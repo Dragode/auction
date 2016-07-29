@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>专场拍品列表</title>
+    <meta charset="UTF-8">
+    <meta name="data-spm" content="a2129"/>
+    <meta name="description" content="undefined"/>
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" type="image/x-icon" href="image/favicon.ico"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link type="text/css" rel="stylesheet" href="/css/special.css">
+</head>
+
+<body data-spm="7389914">
+
+<script type="text/javascript" src="/js/aplus_wap-spm_wap-spmact_wap.js" async
+        defer></script>
+<script type="text/javascript" id="aplus-sufei" src="/js/index.js" async
+        defer></script>
+
+<section id="topTip" class="sale_started">
+    <section id="time" class="time"></section>
+    <section class="desc"></section>
+</section>
+
+<!-同步拍定制状态栏-->
+<section id="topTipTBP" class="TBP_sale_bid" style="display: none;">
+    <section class="biddingDesc">正在进行</section>
+</section>
+
+<section id="container" data-spm="albumList"></section>
+
+<!-- 列表模板 -->
+<script type="text/html" id='listTemplate'>
+    <section class="cell" data-dd="{{=item.status}}"> {{ if(item.isTBP == 'true') {}}
+        <section class="item clickAndOpenWindow" data-link="detail/detailV2.html?itemId={{=item.id}}">
+            <section class="left_box"><img class="img"/>
+                <section id="forgiftedSection" class="classForgiftedSection"><img class="classForgifted"
+                                                                                  src="//gw.alicdn.com/tps/i4/TB1RUpfHFXXXXXMXXXXrywt4VXX-120-120.png">
+                </section>
+            </section>
+            <section class="right_box">
+                <section class="top"> {{=item.auctionNo}} {{=item.title}}</section>
+                <section class="middle2"> {{ if(item.status == "Wait"){ }}
+                    <section class="item_price_tbp item_time_wait">￥<span class="pricespan">{{=item.price}}</span>
+                    </section>
+                    {{ }else if(item.status == "Started") { }}
+                    <section class="item_price_tbp item_time_started">￥<span class="pricespan">{{=item.price}}</span>
+                    </section>
+                    {{ }else{ }}
+                    <section class="item_price_tbp item_time_ended"> ￥<span class="pricespan">{{=item.price}}</span>
+                    </section>
+                    {{ } }}
+                </section>
+                <section class="bottom_status_and_times"> {{ if(item.status == "Wait"){ }}
+                    <section class="bottom2 item_time_wait"> 即将开始</section>
+                    <section class="times_box"><span style="color:#008060;">{{=item.seer}}</span></span>次围观</section>
+                    {{ }else if(item.status == "Started") { }}
+                    <section class="bottom2 item_time_started"> 正在进行</section>
+                    <section class="times_box"><span style="color:darkred;">{{=item.bidCnt}}</span> 次出价</section>
+                    {{ }else{ }}
+                    <section class="bottom2 item_time_ended">
+                        <section class="text">已结束</section>
+                    </section>
+                    <section class="times_box"><span class="item_time_ended">{{=item.bidCnt}}</span> 次出价</section>
+                    {{ } }}
+                </section>
+            </section>
+        </section>
+        {{ }else{ }}
+        <section class="item clickAndOpenWindow" data-link="detail/detailV2.html?itemId={{=item.id}}">
+            <section class="left_box"><img class="img"/></section>
+            <section class="right_box">
+                <section class="top"> {{=item.title}}</section>
+                <section class="middle"> {{ if(item.status == "Wait"){ }}
+                    <section class="item_price item_time_wait">￥{{=item.price}}</section>
+                    <section class="item_bid_count"><span style="color:#008060;">{{=item.seer}}</span> 次围观</section>
+                    {{ }else if(item.status == "Started") { }}
+                    <section class="item_price item_time_started">￥{{=item.price}}</section>
+                    <section class="item_bid_count"><span style="color:darkred;">{{=item.bidCnt}}</span> 次出价</section>
+                    {{ }else{ }}
+                    <section class="item_price item_time_ended">￥{{=item.price}}</section>
+                    <section class="item_bid_count"><span class="item_time_ended">{{=item.bidCnt}}</span> 次出价</section>
+                    {{ } }}
+                </section>
+                {{ if(item.status == "Wait"){ }}
+                <section class="bottom item_time_wait"> 开始时间 &nbsp;{{=item.startTimeShow}}</section>
+                {{ }else if(item.status == "Started") { }} {{ if (item.isLessThanThirtyMinutes == true) { }}
+                <section class="status">
+                    <section class="text"> 距结束 <span id="courtdown">{{=item.lefttime}}</span> {{ if (item.delayTimes ==
+                        "0") {} else { }} <span>({{=item.delayTimes}}次延时)</span> {{ } }}
+                    </section>
+                    <section class="corner"></section>
+                </section>
+                {{ }else{ }}
+                <section class="bottom item_time_started"> 结束时间 &nbsp;{{=item.endTimeShow}}</section>
+                {{ } }} {{ }else{ }}
+                <section class="bottom item_time_ended">
+                    <section class="text">已结束</section>
+                </section>
+                {{ } }}
+            </section>
+        </section>
+        {{ } }}
+    </section>
+</script>
+
+<!--描述模板-->
+<script type="text/html" id="descTemplate">
+    <section class="item_desc_container"> {{if (item.desc == null) { }} {{if (item.isTBP == 'true') { }}
+        <section class="tbp_title_class" id="tbp_title">
+            <section class="tbp_title_number"><span id="secialNumber"> {{=item.index}}</span></section>
+            <section id="secialTitle">
+                <section id="specialTitleText">{{=item.title}}</section>
+                <section id="commontime">{{=item.startTimeShow}}</section>
+            </section>
+        </section>
+        <section class="tbp_jumper_class" id="tbp_jumper">
+            <section class="tbp_jumper_box" id="jump_to_dating">
+                <section id="iconArea"><img class="jumper_icon"
+                                            src="//gw.alicdn.com/tps/i2/TB1jtveHpXXXXa6XFXXpcgcOXXX-156-104.png">
+                </section>
+                <section class="jumper_title_box">拍卖大厅</section>
+                <section class="arrow_here"><img class="arrow"
+                                                 src="//gw.alicdn.com/tps/i1/TB1FPkoHXXXXXcmapXXQFbeIVXX-77-98.png">
+                </section>
+            </section>
+            <section id="tbp_jumper_tips_box">
+                <section class="imgsection"><img class="tiptip"
+                                                 src="//gw.alicdn.com/tps/i3/TB1WuMKHXXXXXXsaXXXkEI0HXXX-52-52.png">
+                </section>
+                所有时间为评估时间,实际以现场时间为准
+            </section>
+        </section>
+        {{ }else{ }}
+        <section class="simple" id="normaltitle">
+            <section class="item_simple">
+                <section class="comment">
+                    <section class="title">{{=item.title}}</section>
+                    <section class="seller_nick"> 送拍机构：{{=item.sellerNick}}</section>
+                </section>
+                <section class="alarmWrap">
+                    <section class="alarmIcon">{{=item.alarmIcon}}</section>
+                    <section class="alarmTip">{{=item.alarmTip}}</section>
+                </section>
+            </section>
+            <section class="full_split"></section>
+        </section>
+        {{ } }} {{ }else{ }}
+        <section class="full">
+            <section class="simple">
+                <section class="item_simple">
+                    <section class="comment">
+                        <section class="title">{{=item.title}}</section>
+                        <section class="sellerNick"> 送拍机构：{{=item.sellerNick}}</section>
+                    </section>
+                    <section class="alarmWrap">
+                        <section class="alarmIcon">{{=item.alarmIcon}}</section>
+                        <section class="alarmTip">{{=item.alarmTip}}</section>
+                    </section>
+                </section>                 <!--<section class="text">详情</section>-->
+                <!--<section class="nav"><img class="nav_down" src="http://gw.alicdn.com/tps/i4/T1ll.HFrdaXXal.AfX-16-28.png?_wvcrc=1"></section>-->
+            </section>
+            <section class="full_split"></section>
+        </section>
+        <section class="full_split"></section>
+        {{ } }}
+    </section>
+</script>
+
+<script type="text/html" id="star-item">
+    <section class="star-item">
+        <ul class="star-item-wrapper"> {{ if(item.data.length){ }} {{ item.data.forEach(function(data){ }}
+            <li class="J_UrlBanner" data-spm="{{= data.id}}"><a class="clickAndOpenWindow"
+                                                                data-link="detail/detailV2.html?itemId={{= data.id}}">
+                <img src/>
+                <p>{{= data.auctionNo}}</p>
+                <p class="title">{{= data.title}}</p></a></li>
+            {{ }) }} {{ } }}
+        </ul>
+    </section>
+</script>
+
+<script type="text/plain" id="bannerTemplate">
+     <section class="banner">         <img />     </section>
+
+
+
+
+
+
+
+
+
+</script>
+
+<div class="module" data-spm="a21525u">
+    <ul class="tb-module pm-zc-banner tb-lazyload">
+        <li class="J_UrlBanner" data-url-param="china">
+            <a href="//www.taobao.com/go/market/paimai/zhenpingyudiao006.php"><img
+                    src="//img.alicdn.com/tps/TB1ih8pJpXXXXatXFXXXXXXXXXX-656-54.jpg"></a>
+        </li>
+        <li class="J_UrlBanner" data-url-param="520paimai">
+            <a href="//market.m.taobao.com/markets/paimai/2016520/index"><img
+                    src="//gtms04.alicdn.com/tps/i4/TB1fxJXJVXXXXXhXXXXNvdBZXXX-1312-108.jpg"></a>
+        </li>
+        <li class="J_UrlBanner" data-url-param="520paimai2">
+            <a href="//market.m.taobao.com/markets/paimai/2016520/index"><img
+                    src="//gtms02.alicdn.com/tps/i2/TB1SlExJFXXXXc3aXXX2_C32pXX-656-54.jpg"></a>
+        </li>
+        <li class="J_UrlBanner" data-url-param="520paimai3">
+            <a href="//market.m.taobao.com/markets/paimai/2016520/index"><img
+                    src="//gtms03.alicdn.com/tps/i3/TB1y4.9JFXXXXXMXXXX7Zdl8FXX-656-100.jpg"></a>
+        </li>
+    </ul>
+</div>
+
+<style>
+    .pm-zc-banner {
+        position: fixed;
+        z-index: 30000;
+        bottom: -4px;
+        left: 0
+    }
+
+    .pm-zc-banner li {
+        display: none
+    }
+
+    .pm-zc-banner li img {
+        width: 100%
+    }
+</style>
+
+</body>
+
+<script type="text/javascript">
+    window.loadCallback = function () {
+        window.initConfig(
+                window.Version.index_v,
+                {debug: false, assetsDomain: '/pmweb/src/'}
+        );
+        var imports = [];
+        imports.push('special/js/module/specialDao.js');
+        imports.push('special/js/module/specialdetailDao.js');
+        imports.push('special/js/module/http.js');
+        imports.push('special/js/module/utils.js');
+        imports.push('special/js/module/listViewHelper.js');
+        imports.push('special/js/module/PyTimer.js');
+        imports.push('detail/js/module/detailUtil.js');
+        seajs.use(imports, function () {
+            seajs.use('special/js/special.js', function () {                 /**SB条初始化**/
+                if (window.StupidBanner) {
+                    StupidBanner.init(window.stupidBannerRuleData);
+                }
+            })
+        });
+    };
+</script>
+
+<script type="text/javascript">
+    window.Version = {index_v: '1.7.3'};
+    (function () {
+        var zepto = {zepto: '//g.alicdn.com/mtb/zepto/1.0.4/zepto.js'};
+        var taobaoMix = {taobaoMix: '//g.alicdn.com/mtb/??/lib-mtop/1.6.4/mtop.js,/lib-promise/3.0.1/polyfillB.js,/lib-promise/3.0.1/promise.js,/lib-login/1.4.3/login.js,/lib-windvane/2.1.1/windvane.js,/lib-encode/0.0.1/base64utf8.js'};
+        window.FrameWork = [zepto, taobaoMix];
+    })();
+</script>
+
+<script type="text/javascript">
+    (function () {
+        var frame = {frame: "//g.alicdn.com/marketingmobile/pmweb/1.7.3/common/js/frame.mini.js"};
+        window.FrameWork.push(frame);
+    })();
+</script>
+
+<script type="text/javascript">
+    (function () {
+        var app = {app: "//g.alicdn.com/marketingmobile/pmweb/1.7.3/common/js/app.mini.js"};
+        window.FrameWork.push(app);
+    })();
+</script>
+
+<script type="text/javascript">
+    (function () {
+        var tbScriptJsArray = [];
+        for (var i = 0; i < window.FrameWork.length; i++) {
+            for (var index in FrameWork[i]) {
+                if (FrameWork[i].hasOwnProperty(index)) {
+                    tbScriptJsArray.push(FrameWork[i][index]);
+                }
+            }
+        }
+        loadScript(tbScriptJsArray, loadCallback);
+        function loadScript(scriptUrlArray, callback) {
+            var loader = function (src, handler) {
+                var script = document.createElement("script");
+                script.src = src;
+                script.onload = script.onreadystatechange = function () {
+                    script.onreadystatechange = script.onload = null;
+                    handler();
+                };
+                var head = document.getElementsByTagName("head")[0];
+                (head || document.body).appendChild(script);
+            };
+            (function () {
+                if (scriptUrlArray.length != 0) {
+                    loader(scriptUrlArray.shift(), arguments.callee);
+                } else {
+                    callback && callback();
+                }
+            })();
+        }
+    })();
+</script>
+
+</html>

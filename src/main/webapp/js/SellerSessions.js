@@ -37,6 +37,9 @@
         }
 
         function handleResponse(response) {
+            /*status 0	needStart	0	goldenColor
+            status 1	needStart	0	redColor
+            status 1	needStart	1	grayColor*/
             var itemsToShow = [];
             //TODO 为什么Zepto().each不行
             for (var i = 0; i < response.items.length; i++) {
