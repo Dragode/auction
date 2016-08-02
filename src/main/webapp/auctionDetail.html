@@ -24,7 +24,7 @@
     <section class="desc"></section>
 </section>
 
-<!-同步拍定制状态栏-->
+<!--同步拍定制状态栏-->
 <section id="topTipTBP" class="TBP_sale_bid" style="display: none;">
     <section class="biddingDesc">正在进行</section>
 </section>
@@ -184,37 +184,7 @@
 
 <script type="text/plain" id="bannerTemplate">
      <section class="banner">         <img />     </section>
-
-
-
-
-
-
-
-
-
 </script>
-
-<div class="module" data-spm="a21525u">
-    <ul class="tb-module pm-zc-banner tb-lazyload">
-        <li class="J_UrlBanner" data-url-param="china">
-            <a href="//www.taobao.com/go/market/paimai/zhenpingyudiao006.php"><img
-                    src="//img.alicdn.com/tps/TB1ih8pJpXXXXatXFXXXXXXXXXX-656-54.jpg"></a>
-        </li>
-        <li class="J_UrlBanner" data-url-param="520paimai">
-            <a href="//market.m.taobao.com/markets/paimai/2016520/index"><img
-                    src="//gtms04.alicdn.com/tps/i4/TB1fxJXJVXXXXXhXXXXNvdBZXXX-1312-108.jpg"></a>
-        </li>
-        <li class="J_UrlBanner" data-url-param="520paimai2">
-            <a href="//market.m.taobao.com/markets/paimai/2016520/index"><img
-                    src="//gtms02.alicdn.com/tps/i2/TB1SlExJFXXXXc3aXXX2_C32pXX-656-54.jpg"></a>
-        </li>
-        <li class="J_UrlBanner" data-url-param="520paimai3">
-            <a href="//market.m.taobao.com/markets/paimai/2016520/index"><img
-                    src="//gtms03.alicdn.com/tps/i3/TB1y4.9JFXXXXXMXXXX7Zdl8FXX-656-100.jpg"></a>
-        </li>
-    </ul>
-</div>
 
 <style>
     .pm-zc-banner {
@@ -239,18 +209,19 @@
     window.loadCallback = function () {
         window.initConfig(
                 window.Version.index_v,
-                {debug: false, assetsDomain: '/pmweb/src/'}
+                {debug: true, assetsDomain: '/pmweb/src/'}
         );
+        seajs.config({base: '/js/'});
         var imports = [];
-        imports.push('special/js/module/specialDao.js');
-        imports.push('special/js/module/specialdetailDao.js');
-        imports.push('special/js/module/http.js');
-        imports.push('special/js/module/utils.js');
-        imports.push('special/js/module/listViewHelper.js');
-        imports.push('special/js/module/PyTimer.js');
-        imports.push('detail/js/module/detailUtil.js');
+        imports.push('/js/auctionDetail/specialDao.js');
+        imports.push('/js/auctionDetail/specialdetailDao.js');
+        imports.push('/js/auctionDetail/http.js');
+        imports.push('/js/auctionDetail/utils.js');
+        imports.push('/js/auctionDetail/listViewHelper.js');
+        imports.push('/js/auctionDetail/PyTimer.js');
+        imports.push('/js/auctionDetail/detailUtil.js');
         seajs.use(imports, function () {
-            seajs.use('special/js/special.js', function () {                 /**SB条初始化**/
+            seajs.use('/js/auctionDetail/special.js', function () {                 /**SB条初始化**/
                 if (window.StupidBanner) {
                     StupidBanner.init(window.stupidBannerRuleData);
                 }
@@ -262,7 +233,7 @@
 <script type="text/javascript">
     window.Version = {index_v: '1.7.3'};
     (function () {
-        var zepto = {zepto: '//g.alicdn.com/mtb/zepto/1.0.4/zepto.js'};
+        var zepto = {zepto: '/js/zepto.1.0.4.js'};
         var taobaoMix = {taobaoMix: '//g.alicdn.com/mtb/??/lib-mtop/1.6.4/mtop.js,/lib-promise/3.0.1/polyfillB.js,/lib-promise/3.0.1/promise.js,/lib-login/1.4.3/login.js,/lib-windvane/2.1.1/windvane.js,/lib-encode/0.0.1/base64utf8.js'};
         window.FrameWork = [zepto, taobaoMix];
     })();
@@ -270,14 +241,9 @@
 
 <script type="text/javascript">
     (function () {
-        var frame = {frame: "//g.alicdn.com/marketingmobile/pmweb/1.7.3/common/js/frame.mini.js"};
+        var frame = {frame: "/js/frame.mini.js"};
         window.FrameWork.push(frame);
-    })();
-</script>
-
-<script type="text/javascript">
-    (function () {
-        var app = {app: "//g.alicdn.com/marketingmobile/pmweb/1.7.3/common/js/app.mini.js"};
+        var app = {app: "/js/app.mini.js"};
         window.FrameWork.push(app);
     })();
 </script>
