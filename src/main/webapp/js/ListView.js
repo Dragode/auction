@@ -65,8 +65,8 @@ function JsListView(listViewConfig, parentContainer) {
         return b.viewType = a, b
     }
 
-    function g(a, b) {
-        return "undefined" == typeof a ? b : a
+    function resolveValueOfDefault(value, defaultValue) {
+        return "undefined" == typeof value ? defaultValue : value
     }
 
     function h(a) {
@@ -103,7 +103,9 @@ function JsListView(listViewConfig, parentContainer) {
 
     function l(a) {
         if (0 != w.length) {
-            var b, c = !1, e = !1;
+            var b,
+                c = !1,
+                e = !1;
             if (a > 0) {
                 var f = w[0];
                 if (0 == firstPosition) {
@@ -128,18 +130,18 @@ function JsListView(listViewConfig, parentContainer) {
     function m(a) {
         var b = a.touches[0], c = parseInt(b.pageY - C), d = parseInt(b.pageX - B);
         if (!(window.navigator.userAgent.match(/iphone os 7/gi) && d > 0 && Math.abs(c / d) < .5)) {
-            if (K.distance = c, p(c, !1))return void(K.distance < 0 && a.preventDefault());
-            a.preventDefault(), C = b.pageY, B = b.pageX, K._touchMove(c), l(c)
+            if (config.distance = c, p(c, !1))return void(config.distance < 0 && a.preventDefault());
+            a.preventDefault(), C = b.pageY, B = b.pageX, config._touchMove(c), l(c)
         }
     }
 
     function n() {
-        K.endTime = Date.now();
-        var a = K.endTime - K.startTime;
-        if (K.currentVelocity * K.velocity > 0) {
-            K.currentVelocity = K.velocity + K.accelerated * a;
-            var b = .5 * (K.velocity + K.currentVelocity) * a;
-            K.distance = parseInt(b - K.startPosition), K.velocity > 0 ? K.distance = K.distance > 0 ? K.distance : 0 : K.velocity < 0 && (K.distance = K.distance < 0 ? K.distance : 0), K.startPosition = b, o(K.distance) || q(K.distance) ? r() : (l(K.distance), K.animation = I(n))
+        config.endTime = Date.now();
+        var a = config.endTime - config.startTime;
+        if (config.currentVelocity * config.velocity > 0) {
+            config.currentVelocity = config.velocity + config.accelerated * a;
+            var b = .5 * (config.velocity + config.currentVelocity) * a;
+            config.distance = parseInt(b - config.startPosition), config.velocity > 0 ? config.distance = config.distance > 0 ? config.distance : 0 : config.velocity < 0 && (config.distance = config.distance < 0 ? config.distance : 0), config.startPosition = b, o(config.distance) || q(config.distance) ? r() : (l(config.distance), config.animation = I(n))
         } else r()
     }
 
@@ -160,28 +162,37 @@ function JsListView(listViewConfig, parentContainer) {
     }
 
     function r() {
-        null != K.animation && (J(K.animation), K.animation = null)
+        null != config.animation && (J(config.animation), config.animation = null)
     }
 
+    //初始化
     var listViewContainer = document.createElement("section");
-    listViewContainer.setAttribute("id", g(listViewConfig.id, "list-") + Math.floor(43114 * Math.random())),
-    listViewContainer.style.position = g(listViewConfig.position, "relative"),
-    listViewContainer.style.height = g(listViewConfig.height, "100px"),
-    listViewContainer.style.width = g(listViewConfig.width, "100px"),
-    listViewContainer.style.overflow = "hidden",
+    listViewContainer.setAttribute("id", resolveValueOfDefault(listViewConfig.id, "list-") + Math.floor(43114 * Math.random())),
+    listViewContainer.style.position = resolveValueOfDefault(listViewConfig.position, "relative");
+    listViewContainer.style.height = resolveValueOfDefault(listViewConfig.height, "100px");
+    listViewContainer.style.width = resolveValueOfDefault(listViewConfig.width, "100px");
+    listViewContainer.style.overflow = "hidden";
     parentContainer.appendChild(listViewContainer);
+
     var _this = this,
         offsetHeight = listViewContainer.offsetHeight,
         v = {},
         w = [],
         firstPosition = 0,
         y = 0;
+
     this.refreshView = function (a) {
-        if ("undefined" != typeof a)a >= firstPosition && y >= a && _this.adaptor.renderView(w[a - firstPosition], a); else for (var b = 0; b < w.length; b++)_this.adaptor.renderView(w[b], firstPosition + b)
+        if ("undefined" != typeof a)
+            a >= firstPosition && y >= a && _this.adaptor.renderView(w[a - firstPosition], a);
+        else
+            for (var b = 0; b < w.length; b++)
+                _this.adaptor.renderView(w[b], firstPosition + b)
     },
+
     this.setAdaptor = function (adapterToSet) {
         function initListView(b) {
-            var topView, count = adapterToSet.getCount();
+            var topView,
+                count = adapterToSet.getCount();
             if (b) {
                 var h = b.top;
                 firstPosition = b.firstPosition
@@ -206,16 +217,20 @@ function JsListView(listViewConfig, parentContainer) {
 
         _this.adaptor = adapterToSet,
         adapterToSet.notifyDataSetChanged = function (a) {
-            (0 === w.length || a === !0) && (w = [], v = {}, listViewContainer.innerHTML = "", initListView()), l(-1e-10)
+            (0 === w.length || a === !0)
+                && (w = [], v = {}, listViewContainer.innerHTML = "", initListView()),
+            l(-1e-10)
         },
         _this._initListView = initListView,
         initListView()
     },
+
     this.setSelection = function (a) {
         r();
         for (var b = 0; b < w.length; b++)w[b].style.top = G + "px", d(w[b]);
         w = [], _this._initListView({top: 0, firstPosition: a})
     };
+
     var z = window.location.pathname.replace(/\//gi, "$").replace(".", "$");
     this.recoverLater = function (a) {
         try {
@@ -253,29 +268,36 @@ function JsListView(listViewConfig, parentContainer) {
         return void 0 === b ? !1 : (A = !0, delete sessionStorage[z], !0)
     },
     this.setHeight = function (b) {
-        listViewConfig.height = b + "px", listViewContainer.style.height = g(listViewConfig.height, "100px"), F = 0, G = F + listViewContainer.offsetHeight, _this.adaptor.notifyDataSetChanged()
+        listViewConfig.height = b + "px", listViewContainer.style.height = resolveValueOfDefault(listViewConfig.height, "100px"), F = 0, G = F + listViewContainer.offsetHeight, _this.adaptor.notifyDataSetChanged()
     },
     this.css = function (a, b) {
-        return "undefined" == typeof b ? listViewContainer[a] : listViewContainer.style[a] = b
+        return "undefined" == typeof b ?
+            listViewContainer[a]
+            :
+            listViewContainer.style[a] = b
     };
-    var B, C, D = !1, E = !1;
-    listViewContainer.addEventListener("touchstart", function (a) {
-        var b = a.touches[0];
-        C = b.pageY, B = b.pageX, null != K.animation && a.stopPropagation(), r(), K._touchStart(), D = !1, E = !1
+
+    var B,
+        C,
+        D = !1,
+        E = !1;
+    listViewContainer.addEventListener("touchstart", function (event) {
+        var b = event.touches[0];
+        C = b.pageY, B = b.pageX, null != config.animation && event.stopPropagation(), r(), config._touchStart(), D = !1, E = !1
     }, !0), listViewContainer.addEventListener("touchmove", m, !1);
     var F = 0, G = F + listViewContainer.offsetHeight, H = 0;
     listViewContainer.addEventListener("touchend", function () {
-        if (!p(K.distance, !0)) {
-            if (K.upTime < K.moveTime) {
-                var a = K.upTime;
-                K.upTime = K.moveTime, K.moveTime = a
+        if (!p(config.distance, !0)) {
+            if (config.upTime < config.moveTime) {
+                var a = config.upTime;
+                config.upTime = config.moveTime, config.moveTime = a
             }
-            if (K.velocity = K.distance / (K.upTime - K.moveTime), Math.abs(K.velocity) > K.velocityMinBase) {
-                K.accelerated = K.velocity > 0 ? -K.flingAccelerated : K.flingAccelerated;
-                var b = K.velocity + K.accelerated * (Date.now() - K.upTime) * K.timeFade;
-                K.velocity = b * K.velocity <= 0 ? 0 : b
+            if (config.velocity = config.distance / (config.upTime - config.moveTime), Math.abs(config.velocity) > config.velocityMinBase) {
+                config.accelerated = config.velocity > 0 ? -config.flingAccelerated : config.flingAccelerated;
+                var b = config.velocity + config.accelerated * (Date.now() - config.upTime) * config.timeFade;
+                config.velocity = b * config.velocity <= 0 ? 0 : b
             }
-            K.velocity = K.velocity / K.velocityFactor, Math.abs(K.velocity) < K.velocityMinBase || K.distance && 0 !== K.velocity && (K.velocity > K.velocityMaxBase ? K.velocity = K.velocityMaxBase : K.velocity < -K.velocityMaxBase && (K.velocity = -K.velocityMaxBase), K.currentVelocity = K.velocity, K.startTime = K.upTime, K.startPosition = 0, K.accelerated = K.velocity > 0 ? -K.flingAccelerated : K.flingAccelerated, K.animation = I(n))
+            config.velocity = config.velocity / config.velocityFactor, Math.abs(config.velocity) < config.velocityMinBase || config.distance && 0 !== config.velocity && (config.velocity > config.velocityMaxBase ? config.velocity = config.velocityMaxBase : config.velocity < -config.velocityMaxBase && (config.velocity = -config.velocityMaxBase), config.currentVelocity = config.velocity, config.startTime = config.upTime, config.startPosition = 0, config.accelerated = config.velocity > 0 ? -config.flingAccelerated : config.flingAccelerated, config.animation = I(n))
         }
     }, !1);
     var I = function () {
@@ -286,7 +308,7 @@ function JsListView(listViewConfig, parentContainer) {
     J = function () {
         return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.cancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout
     }(),
-    K = {
+    config = {
         velocity: 0,
         moveTime: 0,
         upTime: 6e4,
@@ -304,10 +326,10 @@ function JsListView(listViewConfig, parentContainer) {
         flingAccelerated: null !== window.navigator.userAgent.match(/iphone/gi) ? .001 : .001,
         velocityFactor: null !== window.navigator.userAgent.match(/iphone/gi) ? 1.5 : 1.5,
         _touchMove: function (a) {
-            K.distance = a, 0 === K.count ? (K.moveTime = Date.now(), K.count++) : (K.upTime = Date.now(), K.count = 0)
+            config.distance = a, 0 === config.count ? (config.moveTime = Date.now(), config.count++) : (config.upTime = Date.now(), config.count = 0)
         },
         _touchStart: function () {
-            K.count = 0, K.moveTime = Date.now(), K.count++
+            config.count = 0, config.moveTime = Date.now(), config.count++
         }
     }
 }
