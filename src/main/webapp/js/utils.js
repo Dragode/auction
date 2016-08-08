@@ -155,9 +155,11 @@
             return null != b && void 0 != b && b.length > 0 ? b[7] : void 0
         },
         getParameter: function (a, b) {
-            var a = a, b = b;
+            var a = a,
+                b = b;
             1 == arguments.length && (b = a, a = window.location.href), 2 != arguments.length || a || (a = window.location.href);
-            var c = "", d = "";
+            var c = "",
+                d = "";
             try {
                 d = decodeURI(a)
             } catch (e) {

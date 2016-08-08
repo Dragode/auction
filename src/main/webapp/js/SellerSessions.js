@@ -74,6 +74,6 @@
             windowWidth = (window.location, Zepto(window).width()),
             pageNum = 1,
             pageSize = 20,
-            nextPage = !1
+            nextPage = !1;
     })
 }(Zepto, window);

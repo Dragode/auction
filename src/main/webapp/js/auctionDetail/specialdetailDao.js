@@ -1,11 +1,11 @@
 !function (zepto, window) {
     define("specialdetailDao", function (require, exports, module) {
 
-        function getAlbum(successCallBack, b) {
-            f(successCallBack, b, {albumId: albumId})
+        function getAlbum(successCallBack, failCallBack) {
+            f(successCallBack, failCallBack, {albumId: albumId})
         }
 
-        function f(successCallBack, c, requestParams) {
+        function f(successCallBack, failCallBack, requestParams) {
             zepto().toastUtil.showLoading();
             var mockRespons = {
                 "api": "mtop.taobao.paimai.getAlbumInfoByIdV3",
@@ -164,17 +164,19 @@
         }
 
         var albumId = void 0;
-        exports.init = function (a) {
-            1 === arguments.length && "undefined" != typeof albumId && (albumId = a)
-        },
-            exports.setAlbumId = function (a) {
-                albumId = a
-            },
-            exports.getAlbumId = function () {
-                return albumId
-            },
-            exports.getAlbum = function (a, b) {
-                getAlbum(a, b)
+        exports.init = function (id) {
+            if (1 === arguments.length && "undefined" != typeof albumId) {
+                albumId = id
             }
+        };
+        exports.setAlbumId = function (id) {
+            albumId = id
+        };
+        exports.getAlbumId = function () {
+            return albumId
+        };
+        exports.getAlbum = function (successCallBack, failCallBack) {
+            getAlbum(successCallBack, failCallBack)
+        }
     })
 }(Zepto, window);
