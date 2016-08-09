@@ -356,8 +356,7 @@ function BaseAdaptor(a, b) {
     this.viewList = b || {}, this.viewList.defaultItemType = "LIST", this.kData = a || [], this.kShowTip = !1, this.getViewType = function (a) {
         var b = this.kData[a];
         return b.hasOwnProperty("itemType") ? b.itemType : this.viewList.defaultItemType
-    },
-    this.renderView = function (a, b) {
+    }, this.renderView = function (a, b) {
         this.prepareForReuse(a, b);
         var c = $(this.viewList[this.getViewType(b)]).html();
         this.willRenderView(a, b);
@@ -591,7 +590,7 @@ function AuctionTimer(a) {
             }
             return a + e
         }
-    }, $.fn.dateUtil = {
+    }, $.fn.dateUtilApp = {
         LIST_TIME_FORMAT: "MM月dd日 hh:mm", getTwoDigital: function (a) {
             return 10 > a ? "0" + a : a
         }, getTime: function (a) {
@@ -621,7 +620,8 @@ function AuctionTimer(a) {
             var c = (new Date).getTime() >= this.getTime(a);
             c && (window.location.href = b)
         }
-    }, $.fn.urlUtil = {
+    },
+        $.fn.urlUtil = {
         parseUrlRegexp: /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/,
         parseUrlVSm: function (a) {
             return null == a || void 0 == a ? [] : this.parseUrlRegexp.exec(a)
@@ -1279,7 +1279,8 @@ function AuctionTimer(a) {
                 }, 100)
             }, !1), b.moreNavItems && b.moreNavItems("share"))
         }
-    }, $.fn.datingUtil = {
+    },
+        $.fn.datingUtil = {
         init: function (a) {
             var b = $().conditionUtil.hasTouch();
             $("body").append(this.generateHtml()), $("body").append(this.generateBackgroundAll()), $("body").on(b, "#" + a, function () {

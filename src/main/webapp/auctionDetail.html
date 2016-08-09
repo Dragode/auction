@@ -9,16 +9,14 @@
     <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0, user-scalable=no" name="viewport">
     <link rel="shortcut icon" type="image/x-icon" href="image/favicon.ico"/>
     <meta content="telephone=no" name="format-detection"/>
+    <script type="text/javascript" src="/js/common/sea.js"></script>
+    <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
     <link type="text/css" rel="stylesheet" href="/css/special.css">
 </head>
 
 <body data-spm="7389914">
 
-<script type="text/javascript" src="/js/aplus_wap-spm_wap-spmact_wap.js" async
-        defer></script>
-<script type="text/javascript" id="aplus-sufei" src="/js/index.js" async
-        defer></script>
-
+<!--顶部拍卖状态提醒-->
 <section id="topTip" class="sale_started">
     <section id="time" class="time"></section>
     <section class="desc"></section>
@@ -29,6 +27,7 @@
     <section class="biddingDesc">正在进行</section>
 </section>
 
+<!--主容器-->
 <section id="container" data-spm="albumList"></section>
 
 <!-- 列表模板 -->
@@ -206,79 +205,29 @@
 </body>
 
 <script type="text/javascript">
-    window.loadCallback = function () {
-        window.initConfig(
+        /*window.initConfig(
                 window.Version.index_v,
                 {debug: true, assetsDomain: '/pmweb/src/'}
-        );
+        );*/
         seajs.config({base: '/js/'});
         var imports = [];
+        //imports.push('/js/DateUtil.min.js');
+        imports.push('/js/auctionDetail/detailUtil.js');
+        //imports.push('/js/utils.js');
+        imports.push('/js/ListView.js');
         imports.push('/js/auctionDetail/specialDao.js');
         imports.push('/js/auctionDetail/specialdetailDao.js');
         imports.push('/js/auctionDetail/http.js');
         imports.push('/js/auctionDetail/utils.js');
         imports.push('/js/auctionDetail/listViewHelper.js');
         imports.push('/js/auctionDetail/PyTimer.js');
-        imports.push('/js/auctionDetail/detailUtil.js');
+        imports.push('/js/auctionDetail/frame.mini.js');
+        imports.push('/js/auctionDetail/BaseAdapter.js');
         seajs.use(imports, function () {
-            seajs.use('/js/auctionDetail/special.js', function () {                 /**SB条初始化**/
-                if (window.StupidBanner) {
-                    StupidBanner.init(window.stupidBannerRuleData);
-                }
+            seajs.use('/js/auctionDetail/special.js', function (home) {
+                //TODO what to init
             })
         });
-    };
-</script>
-
-<script type="text/javascript">
-    window.Version = {index_v: '1.7.3'};
-    (function () {
-        var zepto = {zepto: '/js/zepto.1.0.4.js'};
-        var taobaoMix = {taobaoMix: '//g.alicdn.com/mtb/??/lib-mtop/1.6.4/mtop.js,/lib-promise/3.0.1/polyfillB.js,/lib-promise/3.0.1/promise.js,/lib-login/1.4.3/login.js,/lib-windvane/2.1.1/windvane.js,/lib-encode/0.0.1/base64utf8.js'};
-        window.FrameWork = [zepto, taobaoMix];
-    })();
-</script>
-
-<script type="text/javascript">
-    (function () {
-        var frame = {frame: "/js/frame.mini.js"};
-        window.FrameWork.push(frame);
-        var app = {app: "/js/app.mini.js"};
-        window.FrameWork.push(app);
-    })();
-</script>
-
-<script type="text/javascript">
-    (function () {
-        var tbScriptJsArray = [];
-        for (var i = 0; i < window.FrameWork.length; i++) {
-            for (var index in FrameWork[i]) {
-                if (FrameWork[i].hasOwnProperty(index)) {
-                    tbScriptJsArray.push(FrameWork[i][index]);
-                }
-            }
-        }
-        loadScript(tbScriptJsArray, loadCallback);
-        function loadScript(scriptUrlArray, callback) {
-            var loader = function (src, handler) {
-                var script = document.createElement("script");
-                script.src = src;
-                script.onload = script.onreadystatechange = function () {
-                    script.onreadystatechange = script.onload = null;
-                    handler();
-                };
-                var head = document.getElementsByTagName("head")[0];
-                (head || document.body).appendChild(script);
-            };
-            (function () {
-                if (scriptUrlArray.length != 0) {
-                    loader(scriptUrlArray.shift(), arguments.callee);
-                } else {
-                    callback && callback();
-                }
-            })();
-        }
-    })();
 </script>
 
 </html>

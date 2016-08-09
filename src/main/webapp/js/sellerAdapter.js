@@ -65,7 +65,8 @@ function SellerSessionAdapter(datas, viewList) {
                         params.datetitle = fftitleViewText,
                         listView2.recoverLater(params),
                         //TODO 跳到自己页面
-                        window.open("http://localhost:8080/", !0, !0)
+                        window.location.href = "/auctionDetail.html";
+                        //window.open("http://localhost:8080/", !0, !0)
                     }),
                     null != data && null != data && "tip" == data.showtype) {
                 var tipsShow = '<section class="tipsshow" >没有更多数据了</section>';

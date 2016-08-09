@@ -1,6 +1,6 @@
-function Adaptor(a, b) {
+function Adaptor(mData, viewList) {
     var c = this;
-    this.mData = a,
+    this.mData = mData,
     this.getCount = function () {
         return c.mData.length
     },
@@ -20,7 +20,7 @@ function Adaptor(a, b) {
     },
     this.renderView = function () {
     },
-    this.viewList = b;
+    this.viewList = viewList;
     for (var d in this.viewList){
         this.viewList[d].viewType = d;
     }
