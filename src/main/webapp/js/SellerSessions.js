@@ -9,8 +9,8 @@
                 }, Zepto("#fframe_container")[0]
             );
             sellerSessionAdapter = new SellerSessionAdapter([], {
-                    child1: createDiv("cell"),
-                    child2: createDiv("tips")
+                cell: createDiv("cell"),
+                tip: createDiv("tips")
                 }
             );
             window.sellerSessionAdapter = sellerSessionAdapter;

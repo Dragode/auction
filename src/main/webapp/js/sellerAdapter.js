@@ -86,14 +86,14 @@ function SellerSessionAdapter(datas, viewList) {
         this.mData = this.oData
     },
     this.viewList = viewList,
-    this.viewList.child1.viewType = "child1",
-    this.viewList.child2.viewType = "child2",
+    this.viewList.cell.viewType = "cell",
+    this.viewList.tip.viewType = "tip",
     this.getViewType = function (index) {
         var data = this.mData[index];
         if(void 0 != data.showtype && "tip" == data.showtype){
-            return this.viewList.child2.viewType
+            return this.viewList.tip.viewType
         }else {
-            return this.viewList.child1.viewType
+            return this.viewList.cell.viewType
         }
     }
 }
