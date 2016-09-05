@@ -11,7 +11,7 @@
     <script type="text/javascript" src="/js/common/touch.js"></script>
     <script type="text/javascript" src="/js/bridge-api.js"></script>
 </head>
-<body>
+<body onload="afterRender()">
 <!--顶部提示-->
 <section id="topTip">
 </section>
@@ -25,6 +25,7 @@
      <section class="banner">
         <img src="<%=item.src%>" >
      </section>
+
 </script>
 
 <!--专场描述模板-->
@@ -35,7 +36,7 @@
                 <section class="comment">
                     <section class="title"><%=item.title%></section>
                 </section>
-                <section class="alarmWrap">
+                <section id="alarmWrap" class="alarmWrap">
                     <section class="alarmIcon"><%=item.alarmIcon%></section>
                     <section class="alarmTip"><%=item.alarmTip%></section>
                 </section>
@@ -84,6 +85,11 @@
             home.initialize();
         })
     });
+
+    $(document).ready(function () {
+
+    })
+
 </script>
 
 </html>

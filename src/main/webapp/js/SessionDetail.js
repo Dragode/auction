@@ -39,21 +39,21 @@
             };
             itemToShow.push(banner);
             var desc = {
-                title:response.session.title,
-                alarmIcon:"&#xe600;",
-                alarmTip:"开拍提醒",
+                title: response.session.title,
+                alarmIcon: "&#xe600;",
+                alarmTip: "开拍提醒",
                 showType: "desc"
             };
             itemToShow.push(desc);
             for (var i = 0; i < response.items.length; i++) {
-                var goods =  response.items[i];
+                var goods = response.items[i];
                 itemToShow.push(goods);
             }
             return itemToShow;
         }
 
         function getAndRender() {
-            $.getJSON('/getSessionDetail/123', function (response) {
+            $.getJSON('/getSessionDetail/' + getUrlParam("sessionId"), function (response) {
                 //TODO 处理异常情况
                 Zepto().toastUtil.dismissLoading();
                 /*renderSessionDesc(response.session);*/
@@ -63,6 +63,12 @@
                 sessionDetailAdapter.notifyDataSetChanged();
                 Zepto().toastUtil.dismissLoading();
 
+                Zepto("#alarmWrap").on($().conditionUtil.hasTouch(), function (event) {
+                    $.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
+                        //TODO 处理异常情况
+                        alert("设置成功");
+                    });
+                });
             });
         }
 
@@ -80,6 +86,13 @@
                 Zepto("#topTip").empty().append("<section id='time' class='time'>" + Zepto().dateUtil.format(startTime) + "</section> <section class='desc'>开始</section>");
                 Zepto("#topTip").attr("class", "sale_wait");
             }
+        }
+
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return unescape(r[2]);
+            return null; //返回参数值
         }
 
         exports.initialize = init;

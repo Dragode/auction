@@ -2,24 +2,23 @@ package dragode.auction.controller;
 
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.BaseResponse;
+import dragode.auction.controller.response.GoodsResponse;
 import dragode.auction.controller.response.SessionDetailResponse;
 import dragode.auction.model.Goods;
 import dragode.auction.model.Session;
 import dragode.auction.model.SessionReminder;
 import dragode.auction.model.User;
+import dragode.auction.repository.GoodsRepository;
 import dragode.auction.repository.SessionReminderRepository;
 import dragode.auction.repository.SessionRepository;
 import dragode.auction.repository.UserRepository;
-import org.joda.time.DateTime;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 @RestController
 public class SessionController {
@@ -30,37 +29,40 @@ public class SessionController {
     private SessionReminderRepository sessionReminderRepository;
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private GoodsRepository goodsRepository;
 
+    /**
+     * 获取所有拍卖专场
+     *
+     * @return
+     */
     @RequestMapping(path = "/getSessions")
     public BaseListResponse<Session> getSessions() {
         return new BaseListResponse<>(sessionRepository.findAll());
     }
 
+    /**
+     * 获取拍卖专场详情
+     *
+     * @param sessionId 专场ID
+     * @return
+     */
     @RequestMapping(path = "/getSessionDetail/{sessionId}")
-    public SessionDetailResponse getSessionDetail(@PathVariable String sessionId) {
+    public SessionDetailResponse getSessionDetail(@PathVariable Integer sessionId) {
         SessionDetailResponse sessionDetailResponse = new SessionDetailResponse();
-        Session session = new Session();
-        session.setId(68635992);
-        session.setTitle("拍卖专场详情-接口");
-        session.setBannerUrl("exampleImg/sessionExample.jpg");
-        session.setStartTime(new DateTime(2016, 2, 1, 8, 8).toDate());
-        session.setEndTime(new DateTime(2016, 3, 11, 8, 8).toDate());
-        session.setItemNum(88l);
-        session.setBidCount(8l);
-        session.setStatus(Session.WAITING);
-        sessionDetailResponse.setSession(session);
-        sessionDetailResponse.setItems(new ArrayList<Goods>());
-        for (int i = 0; i < 10; i++) {
-            Goods goods = new Goods();
-            goods.setBannerUrl("exampleImg/goodsExample.jpg");
-            goods.setTitle("商品详情-接口");
-            goods.setBidCount((long) i);
-            goods.setPrice((long) i * 100);
-            sessionDetailResponse.getItems().add(goods);
-        }
+        sessionDetailResponse.setSession(sessionRepository.findOne(sessionId));
+        sessionDetailResponse.setItems(goodsRepository.findAllBySessionId(sessionId));
         return sessionDetailResponse;
     }
 
+    /**
+     * 专场开拍提醒,现支持微信提醒
+     *
+     * @param sessionId 专场ID
+     * @param userId    用户ID
+     * @return
+     */
     @RequestMapping(path = "/remindWhenAuctionBegin")
     public BaseResponse remindWhenAuctionBegin(@RequestParam Integer sessionId,
                                                @RequestParam Integer userId) {
@@ -76,9 +78,17 @@ public class SessionController {
         return new BaseResponse();
     }
 
+    /**
+     * 获取商品详情
+     *
+     * @param goodsId 商品ID
+     * @return
+     */
     @RequestMapping(path = "/getGoods/{goodsId}")
-    public Goods getGoods(@PathVariable String goodsId) {
-        Goods goods = new Goods();
+    public GoodsResponse getGoods(@PathVariable Integer goodsId) {
+        Goods one = goodsRepository.findOne(goodsId);
+
+        GoodsResponse goods = new GoodsResponse();
         goods.setBannerUrl("exampleImg/goodsExample.jpg");
         goods.setTitle("商品详情-接口");
         goods.setBidCount((long) 88);
@@ -91,14 +101,5 @@ public class SessionController {
         goods.getDescPics().add("exampleImg/goodsDescExample1.jpg");
         goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
         return goods;
-    }
-
-
-    @RequestMapping(path = "/test")
-    public void test() {
-        List<Session> all = sessionRepository.findAll();
-        for (Session session : all) {
-            System.out.println(session.getTitle());
-        }
     }
 }

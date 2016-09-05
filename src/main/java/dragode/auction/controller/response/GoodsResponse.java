@@ -1,19 +1,39 @@
-package dragode.auction.model;
+package dragode.auction.controller.response;
 
-import javax.persistence.Entity;
+import dragode.auction.model.Goods;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.List;
 
 /**
- * Created by Dracode on 2016/8/27.
+ * ******************************************
+ * <p/>
+ * Copyright 2016
+ * NetDragon All rights reserved
+ * <p/>
+ * *****************************************
+ * <p/>
+ * *** Company ***
+ * NetDragon
+ * <p/>
+ * *****************************************
+ * <p/>
+ * *** Team ***
+ * SmartQ
+ * <p/>
+ * *****************************************
+ *
+ * @author 俞建龙(300116)
+ * @version V1.0
+ * @Title GoodsResponse
+ * @Package dragode.auction.controller.response
+ * <p/>
+ * *****************************************
+ * @Description
+ * @date 2016/9/5 0005
  */
-@Entity
-@Table(name = "goods")
-public class Goods {
-    @Id
-    @GeneratedValue
+public class GoodsResponse {
     private Integer id;
     private Integer sessionId;
     private String bannerUrl;
@@ -26,8 +46,8 @@ public class Goods {
     private Long startingPrice;
     private Long cashDeposit;
     private Long bidIncrement;
-    private String showPics;
-    private String descPics;
+    private List<String> showPics;
+    private List<String> descPics;
 
     public Integer getId() {
         return id;
@@ -77,22 +97,6 @@ public class Goods {
         this.price = price;
     }
 
-    public String getDescPics() {
-        return descPics;
-    }
-
-    public void setDescPics(String descPics) {
-        this.descPics = descPics;
-    }
-
-    public String getShowPics() {
-        return showPics;
-    }
-
-    public void setShowPics(String showPics) {
-        this.showPics = showPics;
-    }
-
     public Long getStartingPrice() {
         return startingPrice;
     }
@@ -115,5 +119,21 @@ public class Goods {
 
     public void setBidIncrement(Long bidIncrement) {
         this.bidIncrement = bidIncrement;
+    }
+
+    public List<String> getShowPics() {
+        return showPics;
+    }
+
+    public void setShowPics(List<String> showPics) {
+        this.showPics = showPics;
+    }
+
+    public List<String> getDescPics() {
+        return descPics;
+    }
+
+    public void setDescPics(List<String> descPics) {
+        this.descPics = descPics;
     }
 }

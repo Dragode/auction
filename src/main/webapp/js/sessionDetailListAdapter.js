@@ -54,7 +54,9 @@ function SessionDetailListAdapter(datas, viewList) {
 
                 var viewCopy = $(viewCell),
                     viewClass = viewCopy.attr("class");
-                if ("cell" == viewClass && viewCopy.on($().conditionUtil.hasTouch(),
+                if ("cell" == viewClass
+                        && "desc" != data.showType
+                    && viewCopy.on($().conditionUtil.hasTouch(),
                         function (event) {
                             var params = {};
                             params.pageNum = pagepmptom,
