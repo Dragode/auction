@@ -1,45 +1,46 @@
 package dragode.auction.controller;
 
 import dragode.auction.controller.response.BaseListResponse;
+import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.SessionDetailResponse;
 import dragode.auction.model.Goods;
 import dragode.auction.model.Session;
+import dragode.auction.model.SessionReminder;
+import dragode.auction.model.User;
+import dragode.auction.repository.SessionReminderRepository;
+import dragode.auction.repository.SessionRepository;
+import dragode.auction.repository.UserRepository;
 import org.joda.time.DateTime;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 public class SessionController {
 
+    @Resource
+    private SessionRepository sessionRepository;
+    @Resource
+    private SessionReminderRepository sessionReminderRepository;
+    @Resource
+    private UserRepository userRepository;
+
     @RequestMapping(path = "/getSessions")
     public BaseListResponse<Session> getSessions() {
-        BaseListResponse<Session> response = new BaseListResponse<>();
-        List<Session> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Session session = new Session();
-            session.setId("68635992");
-            session.setTitle("拍卖专场标题-接口");
-            session.setBannerUrl("exampleImg/sessionExample.jpg");
-            session.setStartTime(new DateTime(2016, 10, 1, 8, 8).toDate());
-            session.setEndTime(new DateTime(2016, 11, 11, 8, 8).toDate());
-            session.setItemNum(88l);
-            session.setBidCount((long) i);
-            session.setStatus(Session.WAITING);
-
-            items.add(session);
-        }
-        response.setItems(items);
-        return response;
+        return new BaseListResponse<>(sessionRepository.findAll());
     }
 
     @RequestMapping(path = "/getSessionDetail/{sessionId}")
     public SessionDetailResponse getSessionDetail(@PathVariable String sessionId) {
         SessionDetailResponse sessionDetailResponse = new SessionDetailResponse();
         Session session = new Session();
-        session.setId("68635992");
+        session.setId(68635992);
         session.setTitle("拍卖专场详情-接口");
         session.setBannerUrl("exampleImg/sessionExample.jpg");
         session.setStartTime(new DateTime(2016, 2, 1, 8, 8).toDate());
@@ -60,6 +61,21 @@ public class SessionController {
         return sessionDetailResponse;
     }
 
+    @RequestMapping(path = "/remindWhenAuctionBegin")
+    public BaseResponse remindWhenAuctionBegin(@RequestParam Integer sessionId,
+                                               @RequestParam Integer userId) {
+        //TODO 业务逻辑校验
+        SessionReminder sessionReminder = new SessionReminder();
+        sessionReminder.setSessionId(sessionId);
+        Session session = sessionRepository.findOne(sessionId);
+        sessionReminder.setSessionStartTime(session.getStartTime());
+        sessionReminder.setUserId(userId);
+        User user = userRepository.findOne(userId);
+        sessionReminder.setOpenId(user.getOpenId());
+        sessionReminderRepository.save(sessionReminder);
+        return new BaseResponse();
+    }
+
     @RequestMapping(path = "/getGoods/{goodsId}")
     public Goods getGoods(@PathVariable String goodsId) {
         Goods goods = new Goods();
@@ -75,5 +91,14 @@ public class SessionController {
         goods.getDescPics().add("exampleImg/goodsDescExample1.jpg");
         goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
         return goods;
+    }
+
+
+    @RequestMapping(path = "/test")
+    public void test() {
+        List<Session> all = sessionRepository.findAll();
+        for (Session session : all) {
+            System.out.println(session.getTitle());
+        }
     }
 }

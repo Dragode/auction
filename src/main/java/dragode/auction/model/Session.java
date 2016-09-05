@@ -1,13 +1,21 @@
 package dragode.auction.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Entity
+@Table(name = "session")
 public class Session {
     public static final String WAITING = "0";
     public static final String AUCTION = "1";
     public static final String DONE = "2";
 
-    private String id;
+    @Id
+    @GeneratedValue
+    private Integer id;
     private String bannerUrl;
     private String title;
     private Long itemNum;
@@ -16,11 +24,11 @@ public class Session {
     private Date startTime;
     private Date endTime;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
