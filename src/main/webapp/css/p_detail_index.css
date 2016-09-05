@@ -50,7 +50,7 @@
 
 @font-face {
     font-family: pm-iconfont;
-    src: url(../img/at.alicdn.com_t_font_1462600353_3103302.ttf) format('truetype')
+    src: url(/ttf/1462600353_3103302.ttf) format('truetype')
 }
 
 .pm-iconfont {
@@ -168,7 +168,7 @@
 
 @font-face {
     font-family: pm-util-iconfont;
-    src: url(../img/at.alicdn.com_t_font_1462599136_2986462.ttf) format('truetype')
+    src: url(/ttf/1462599136_2986462.ttf) format('truetype')
 }
 
 .pm-util-iconfont {
@@ -845,7 +845,7 @@ html {
 }
 
 .first-screen {
-    padding-bottom: 1.53125rem
+    padding-bottom: 0
 }
 
 .first-screen.has-second-screen {
@@ -863,7 +863,7 @@ html {
 }
 
 .first-screen .rc-slide .slick-slide {
-    background: url(../img/tps_i1_TB1o1TjIpXXXXXnXFXXj64lTXXX-167-167.jpg) no-repeat 50% 50% #f5f5f5;
+    background: url(/image/auction.jpg) no-repeat 50% 50% #f5f5f5;
     -webkit-background-size: 33.333333%;
     background-size: 33.333333%
 }

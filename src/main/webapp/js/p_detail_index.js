@@ -8,210 +8,248 @@ webpackJsonp([7], [
                 return e
             };
         n(320);
-        var r = n(2), s = n(30), a = n(162), o = n(184), c = n(192), l = n(194), u = n(321), p = n(334), d = n(181);
+        var r = n(2),
+            s = n(30),
+            a = n(162),
+            o = n(184),
+            c = n(192),
+            l = n(194),
+            u = n(321),
+            p = n(334),
+            d = n(181);
         n(188)();
-        var h = n(295), f = n(220), m = n(205), g = n(250), v = n(337), y = n(308), T = n(338), b = n(352), w = n(292), S = n(354), E = n(303), x = n(356), I = n(396), P = n(395), N = n(394), C = n(446), A = n(206), k = n(311), D = n(312), O = n(313), _ = $(window), L = f.urlUtil.getParameter("itemId"), R = !1, M = m.getNewDomain() + "bid-hall/index.html?itemId=" + L, B = {
-            banner: "rgn/app-banner",
-            video: "rgn/video-switch",
-            announcement: "rgn/announcement"
-        }, U = r.createClass({
-            displayName: "Detail",
-            mixins: [d, g, a.listenTo(N, "onReceiveItemInfo"), a.listenTo(C, "onUpdateMessage"), a.listenTo(D, "onUpdateIdentity")],
-            getInitialState: function W() {
-                return {
-                    status: N.getStatus(),
-                    mppMsgVisible: !1,
-                    mainOpInfo: {sellerNick: ""},
-                    toTopVisible: !1,
-                    links: [],
-                    initSS: !1,
-                    appBanner: {}
-                }
+        var h = n(295),
+            f = n(220),
+            m = n(205),
+            g = n(250),
+            v = n(337),
+            y = n(308),
+            T = n(338),
+            b = n(352),
+            w = n(292),
+            S = n(354),
+            E = n(303),
+            x = n(356),
+            I = n(396),
+            P = n(395),
+            N = n(394),
+            C = n(446),
+            A = n(206),
+            k = n(311),
+            D = n(312),
+            O = n(313),
+            _ = $(window),
+            L = f.urlUtil.getParameter("itemId"),
+            R = !1,
+            M = m.getNewDomain() + "bid-hall/index.html?itemId=" + L,
+            B = {
+                banner: "rgn/app-banner",
+                video: "rgn/video-switch",
+                announcement: "rgn/announcement"
             },
-            componentWillMount: function X() {
-                this.getDataFromMtop(!0)
-            },
-            componentWillUpdate: function F(e, t) {
-                var n = N.getBuyerBid();
-                n && n.winner && (R || t.status !== l.AUCTION_STATUS.ORDER || (this.refs.toast.show("\u8ba2\u5355\u751f\u6210\u4e2d..."), R = !0))
-            },
-            componentDidMount: function j() {
-                var e = this;
-                f.DeviceUtil.isWindVane() && document.addEventListener("WindVane.fromWebViewPop", function () {
-                    e.getDataFromMtop(!1, !1)
-                }, !1), f.pageUtil.initSearch(m.getBaseDomain() + "v3/search-panel.html");
-                var t = [B.banner, B.video, B.announcement];
-                y.ems(t.join(",")).then(function (t) {
-                    if (t.success) {
-                        if (t.data[B.banner].success && e.setState({appBanner: t.data[B.banner].data}), t.data[B.video].success) {
-                            var n = t.data[B.video].data;
-                            e.setState({showVideo: "true" === n || n === !0})
-                        }
-                        if (t.data[B.announcement].success) {
-                            var i = t.data[B.announcement].data;
-                            i.isShow && e.setState({announcement: t.data[B.announcement].data})
-                        }
+            U = r.createClass({
+                displayName: "Detail",
+                mixins: [d, g, a.listenTo(N, "onReceiveItemInfo"), a.listenTo(C, "onUpdateMessage"), a.listenTo(D, "onUpdateIdentity")],
+                getInitialState: function W() {
+                    return {
+                        status: N.getStatus(),
+                        mppMsgVisible: !1,
+                        mainOpInfo: {sellerNick: ""},
+                        toTopVisible: !1,
+                        links: [],
+                        initSS: !1,
+                        appBanner: {}
                     }
-                });
-                var n = function i() {
-                    var t = $(s.findDOMNode(e.refs.fs)), n = _.scrollTop();
-                    e.state.initSS && e.setState({toTopVisible: n + 6 >= t.outerHeight(!0)})
-                };
-                _.on("scroll", function () {
-                    v.rAF.call(window, function () {
-                        n()
-                    })
-                }), _.on("thirtyLeft", function () {
-                    h.detailCheck(L, function (e) {
-                        P.updateAuctionInfo({serverTime: e.serverTime})
-                    }, function () {
-                        P.updateAuctionInfo({serverTime: $.now()})
-                    })
-                })
-            },
-            getDataFromMtop: function H(e, t) {
-                var n = this;
-                t = !!$.isUndefined(t) || !!t, L <= 0 || (t && n.startLoading(), e && !w.fromBidHall && h.detailCheck(L, function (e) {
-                    var t = e.auctionBasic.status, n = e.buyerBid.apply, i = e.buyerBid.winner;
-                    w.shouldToBidHall(t, n, i) && f.pageUtil.openWindow(M, !0)
-                }, function (e) {
-                    t && n.stopLoading(), n.refs.toast.show(e)
-                }), h.detail(L, function (e) {
-                    t && n.stopLoading(), P.receiveItemInfo(e), e.buyerBasic && "" !== e.buyerBasic.nick && O.getIdentity(function (e) {
-                        n.stopLoading(), k.getIdentity(e)
-                    }, function (e) {
-                        n.stopLoading(), e && n.refs.toast.show(e)
-                    })
-                }, function (e) {
-                    t && n.stopLoading(), n.refs.toast.show(e)
-                }))
-            },
-            onReceiveItemInfo: function z() {
-                this.setState({
-                    status: N.getStatus(),
-                    auctionStats: N.getAuctionStats(),
-                    auctionBasic: N.getAuctionBasic(),
-                    albumBasic: N.getAlbumBasic(),
-                    auctionDesc: N.getAuctionDesc(),
-                    images: N.getImages(),
-                    agentInfo: N.getAgentInfo(),
-                    masterInfo: N.getMasterInfo(),
-                    paiBasicInfo: N.getPaiBasicInfo(),
-                    mainOpInfo: N.getMainOpInfo(),
-                    description: N.getDescription(),
-                    statusBarInfo: N.getStatusBarInfo()
-                });
-                var e = N.getBuyerBid(), t = N.getBuyerBasic(), n = this;
-                n.state.status !== l.AUCTION_STATUS.ING || C.isRegistered() || setTimeout(function () {
-                    A.register(L, n.state.auctionBasic.version, t.userId, e.winner)
-                }, 200)
-            },
-            showMessage: function q(e) {
-                this.refs.toast.show(e)
-            },
-            gotoHall: function V(e) {
-                f.goldLog("/tbauctionh.21.2.10", "H46985919"), f.pageUtil.openWindow(m.getNewDomain() + "bid-hall/index.html?itemId=" + L, !0, e.currentTarget)
-            },
-            onUpdateMessage: function Y(e) {
-                "OVERSTEP" === e.type ? this.setState({
-                    mppMsgVisible: !0,
-                    mppMainTitle: "\u60a8\u7684\u51fa\u4ef7\u5df2\u88ab\u8d85\u8d8a",
-                    mppSubTitle: "\u70b9\u51fb\u6b64\u5904\u53bb\u51fa\u4ef7"
-                }) : "RESERVE" === e.type ? this.setState({
-                    mppMsgVisible: !0,
-                    mppMainTitle: "\u60a8\u5df2\u80dc\u51fa\u4f46\u672a\u8fbe\u4fdd\u7559\u4ef7",
-                    mppSubTitle: "\u8be2\u95ee\u60a8\u662f\u5426\u4ee5\u4fdd\u7559\u4ef7\u6210\u4ea4"
-                }) : this.setState({mppMsgVisible: !1})
-            },
-            onUpdateIdentity: function G() {
-                var e = D.getUserData();
-                this.setState({buyerIdentity: e})
-            },
-            switchScreen: function K() {
-                var e = this, t = $(s.findDOMNode(e.refs.fs));
-                t.addClass("has-second-screen"), e.setState({
-                    toTopVisible: !0,
-                    initSS: !0
-                }), new S(_, {targetTop: t.height(), easing: "easeBothStrong"})
-            },
-            toTop: function Q() {
-                this.setState({toTopVisible: !1}), new S(_, {easing: "easeBothStrong"}), f.goldLog("/tbauctionh.21.1.10", "H46985919")
-            },
-            fillImage: function J(e) {
-                var t = this.refs.fullImage, n = f.PlatformUtil.getTaobaoVersion(), i = f.DeviceUtil.isWindVane() && f.DeviceUtil.isIphone() && f.PlatformUtil.isTaobao() && f.versionCompare(n, "5.4.3") < 0 && e.links.length > 9, r = i ? 0 : e.index;
-                return this.state.links.length ? void(t && t.show(r)) : void this.setState({links: e.links}, function () {
-                    t && t.show(r)
-                })
-            },
-            render: function Z() {
-                var e = this.state, t = null, n = null, s = null, a = null, d = null, h = null, f = null;
-                if (e.status !== l.AUCTION_STATUS.ERROR) {
-                    var m = e.albumBasic ? e.albumBasic.tags : [];
-                    t = r.createElement(x, {
-                        ref: "fs",
-                        images: e.images,
-                        itemId: L,
-                        status: e.status,
-                        ssInited: e.initSS,
-                        paiBasicInfo: e.paiBasicInfo,
-                        title: e.auctionBasic.title,
-                        tags: m,
-                        auctionId: e.auctionBasic.auctionId,
-                        bidderCnt: e.auctionStats.bidCount,
-                        agentInfo: e.agentInfo,
-                        masterInfo: e.masterInfo,
-                        mainOpInfo: e.mainOpInfo,
-                        statusBarInfo: e.statusBarInfo,
-                        slideToDetail: this.switchScreen,
-                        appBanner: e.appBanner,
-                        onShowMessage: this.showMessage
+                },
+                componentWillMount: function X() {
+                    this.getDataFromMtop(!0)
+                },
+                componentWillUpdate: function F(e, t) {
+                    var n = N.getBuyerBid();
+                    n && n.winner && (R || t.status !== l.AUCTION_STATUS.ORDER || (this.refs.toast.show("\u8ba2\u5355\u751f\u6210\u4e2d..."), R = !0))
+                },
+                componentDidMount: function j() {
+                    var e = this;
+                    f.DeviceUtil.isWindVane() && document.addEventListener("WindVane.fromWebViewPop", function () {
+                        e.getDataFromMtop(!1, !1)
+                    }, !1), f.pageUtil.initSearch(m.getBaseDomain() + "v3/search-panel.html");
+                    var t = [B.banner, B.video, B.announcement];
+                    y.ems(t.join(",")).then(function (t) {
+                        if (t.success) {
+                            if (t.data[B.banner].success && e.setState({appBanner: t.data[B.banner].data}), t.data[B.video].success) {
+                                var n = t.data[B.video].data;
+                                e.setState({showVideo: "true" === n || n === !0})
+                            }
+                            if (t.data[B.announcement].success) {
+                                var i = t.data[B.announcement].data;
+                                i.isShow && e.setState({announcement: t.data[B.announcement].data})
+                            }
+                        }
                     });
-                    var g = N.getAuctionSignup(), v = g.foregiftType, y = N.getAlbumId() || 0, w = D.isNoBankAuth();
-                    n = r.createElement(I, {
-                        ref: "ss",
-                        itemId: L,
-                        auctionDesc: e.auctionDesc,
-                        description: e.description,
-                        shouldInit: e.initSS,
-                        onShowMessage: this.showMessage,
-                        albumId: y,
-                        cateId: e.mainOpInfo.cateId,
-                        foregiftType: v,
-                        videos: N.getVideos(),
-                        showVideo: e.showVideo,
-                        videoPoster: e.images[0],
-                        fillImage: this.fillImage,
-                        startLoading: this.startLoading,
-                        stopLoading: this.stopLoading
-                    }), s = r.createElement(b, {
-                        visible: e.mppMsgVisible,
-                        onTouchTap: this.gotoHall,
-                        mainTitle: e.mppMainTitle,
-                        subTitle: e.mppSubTitle
-                    }), a = r.createElement(T, i({
-                        status: e.status,
-                        albumId: y,
-                        foregiftBizTypes: g.foregiftBizTypes,
-                        itemId: L,
-                        accountStatus: e.buyerIdentity && e.buyerIdentity.accountStatus,
-                        isNoBankAuth: w
-                    }, e.mainOpInfo, {onShowMessage: this.showMessage})), d = e.announcement ? r.createElement(E, i({delay: 1e3}, e.announcement)) : null, h = r.createElement(p, {
-                        showPos: 0,
-                        visible: e.toTopVisible,
-                        toTop: this.toTop
-                    }), f = r.createElement(u, {ref: "fullImage", links: e.links, indictor: !0, thumb: !1})
+                    var n = function i() {
+                        var t = $(s.findDOMNode(e.refs.fs)), n = _.scrollTop();
+                        e.state.initSS && e.setState({toTopVisible: n + 6 >= t.outerHeight(!0)})
+                    };
+                    _.on("scroll", function () {
+                        v.rAF.call(window, function () {
+                            n()
+                        })
+                    }), _.on("thirtyLeft", function () {
+                        h.detailCheck(L, function (e) {
+                            P.updateAuctionInfo({serverTime: e.serverTime})
+                        }, function () {
+                            P.updateAuctionInfo({serverTime: $.now()})
+                        })
+                    })
+                },
+                getDataFromMtop: function H(e, t) {
+                    var n = this;
+                    t = !!$.isUndefined(t) || !!t, L <= 0 || (t && n.startLoading(), e && !w.fromBidHall && h.detailCheck(L, function (e) {
+                        var t = e.auctionBasic.status, n = e.buyerBid.apply, i = e.buyerBid.winner;
+                        w.shouldToBidHall(t, n, i) && f.pageUtil.openWindow(M, !0)
+                    }, function (e) {
+                        t && n.stopLoading(), n.refs.toast.show(e)
+                    }), h.detail(L, function (e) {
+                        t && n.stopLoading(), P.receiveItemInfo(e), e.buyerBasic && "" !== e.buyerBasic.nick && O.getIdentity(function (e) {
+                            n.stopLoading(), k.getIdentity(e)
+                        }, function (e) {
+                            n.stopLoading(), e && n.refs.toast.show(e)
+                        })
+                    }, function (e) {
+                        t && n.stopLoading(), n.refs.toast.show(e)
+                    }))
+                },
+                onReceiveItemInfo: function z() {
+                    this.setState({
+                        status: N.getStatus(),
+                        auctionStats: N.getAuctionStats(),
+                        auctionBasic: N.getAuctionBasic(),
+                        albumBasic: N.getAlbumBasic(),
+                        auctionDesc: N.getAuctionDesc(),
+                        images: N.getImages(),
+                        agentInfo: N.getAgentInfo(),
+                        masterInfo: N.getMasterInfo(),
+                        paiBasicInfo: N.getPaiBasicInfo(),
+                        mainOpInfo: N.getMainOpInfo(),
+                        description: N.getDescription(),
+                        statusBarInfo: N.getStatusBarInfo()
+                    });
+                    var e = N.getBuyerBid(), t = N.getBuyerBasic(), n = this;
+                    n.state.status !== l.AUCTION_STATUS.ING || C.isRegistered() || setTimeout(function () {
+                        A.register(L, n.state.auctionBasic.version, t.userId, e.winner)
+                    }, 200)
+                },
+                showMessage: function q(e) {
+                    this.refs.toast.show(e)
+                },
+                gotoHall: function V(e) {
+                    f.goldLog("/tbauctionh.21.2.10", "H46985919"), f.pageUtil.openWindow(m.getNewDomain() + "bid-hall/index.html?itemId=" + L, !0, e.currentTarget)
+                },
+                onUpdateMessage: function Y(e) {
+                    "OVERSTEP" === e.type ? this.setState({
+                        mppMsgVisible: !0,
+                        mppMainTitle: "\u60a8\u7684\u51fa\u4ef7\u5df2\u88ab\u8d85\u8d8a",
+                        mppSubTitle: "\u70b9\u51fb\u6b64\u5904\u53bb\u51fa\u4ef7"
+                    }) : "RESERVE" === e.type ? this.setState({
+                        mppMsgVisible: !0,
+                        mppMainTitle: "\u60a8\u5df2\u80dc\u51fa\u4f46\u672a\u8fbe\u4fdd\u7559\u4ef7",
+                        mppSubTitle: "\u8be2\u95ee\u60a8\u662f\u5426\u4ee5\u4fdd\u7559\u4ef7\u6210\u4ea4"
+                    }) : this.setState({mppMsgVisible: !1})
+                },
+                onUpdateIdentity: function G() {
+                    var e = D.getUserData();
+                    this.setState({buyerIdentity: e})
+                },
+                switchScreen: function K() {
+                    var e = this, t = $(s.findDOMNode(e.refs.fs));
+                    t.addClass("has-second-screen"), e.setState({
+                        toTopVisible: !0,
+                        initSS: !0
+                    }), new S(_, {targetTop: t.height(), easing: "easeBothStrong"})
+                },
+                toTop: function Q() {
+                    this.setState({toTopVisible: !1}), new S(_, {easing: "easeBothStrong"}), f.goldLog("/tbauctionh.21.1.10", "H46985919")
+                },
+                fillImage: function J(e) {
+                    var t = this.refs.fullImage, n = f.PlatformUtil.getTaobaoVersion(), i = f.DeviceUtil.isWindVane() && f.DeviceUtil.isIphone() && f.PlatformUtil.isTaobao() && f.versionCompare(n, "5.4.3") < 0 && e.links.length > 9, r = i ? 0 : e.index;
+                    return this.state.links.length ? void(t && t.show(r)) : void this.setState({links: e.links}, function () {
+                        t && t.show(r)
+                    })
+                },
+                render: function Z() {
+                    var e = this.state, t = null, n = null, s = null, a = null, d = null, h = null, f = null;
+                    if (e.status !== l.AUCTION_STATUS.ERROR) {
+                        var m = e.albumBasic ? e.albumBasic.tags : [];
+                        t = r.createElement(x, {
+                            ref: "fs",
+                            images: e.images,
+                            itemId: L,
+                            status: e.status,
+                            ssInited: e.initSS,
+                            paiBasicInfo: e.paiBasicInfo,
+                            title: e.auctionBasic.title,
+                            tags: m,
+                            auctionId: e.auctionBasic.auctionId,
+                            bidderCnt: e.auctionStats.bidCount,
+                            agentInfo: e.agentInfo,
+                            masterInfo: e.masterInfo,
+                            mainOpInfo: e.mainOpInfo,
+                            statusBarInfo: e.statusBarInfo,
+                            slideToDetail: this.switchScreen,
+                            appBanner: e.appBanner,
+                            onShowMessage: this.showMessage
+                        });
+                        var g = N.getAuctionSignup(), v = g.foregiftType, y = N.getAlbumId() || 0, w = D.isNoBankAuth();
+                        n = r.createElement(I, {
+                            ref: "ss",
+                            itemId: L,
+                            auctionDesc: e.auctionDesc,
+                            description: e.description,
+                            shouldInit: e.initSS,
+                            onShowMessage: this.showMessage,
+                            albumId: y,
+                            cateId: e.mainOpInfo.cateId,
+                            foregiftType: v,
+                            videos: N.getVideos(),
+                            showVideo: e.showVideo,
+                            videoPoster: e.images[0],
+                            fillImage: this.fillImage,
+                            startLoading: this.startLoading,
+                            stopLoading: this.stopLoading
+                        }), s = r.createElement(b, {
+                            visible: e.mppMsgVisible,
+                            onTouchTap: this.gotoHall,
+                            mainTitle: e.mppMainTitle,
+                            subTitle: e.mppSubTitle
+                        }), a = r.createElement(T, i({
+                            status: e.status,
+                            albumId: y,
+                            foregiftBizTypes: g.foregiftBizTypes,
+                            itemId: L,
+                            accountStatus: e.buyerIdentity && e.buyerIdentity.accountStatus,
+                            isNoBankAuth: w
+                        }, e.mainOpInfo, {onShowMessage: this.showMessage})), d = e.announcement ? r.createElement(E, i({delay: 1e3}, e.announcement)) : null, h = r.createElement(p, {
+                            showPos: 0,
+                            visible: e.toTopVisible,
+                            toTop: this.toTop
+                        }), f = r.createElement(u, {ref: "fullImage", links: e.links, indictor: !0, thumb: !1})
+                    }
+                    return r.createElement("div", {className: "wrapper"}, r.createElement(o, {
+                        ref: "toast",
+                        timeToHide: 3e3
+                    }), r.createElement(c, {loading: e.loading}), t, n, s, a, d, h, f)
                 }
-                return r.createElement("div", {className: "wrapper"}, r.createElement(o, {
-                    ref: "toast",
-                    timeToHide: 3e3
-                }), r.createElement(c, {loading: e.loading}), t, n, s, a, d, h, f)
-            }
-        });
+            });
         s.render(r.createElement(U, null), document.getElementById("J_App"))
     }, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
     function (e, t, n) {
         var i = n(163);
-        i.connect = n(176), i.connectFilter = n(178), i.ListenerMixin = n(177), i.listenTo = n(179), i.listenToMany = n(180), e.exports = i
+        i.connect = n(176);
+        i.connectFilter = n(178);
+        i.ListenerMixin = n(177);
+        i.listenTo = n(179);
+        i.listenToMany = n(180);
+        e.exports = i
     },
     function (e, t, n) {
         Object.defineProperty(t, "__esModule", {value: !0});
@@ -3419,32 +3457,32 @@ webpackJsonp([7], [
                     alt: "\u5e94\u7528\u4e0b\u8f7d"
                 })));
                 return r.createElement("div", {
-                    ref: "firstScreen",
-                    className: "first-screen"
-                }, r.createElement(o, {
-                    ref: "slide",
-                    slideToDetailEnd: this.slideToDetail,
-                    edgeEvent: $.noop,
-                    slideToDetail: {},
-                    afterChange: this.slideChange,
-                    imageClick: this.slideClick,
-                    slideToDetailDiff: 50
-                }, u), r.createElement(v, i({}, n.statusBarInfo, {
-                    status: n.status,
-                    alignCenter: !1,
-                    showShadow: !0
-                })), r.createElement(h, i({
-                    status: n.status,
-                    title: n.title,
-                    tags: n.tags,
-                    foregiftBizTypes: l && l.foregiftBizTypes || [],
-                    shareImg: n.images[0],
-                    onShowMessage: n.onShowMessage
-                }, n.paiBasicInfo)), t, r.createElement(f, {
-                    ref: "paiRecord",
-                    bidderCnt: n.bidderCnt,
-                    auctionId: n.auctionId
-                }),
+                        ref: "firstScreen",
+                        className: "first-screen"
+                    }, r.createElement(o, {
+                        ref: "slide",
+                        slideToDetailEnd: this.slideToDetail,
+                        edgeEvent: $.noop,
+                        slideToDetail: {},
+                        afterChange: this.slideChange,
+                        imageClick: this.slideClick,
+                        slideToDetailDiff: 50
+                    }, u), r.createElement(v, i({}, n.statusBarInfo, {
+                        status: n.status,
+                        alignCenter: !1,
+                        showShadow: !0
+                    })), r.createElement(h, i({
+                        status: n.status,
+                        title: n.title,
+                        tags: n.tags,
+                        foregiftBizTypes: l && l.foregiftBizTypes || [],
+                        shareImg: n.images[0],
+                        onShowMessage: n.onShowMessage
+                    }, n.paiBasicInfo)), t, r.createElement(f, {
+                        ref: "paiRecord",
+                        bidderCnt: n.bidderCnt,
+                        auctionId: n.auctionId
+                    }),
                     r.createElement(m, n.agentInfo),
                     r.createElement(g, n.masterInfo),
                     p,
@@ -3456,64 +3494,65 @@ webpackJsonp([7], [
     }, function (e, t) {
     }, function (e, t, n) {
         n(359);
-        var i = n(2), r = n(360), s = i.createClass({
-            displayName: "RcSlide",
-            propTypes: {
-                cls: i.PropTypes.string,
-                showNav: i.PropTypes.bool,
-                showArrow: i.PropTypes.bool,
-                isLoop: i.PropTypes.bool,
-                autoplay: i.PropTypes.bool,
-                lazyload: i.PropTypes.bool,
-                speed: i.PropTypes.number,
-                autoplaySpeed: i.PropTypes.number,
-                defaultIndex: i.PropTypes.number,
-                imageClick: i.PropTypes.func,
-                afterChange: i.PropTypes.func,
-                beforeChange: i.PropTypes.func,
-                edgeEvent: i.PropTypes.func,
-                swipeEvent: i.PropTypes.func,
-                slideToDetail: i.PropTypes.object,
-                slideToDetailDiff: i.PropTypes.number,
-                slideToDetailEvent: i.PropTypes.func,
-                slideToDetailEnd: i.PropTypes.func
-            },
-            getDefaultProps: function a() {
-                return {
-                    cls: "rc-slide",
-                    showNav: !0,
-                    showArrow: !1,
-                    isLoop: !1,
-                    autoplay: !1,
-                    lazyload: !0,
-                    speed: 300,
-                    autoplaySpeed: 3e3,
-                    defaultIndex: 0,
-                    slideToDetailDiff: 50
+        var i = n(2), r = n(360),
+            s = i.createClass({
+                displayName: "RcSlide",
+                propTypes: {
+                    cls: i.PropTypes.string,
+                    showNav: i.PropTypes.bool,
+                    showArrow: i.PropTypes.bool,
+                    isLoop: i.PropTypes.bool,
+                    autoplay: i.PropTypes.bool,
+                    lazyload: i.PropTypes.bool,
+                    speed: i.PropTypes.number,
+                    autoplaySpeed: i.PropTypes.number,
+                    defaultIndex: i.PropTypes.number,
+                    imageClick: i.PropTypes.func,
+                    afterChange: i.PropTypes.func,
+                    beforeChange: i.PropTypes.func,
+                    edgeEvent: i.PropTypes.func,
+                    swipeEvent: i.PropTypes.func,
+                    slideToDetail: i.PropTypes.object,
+                    slideToDetailDiff: i.PropTypes.number,
+                    slideToDetailEvent: i.PropTypes.func,
+                    slideToDetailEnd: i.PropTypes.func
+                },
+                getDefaultProps: function a() {
+                    return {
+                        cls: "rc-slide",
+                        showNav: !0,
+                        showArrow: !1,
+                        isLoop: !1,
+                        autoplay: !1,
+                        lazyload: !0,
+                        speed: 300,
+                        autoplaySpeed: 3e3,
+                        defaultIndex: 0,
+                        slideToDetailDiff: 50
+                    }
+                },
+                render: function o() {
+                    var e = this.props, t = {
+                        dots: e.showNav,
+                        infinite: e.isLoop,
+                        speed: e.speed,
+                        initialSlide: e.defaultIndex,
+                        imageClick: e.imageClick,
+                        afterChange: e.afterChange,
+                        beforeChange: e.beforeChange,
+                        edgeEvent: e.edgeEvent,
+                        swipeEvent: e.swipeEvent,
+                        slideToDetail: e.slideToDetail,
+                        slideToDetailEvent: e.slideToDetailEvent,
+                        slideToDetailDiff: e.slideToDetailDiff,
+                        slideToDetailEnd: e.slideToDetailEnd,
+                        arrows: e.showArrow,
+                        lazyLoad: e.lazyload,
+                        edgeFriction: .3
+                    };
+                    return i.createElement("div", {className: e.cls}, i.createElement(r, t, e.children))
                 }
-            },
-            render: function o() {
-                var e = this.props, t = {
-                    dots: e.showNav,
-                    infinite: e.isLoop,
-                    speed: e.speed,
-                    initialSlide: e.defaultIndex,
-                    imageClick: e.imageClick,
-                    afterChange: e.afterChange,
-                    beforeChange: e.beforeChange,
-                    edgeEvent: e.edgeEvent,
-                    swipeEvent: e.swipeEvent,
-                    slideToDetail: e.slideToDetail,
-                    slideToDetailEvent: e.slideToDetailEvent,
-                    slideToDetailDiff: e.slideToDetailDiff,
-                    slideToDetailEnd: e.slideToDetailEnd,
-                    arrows: e.showArrow,
-                    lazyLoad: e.lazyload,
-                    edgeFriction: .3
-                };
-                return i.createElement("div", {className: e.cls}, i.createElement(r, t, e.children))
-            }
-        });
+            });
         e.exports = s
     }, function (e, t) {
     }, function (e, t, n) {
@@ -3652,84 +3691,101 @@ webpackJsonp([7], [
         });
         e.exports = g
     }, function (e, t, n) {
-        var i = n(364), r = i.getTrackCSS, s = i.getTrackLeft, a = i.getTrackAnimateCSS, o = n(4), c = n(365), l = {
-            changeSlide: function u(e) {
-                var t, n, i, r;
-                if (i = this.state.slideCount % this.props.slidesToScroll !== 0, t = i ? 0 : (this.state.slideCount - this.state.currentSlide) % this.props.slidesToScroll, "previous" === e.message)n = 0 === t ? this.props.slidesToScroll : this.props.slidesToShow - t, r = this.state.currentSlide - n; else if ("next" === e.message)n = 0 === t ? this.props.slidesToScroll : t, r = this.state.currentSlide + n; else if ("dots" === e.message && (r = e.index * e.slidesToScroll, r === e.currentSlide))return;
-                this.slideHandler(r)
-            }, swipeStart: function p(e) {
-                var t, n;
-                this.props.swipe === !1 || "ontouchend" in document && this.props.swipe === !1 || this.props.draggable === !1 && e.type.indexOf("mouse") !== -1 || (t = void 0 !== e.touches ? e.touches[0].pageX : e.clientX, n = void 0 !== e.touches ? e.touches[0].pageY : e.clientY, this.setState({
-                    dragging: !0,
-                    touchObject: {startX: t, startY: n, curX: t, curY: n}
-                }))
-            }, swipeMove: function d(e) {
-                if (this.state.dragging && !this.state.animating) {
-                    var t, n, i, a = this.state.touchObject;
-                    n = s(o({
-                        slideIndex: this.state.currentSlide,
-                        trackRef: this.refs.track
-                    }, this.props, this.state)), a.curX = e.touches ? e.touches[0].pageX : e.clientX, a.curY = e.touches ? e.touches[0].pageY : e.clientY, a.swipeLength = Math.round(Math.sqrt(Math.pow(a.curX - a.startX, 2))), i = (this.props.rtl === !1 ? 1 : -1) * (a.curX > a.startX ? 1 : -1);
-                    var l = this.state.currentSlide, u = Math.ceil(this.state.slideCount / this.props.slidesToScroll), p = this.swipeDirection(this.state.touchObject), d = a.swipeLength;
-                    if ("vertical" === p)return void this.setState({lock: !0});
-                    if (this.state.lock && "vertical" !== p)return void e.preventDefault();
-                    if (this.props.infinite === !1 && !this.state.lock) {
-                        var h = c.findDOMNode(this.refs.slideToDetail), f = $(h), m = $(".slide-icon", f).children();
-                        if (0 === l && "right" === p || l + 1 >= u && "left" === p) {
-                            if (d = a.swipeLength * this.props.edgeFriction, this.props.edgeEvent && (this.props.edgeEvent(p, d), this.props.slideToDetail && (u > 1 && l + 1 >= u || 1 === u && "left" === p))) {
-                                this.props.slideToDetailEvent && this.props.slideToDetailEvent(d);
-                                var g = d / this.props.slideToDetailDiff;
-                                g = Math.min(1, Math.max(0, g));
-                                var v = 180 * g;
-                                f.css({opacity: g, right: (g - 1) * f.width() + 5}), m.css({
-                                    transform: "rotate(" + v + "deg)",
-                                    msTransform: "rotate(" + v + "deg)",
-                                    WebkitTransform: "rotate(" + v + "deg)"
-                                }), d >= this.props.slideToDetailDiff && !this.state.triggered ? this.setState({triggered: !0}) : d < this.props.slideToDetailDiff && this.state.triggered && this.setState({triggered: !1})
-                            }
-                        } else f.css({opacity: 0, right: 0 - f.width()}), m.css({
-                            transform: "rotate(0deg)",
-                            msTransform: "rotate(0deg)",
-                            WebkitTransform: "rotate(0deg)"
-                        })
-                    }
-                    this.state.swiped === !1 && this.props.swipeEvent && (this.props.swipeEvent(p), this.setState({swiped: !0})), t = n + d * i, this.setState({
-                        touchObject: a,
-                        swipeLeft: t,
-                        trackStyle: r(o({left: t}, this.props, this.state))
-                    }), Math.abs(a.curX - a.startX) < .8 * Math.abs(a.curY - a.startY) || a.swipeLength > 4 && e.preventDefault()
-                }
-            }, swipeEnd: function h(e) {
-                if (this.state.dragging) {
-                    var t = this.state.touchObject, n = this.state.listWidth / this.props.touchThreshold, i = this.swipeDirection(t);
-                    if (this.setState({dragging: !1, swiped: !1, swipeLeft: null, touchObject: {}}), t.swipeLength) {
-                        var r = s(o({
+        var i = n(364),
+            r = i.getTrackCSS,
+            s = i.getTrackLeft,
+            a = i.getTrackAnimateCSS,
+            o = n(4),
+            c = n(365),
+            l = {
+                changeSlide: function u(e) {
+                    var t, n, i, r;
+                    if (i = this.state.slideCount % this.props.slidesToScroll !== 0, t = i ? 0 : (this.state.slideCount - this.state.currentSlide) % this.props.slidesToScroll, "previous" === e.message)n = 0 === t ? this.props.slidesToScroll : this.props.slidesToShow - t, r = this.state.currentSlide - n; else if ("next" === e.message)n = 0 === t ? this.props.slidesToScroll : t, r = this.state.currentSlide + n; else if ("dots" === e.message && (r = e.index * e.slidesToScroll, r === e.currentSlide))return;
+                    this.slideHandler(r)
+                },
+                swipeStart: function p(e) {
+                    var t, n;
+                    this.props.swipe === !1 || "ontouchend" in document && this.props.swipe === !1 || this.props.draggable === !1 && e.type.indexOf("mouse") !== -1 || (t = void 0 !== e.touches ? e.touches[0].pageX : e.clientX, n = void 0 !== e.touches ? e.touches[0].pageY : e.clientY, this.setState({
+                        dragging: !0,
+                        touchObject: {startX: t, startY: n, curX: t, curY: n}
+                    }))
+                },
+                swipeMove: function d(e) {
+                    if (this.state.dragging && !this.state.animating) {
+                        var t, n, i, a = this.state.touchObject;
+                        n = s(o({
                             slideIndex: this.state.currentSlide,
                             trackRef: this.refs.track
-                        }, this.props, this.state));
-                        this.state.lock && this.setState({lock: !1}), !this.state.lock && t.swipeLength > n ? (e.preventDefault(), "left" === i ? this.slideHandler(this.state.currentSlide + this.props.slidesToScroll) : "right" === i ? this.slideHandler(this.state.currentSlide - this.props.slidesToScroll) : (this.slideHandler(this.state.currentSlide), this.setState({trackStyle: a(o({left: r}, this.props, this.state))}))) : this.setState({trackStyle: a(o({left: r}, this.props, this.state))});
-                        var l = this.state.currentSlide, u = Math.ceil(this.state.slideCount / this.props.slidesToScroll);
-                        if (this.props.slideToDetail && l + 1 >= u) {
-                            var p = t.swipeLength * this.props.edgeFriction, d = c.findDOMNode(this.refs.slideToDetail), h = $(d), f = $(".slide-icon", h).children();
-                            p >= this.props.slideToDetailDiff && this.state.triggered && this.state.fullScreen && this.exitFullScreen(), h.css({
-                                opacity: 0,
-                                right: 0 - h.width()
-                            }), f.css({
+                        }, this.props, this.state)), a.curX = e.touches ? e.touches[0].pageX : e.clientX, a.curY = e.touches ? e.touches[0].pageY : e.clientY, a.swipeLength = Math.round(Math.sqrt(Math.pow(a.curX - a.startX, 2))), i = (this.props.rtl === !1 ? 1 : -1) * (a.curX > a.startX ? 1 : -1);
+                        var l = this.state.currentSlide, u = Math.ceil(this.state.slideCount / this.props.slidesToScroll), p = this.swipeDirection(this.state.touchObject), d = a.swipeLength;
+                        if ("vertical" === p)return void this.setState({lock: !0});
+                        if (this.state.lock && "vertical" !== p)return void e.preventDefault();
+                        if (this.props.infinite === !1 && !this.state.lock) {
+                            var h = c.findDOMNode(this.refs.slideToDetail), f = $(h), m = $(".slide-icon", f).children();
+                            if (0 === l && "right" === p || l + 1 >= u && "left" === p) {
+                                if (d = a.swipeLength * this.props.edgeFriction, this.props.edgeEvent && (this.props.edgeEvent(p, d), this.props.slideToDetail && (u > 1 && l + 1 >= u || 1 === u && "left" === p))) {
+                                    this.props.slideToDetailEvent && this.props.slideToDetailEvent(d);
+                                    var g = d / this.props.slideToDetailDiff;
+                                    g = Math.min(1, Math.max(0, g));
+                                    var v = 180 * g;
+                                    f.css({opacity: g, right: (g - 1) * f.width() + 5}), m.css({
+                                        transform: "rotate(" + v + "deg)",
+                                        msTransform: "rotate(" + v + "deg)",
+                                        WebkitTransform: "rotate(" + v + "deg)"
+                                    }), d >= this.props.slideToDetailDiff && !this.state.triggered ? this.setState({triggered: !0}) : d < this.props.slideToDetailDiff && this.state.triggered && this.setState({triggered: !1})
+                                }
+                            } else f.css({opacity: 0, right: 0 - f.width()}), m.css({
                                 transform: "rotate(0deg)",
                                 msTransform: "rotate(0deg)",
                                 WebkitTransform: "rotate(0deg)"
                             })
                         }
+                        this.state.swiped === !1 && this.props.swipeEvent && (this.props.swipeEvent(p), this.setState({swiped: !0})), t = n + d * i, this.setState({
+                            touchObject: a,
+                            swipeLeft: t,
+                            trackStyle: r(o({left: t}, this.props, this.state))
+                        }), Math.abs(a.curX - a.startX) < .8 * Math.abs(a.curY - a.startY) || a.swipeLength > 4 && e.preventDefault()
                     }
+                },
+                swipeEnd: function h(e) {
+                    if (this.state.dragging) {
+                        var t = this.state.touchObject, n = this.state.listWidth / this.props.touchThreshold, i = this.swipeDirection(t);
+                        if (this.setState({
+                                dragging: !1,
+                                swiped: !1,
+                                swipeLeft: null,
+                                touchObject: {}
+                            }), t.swipeLength) {
+                            var r = s(o({
+                                slideIndex: this.state.currentSlide,
+                                trackRef: this.refs.track
+                            }, this.props, this.state));
+                            this.state.lock && this.setState({lock: !1}), !this.state.lock && t.swipeLength > n ? (e.preventDefault(), "left" === i ? this.slideHandler(this.state.currentSlide + this.props.slidesToScroll) : "right" === i ? this.slideHandler(this.state.currentSlide - this.props.slidesToScroll) : (this.slideHandler(this.state.currentSlide), this.setState({trackStyle: a(o({left: r}, this.props, this.state))}))) : this.setState({trackStyle: a(o({left: r}, this.props, this.state))});
+                            var l = this.state.currentSlide, u = Math.ceil(this.state.slideCount / this.props.slidesToScroll);
+                            if (this.props.slideToDetail && l + 1 >= u) {
+                                var p = t.swipeLength * this.props.edgeFriction, d = c.findDOMNode(this.refs.slideToDetail), h = $(d), f = $(".slide-icon", h).children();
+                                p >= this.props.slideToDetailDiff && this.state.triggered && this.state.fullScreen && this.exitFullScreen(), h.css({
+                                    opacity: 0,
+                                    right: 0 - h.width()
+                                }), f.css({
+                                    transform: "rotate(0deg)",
+                                    msTransform: "rotate(0deg)",
+                                    WebkitTransform: "rotate(0deg)"
+                                })
+                            }
+                        }
+                    }
+                },
+                enterFullScreen: function f() {
+                    this.setState({fullScreen: !0}), $("html").addClass("full-screen"), $(".rc-slide").height(window.innerHeight)
+                },
+                exitFullScreen: function m() {
+                    this.setState({fullScreen: !1}), $("html").removeClass("full-screen"), $(".rc-slide").height("10rem")
+                },
+                imageClicked: function g(e) {
+                    e.preventDefault(), this.props.imageClick && this.props.imageClick(this.state.fullScreen, this.state.currentSlide), this.state.fullScreen ? this.exitFullScreen() : this.enterFullScreen()
                 }
-            }, enterFullScreen: function f() {
-                this.setState({fullScreen: !0}), $("html").addClass("full-screen"), $(".rc-slide").height(window.innerHeight)
-            }, exitFullScreen: function m() {
-                this.setState({fullScreen: !1}), $("html").removeClass("full-screen"), $(".rc-slide").height("10rem")
-            }, imageClicked: function g(e) {
-                e.preventDefault(), this.props.imageClick && this.props.imageClick(this.state.fullScreen, this.state.currentSlide), this.state.fullScreen ? this.exitFullScreen() : this.enterFullScreen()
-            }
-        };
+            };
         e.exports = l
     }, function (e, t, n) {
         var i = n(365), r = function c(e, t) {
