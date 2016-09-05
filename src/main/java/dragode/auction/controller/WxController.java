@@ -3,13 +3,17 @@ package dragode.auction.controller;
 import com.alibaba.fastjson.JSONObject;
 import dragode.auction.intf.TemplateMessage;
 import dragode.auction.intf.WxInterface;
+import dragode.auction.model.User;
+import dragode.auction.repository.UserRepository;
 import dragode.auction.utils.HttpRequestPrinter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -43,6 +47,9 @@ import java.util.HashMap;
 @RestController
 public class WxController {
 
+    @Resource
+    private UserRepository userRepository;
+
     /**
      * 接入微信开发者
      *
@@ -50,12 +57,49 @@ public class WxController {
      * @return echostr
      */
     @RequestMapping(path = "/accessWx")
-    public String accessWx(HttpServletRequest request) {
+    public String accessWx(HttpServletRequest request) throws Exception {
         System.out.println(HttpRequestPrinter.tranferRequestToString(request));
+        System.out.println(request.getMethod());
+
+        if (request.getMethod().equals("POST")) {
+            StringBuffer sb = new StringBuffer();
+            BufferedReader bufferedReader = null;
+            String content = "";
+
+            try {
+                //InputStream inputStream = request.getInputStream();
+                //inputStream.available();
+                //if (inputStream != null) {
+                bufferedReader = request.getReader(); //new BufferedReader(new InputStreamReader(inputStream));
+                char[] charBuffer = new char[128];
+                int bytesRead;
+                while ((bytesRead = bufferedReader.read(charBuffer)) != -1) {
+                    sb.append(charBuffer, 0, bytesRead);
+                }
+                //} else {
+                //        sb.append("");
+                //}
+
+            } catch (IOException ex) {
+                throw ex;
+            } finally {
+                if (bufferedReader != null) {
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException ex) {
+                        throw ex;
+                    }
+                }
+            }
+
+            String postBody = sb.toString();
+            System.out.println(postBody);
+        }
 
         //TODO 校验是否为微信的请求
         return request.getParameter("echostr");
     }
+
 
     /**
      * 微信网页授权接口
@@ -84,7 +128,6 @@ public class WxController {
      * @param request Http请求
      * @return openid
      */
-    //TODO 移到service中
     private String getAndCacheOpenId(HttpServletRequest request) {
         String openId = getOpenId(request);
         request.getSession().setAttribute("openid", openId);
@@ -130,5 +173,16 @@ public class WxController {
         stringDataItemHashMap.put("name", name);
         WxInterface.sendTemplateMessage(templateId, openId, topcolor, url, stringDataItemHashMap);
         return "sended";
+    }
+
+    @RequestMapping(path = "/redirectToAuctionList")
+    public void redirectToAuctionList(HttpServletRequest request, HttpServletResponse response) {
+        String openId = getAndCacheOpenId(request);
+        User user = userRepository.findByOpenId(openId);
+        try {
+            response.sendRedirect("/auctionList.html?userId=" + user.getId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

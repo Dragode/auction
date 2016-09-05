@@ -65,7 +65,7 @@ function SellerSessionAdapter(datas, viewList) {
                             params.datetitle = fftitleViewText,
                                 listView2.recoverLater(params),
                                 //TODO 跳到自己页面
-                                window.location.href = "/auctionDetail.html?sessionId=" + 1 + "&userId=" + 1;//TODO 动态数据
+                                window.location.href = "/auctionDetail.html?sessionId=" + 1 + "&userId=" + getUrlParam("userId");//TODO 动态数据
                         }),
                     null != data && null != data && "tip" == data.showtype) {
                     var tipsShow = '<section class="tipsshow" >没有更多数据了</section>';
@@ -104,6 +104,13 @@ function getCellByTemplateTom(templateId, params) {
 
 function getCellOfTitle(a) {
     return '<section class="celltitle">' + a + "</section>"
+}
+
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return unescape(r[2]);
+    return null; //返回参数值
 }
 
 function convertODataToMData(a, b) {

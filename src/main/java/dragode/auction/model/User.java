@@ -40,6 +40,7 @@ public class User {
     private Integer id;
     private String openId;
     private Integer balance;
+    private Boolean subscribed;
 
     public Integer getId() {
         return id;
@@ -63,5 +64,13 @@ public class User {
 
     public void setBalance(Integer balance) {
         this.balance = balance;
+    }
+
+    public Boolean getSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(Boolean subscribed) {
+        this.subscribed = subscribed;
     }
 }

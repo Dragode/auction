@@ -102,4 +102,9 @@ public class WxInterface {
         }
         return (JSONObject) parse;
     }
+
+    public static void main(String[] args) {
+        String accessToken = getAccessToken();
+        System.out.println(accessToken);
+    }
 }
