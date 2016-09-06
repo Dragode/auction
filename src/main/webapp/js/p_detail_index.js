@@ -38,7 +38,7 @@ webpackJsonp([7], [
             k = n(311),
             D = n(312),
             O = n(313),
-            _ = $(window),
+            _window = $(window),
             L = f.urlUtil.getParameter("itemId"),
             R = !1,
             M = m.getNewDomain() + "bid-hall/index.html?itemId=" + L,
@@ -87,20 +87,21 @@ webpackJsonp([7], [
                         }
                     });
                     var n = function i() {
-                        var t = $(s.findDOMNode(e.refs.fs)), n = _.scrollTop();
+                        var t = $(s.findDOMNode(e.refs.fs)), n = _window.scrollTop();
                         e.state.initSS && e.setState({toTopVisible: n + 6 >= t.outerHeight(!0)})
                     };
-                    _.on("scroll", function () {
+                    _window.on("scroll", function () {
                         v.rAF.call(window, function () {
                             n()
                         })
-                    }), _.on("thirtyLeft", function () {
-                        h.detailCheck(L, function (e) {
-                            P.updateAuctionInfo({serverTime: e.serverTime})
-                        }, function () {
-                            P.updateAuctionInfo({serverTime: $.now()})
+                    }),
+                        _window.on("thirtyLeft", function () {
+                            h.detailCheck(L, function (e) {
+                                P.updateAuctionInfo({serverTime: e.serverTime})
+                            }, function () {
+                                P.updateAuctionInfo({serverTime: $.now()})
+                            })
                         })
-                    })
                 },
                 getDataFromMtop: function H(e, t) {
                     var n = this;
@@ -165,10 +166,10 @@ webpackJsonp([7], [
                     t.addClass("has-second-screen"), e.setState({
                         toTopVisible: !0,
                         initSS: !0
-                    }), new S(_, {targetTop: t.height(), easing: "easeBothStrong"})
+                    }), new S(_window, {targetTop: t.height(), easing: "easeBothStrong"})
                 },
                 toTop: function Q() {
-                    this.setState({toTopVisible: !1}), new S(_, {easing: "easeBothStrong"}), f.goldLog("/tbauctionh.21.1.10", "H46985919")
+                    this.setState({toTopVisible: !1}), new S(_window, {easing: "easeBothStrong"}), f.goldLog("/tbauctionh.21.1.10", "H46985919")
                 },
                 fillImage: function J(e) {
                     var t = this.refs.fullImage, n = f.PlatformUtil.getTaobaoVersion(), i = f.DeviceUtil.isWindVane() && f.DeviceUtil.isIphone() && f.PlatformUtil.isTaobao() && f.versionCompare(n, "5.4.3") < 0 && e.links.length > 9, r = i ? 0 : e.index;
@@ -736,66 +737,74 @@ webpackJsonp([7], [
     function (e, t) {
     },
     function (e, t) {
-        function n(e, t) {
-            var n = t || ["\u8d77\u62cd\u4ef7", "\u5f53\u524d\u4ef7", "\u843d\u69cc\u4ef7"], i;
-            switch (e) {
-                case s.IN_STOCK:
-                case s.BEFORE:
-                case s.UNSOLD:
-                    i = n[0];
+        function _getPriceTextByAuctionStatus(status, _textArray) {
+            var textArray = _textArray || ["起拍价", "当前价", "落槌价"],
+                text;
+            switch (status) {
+                case _AUCTION_STATUS.IN_STOCK:
+                case _AUCTION_STATUS.BEFORE:
+                case _AUCTION_STATUS.UNSOLD:
+                    text = textArray[0];
                     break;
-                case s.FINISH:
-                    i = n[2];
-                    break;
-                default:
-                    i = n[1]
-            }
-            return i
-        }
-
-        function i(e) {
-            return s.DELETE !== e || s.ERROR !== e || s.HIDDEN !== e
-        }
-
-        function r(e) {
-            var t;
-            switch (e) {
-                case s.IN_STOCK:
-                case s.BEFORE:
-                    t = a.BEFORE;
-                    break;
-                case s.ING:
-                    t = a.ING;
+                case _AUCTION_STATUS.FINISH:
+                    text = textArray[2];
                     break;
                 default:
-                    t = a.END
+                    text = textArray[1]
             }
-            return t
+            return text
         }
 
-        var s = {
-            IN_STOCK: "inStock",
-            DELETE: "delete",
-            ERROR: "error",
-            PAUSE: "pause",
-            CANCEL: "cancel",
-            HIDDEN: "hidden",
-            BEFORE: "before",
-            ING: "ing",
-            PRIORITY: "priority",
-            END: "end",
-            ORDER: "order",
-            WAIT_BUYER_CONFIRM: "waitBuyerConfirm",
-            UNSOLD: "unsold",
-            UNSOLD_UNRESERVE: "unsoldUnReserve",
-            FINISH: "finish"
-        }, a = {BEFORE: 0, ING: 1, END: 2};
+        function _isNormalAuction(status) {
+            return _AUCTION_STATUS.DELETE !== status
+                || _AUCTION_STATUS.ERROR !== status
+                || _AUCTION_STATUS.HIDDEN !== status
+        }
+
+        function _getAuctionFormatStatus(status) {
+            var formatStatus;
+            switch (status) {
+                case _AUCTION_STATUS.IN_STOCK:
+                case _AUCTION_STATUS.BEFORE:
+                    formatStatus = _AUCTION_FORMAT_STATUS.BEFORE;
+                    break;
+                case _AUCTION_STATUS.ING:
+                    formatStatus = _AUCTION_FORMAT_STATUS.ING;
+                    break;
+                default:
+                    formatStatus = _AUCTION_FORMAT_STATUS.END
+            }
+            return formatStatus
+        }
+
+        var _AUCTION_STATUS = {
+                IN_STOCK: "inStock",
+                DELETE: "delete",
+                ERROR: "error",
+                PAUSE: "pause",
+                CANCEL: "cancel",
+                HIDDEN: "hidden",
+                BEFORE: "before",
+                ING: "ing",
+                PRIORITY: "priority",
+                END: "end",
+                ORDER: "order",
+                WAIT_BUYER_CONFIRM: "waitBuyerConfirm",
+                UNSOLD: "unsold",
+                UNSOLD_UNRESERVE: "unsoldUnReserve",
+                FINISH: "finish"
+            },
+            _AUCTION_FORMAT_STATUS = {
+                BEFORE: 0,
+                ING: 1,
+                END: 2
+            };
         e.exports = {
-            AUCTION_STATUS: s,
-            AUCTION_FORMAT_STATUS: a,
-            isNormalAuction: i,
-            getAuctionFormatStatus: r,
-            getPriceTextByAuctionStatus: n
+            AUCTION_STATUS: _AUCTION_STATUS,
+            AUCTION_FORMAT_STATUS: _AUCTION_FORMAT_STATUS,
+            isNormalAuction: _isNormalAuction,
+            getAuctionFormatStatus: _getAuctionFormatStatus,
+            getPriceTextByAuctionStatus: _getPriceTextByAuctionStatus
         }
     }, , , , , , , , , , ,
     function (e, t) {
@@ -1162,195 +1171,375 @@ webpackJsonp([7], [
 
         var r = n(239), s = n(242);
         s.extend(i, r.Object), e.exports = i
-    }, , , function (e, t, n) {
-        n(252), n(253);
-        var i = n(2), r = n(254), s = n(255), a = n(194), o = n(181), c = !1, l = i.createClass({
-            displayName: "StatusBar", mixins: [o], getDefaultProps: function u() {
-                return {
-                    prefixCls: "rc-statusbar",
-                    countdownTpl: "{m}\u5206 {s}\u79d2 {ms}",
-                    showShadow: !1,
-                    AUCTION_STATUS: a.AUCTION_STATUS,
-                    AUCTION_STATUS_FLAG: {
-                        IN_STOCK: "\u62cd\u54c1\u8fd8\u672a\u4e0a\u67b6",
-                        BEFORE: "\u5373\u5c06\u5f00\u59cb",
-                        ING: "\u6b63\u5728\u8fdb\u884c",
-                        END: "\u5df2\u7ed3\u675f",
-                        UNSOLD: "\u5df2\u6d41\u62cd"
+    }, , ,
+    function (e, t, n) {
+        n(252);
+        n(253);
+        var i = n(2),
+            r = n(254),
+            s = n(255),
+            a = n(194),
+            o = n(181),
+            c = !1,
+            l = i.createClass(
+                {
+                    displayName: "StatusBar",
+                    mixins: [o],
+                    getDefaultProps: function u() {
+                        return {
+                            prefixCls: "rc-statusbar",
+                            countdownTpl: "{m}分 {s}秒 {ms}",
+                            showShadow: !1,
+                            AUCTION_STATUS: a.AUCTION_STATUS,
+                            AUCTION_STATUS_FLAG: {
+                                IN_STOCK: "拍品还未上架",
+                                BEFORE: "即将开始",
+                                ING: "正在进行",
+                                END: "已结束",
+                                UNSOLD: "已流拍"
+                            },
+                            AUCTION_STAUS_DESC: {
+                                END: "您未获得拍品",
+                                FINISH: "恭喜！您获得此拍品",
+                                FDJ: "恭喜您以封顶价成交",
+                                WAIT_BUYER_CONFIRM: "以保留价购买确认中",
+                                UNSOLD_UNRESERVE: "已流拍，未达保留价",
+                                DEAL: "拍品已成交",
+                                NOT_APPLY: "您未参拍",
+                                ORDER: "订单生成中..."
+                            }
+                        }
                     },
-                    AUCTION_STAUS_DESC: {
-                        END: "\u60a8\u672a\u83b7\u5f97\u62cd\u54c1",
-                        FINISH: "\u606d\u559c\uff01\u60a8\u83b7\u5f97\u6b64\u62cd\u54c1",
-                        FDJ: "\u606d\u559c\u60a8\u4ee5\u5c01\u9876\u4ef7\u6210\u4ea4",
-                        WAIT_BUYER_CONFIRM: "\u4ee5\u4fdd\u7559\u4ef7\u8d2d\u4e70\u786e\u8ba4\u4e2d",
-                        UNSOLD_UNRESERVE: "\u5df2\u6d41\u62cd\uff0c\u672a\u8fbe\u4fdd\u7559\u4ef7",
-                        DEAL: "\u62cd\u54c1\u5df2\u6210\u4ea4",
-                        NOT_APPLY: "\u60a8\u672a\u53c2\u62cd",
-                        ORDER: "\u8ba2\u5355\u751f\u6210\u4e2d..."
+                    completeCallback: function p() {
+                        window.location.reload(!0)
+                    },
+                    thirtyLeft: function d(e) {
+                        var props = this.props,
+                            status = props.status,
+                            i = 1800000;
+                        c
+                        || a.getAuctionFormatStatus(status) !== a.AUCTION_FORMAT_STATUS.ING
+                        || e > i
+                        || props.endTime - props.serverTime < i
+                        || ($(window).fire("thirtyLeft"), c = !0)
+                    },
+                    render: function h() {
+                        var props = this.props,
+                            startTime = props.startTime,
+                            endTime = props.endTime,
+                            serverTime = props.serverTime,
+                            status = props.status,
+                            delayCount = props.delayCount,
+                            alignCenter = props.alignCenter,
+                            isWinner = props.isWinner,
+                            isApply = props.isApply,
+                            showShadow = props.showShadow,
+                            ceilingPrice = props.ceilingPrice,
+                            currentPrice = props.currentPrice,
+                            prefixCls = props.prefixCls,
+                            countdownTpl = props.countdownTpl,
+                            AUCTION_STATUS = props.AUCTION_STATUS,
+                            AUCTION_STATUS_FLAG = props.AUCTION_STATUS_FLAG,
+                            AUCTION_STAUS_DESC = props.AUCTION_STAUS_DESC,
+                            status,
+                            w,
+                            S,
+                            timeHtml,
+                            color,
+                            I,
+                            _class,
+                            timeIntFormate,
+                            C,
+                            _timeRemaining = endTime - serverTime,
+                            k = 1800000;
+                        switch (_class = alignCenter ? "align-center" : "align-left", status) {
+                            case AUCTION_STATUS.IN_STOCK:
+                                color = "&#x65f6;";
+                                status = AUCTION_STATUS_FLAG.IN_STOCK;
+                                break;
+                            case AUCTION_STATUS.BEFORE:
+                            case AUCTION_STATUS.ING:
+                                var inAuction = status === AUCTION_STATUS.ING;
+                                color = "&#x65f6;";
+                                status = inAuction ? AUCTION_STATUS_FLAG.ING : AUCTION_STATUS_FLAG.BEFORE;
+                                timeIntFormate = inAuction ? parseInt(endTime) : parseInt(startTime);
+                                S = s.formatDate(timeIntFormate, parseInt(serverTime), !0);
+                                timeHtml = "<p>";
+                                timeHtml += S.smartDate ? "<span>" + S.smartDate + "</span>" : "<b>" + S.M + "</b><span>月</span><b>" + S.D + "</b><span>日</span>";
+                                timeHtml += " <b>" + S.h + ":" + S.m + "</b> " + (status === AUCTION_STATUS.ING ? "结束" : "开始") + "</p>";
+                                break;
+                            case AUCTION_STATUS.END:
+                            case AUCTION_STATUS.FINISH:
+                                color = "&#x6210;";
+                                status = AUCTION_STATUS_FLAG.END;
+                                w = isWinner ? ceilingPrice > 0 && ceilingPrice == currentPrice ? AUCTION_STAUS_DESC.FDJ : AUCTION_STAUS_DESC.FINISH : isApply ? AUCTION_STAUS_DESC.END : status === AUCTION_STATUS.FINISH ? AUCTION_STAUS_DESC.DEAL : AUCTION_STAUS_DESC.NOT_APPLY;
+                                break;
+                            case AUCTION_STATUS.ORDER:
+                                color = "&#x6210;";
+                                status = AUCTION_STATUS_FLAG.END;
+                                w = isWinner ? AUCTION_STAUS_DESC.ORDER : isApply ? AUCTION_STAUS_DESC.END : AUCTION_STAUS_DESC.NOT_APPLY;
+                                break;
+                            case AUCTION_STATUS.WAIT_BUYER_CONFIRM:
+                                color = "&#x6210;";
+                                status = AUCTION_STATUS_FLAG.END;
+                                w = AUCTION_STAUS_DESC.WAIT_BUYER_CONFIRM;
+                                break;
+                            case AUCTION_STATUS.UNSOLD_UNRESERVE:
+                                color = "&#x6210;";
+                                status = AUCTION_STATUS_FLAG.END;
+                                w = AUCTION_STAUS_DESC.UNSOLD_UNRESERVE;
+                                break;
+                            case AUCTION_STATUS.UNSOLD:
+                                color = "&#x6210;";
+                                status = AUCTION_STATUS_FLAG.UNSOLD
+                        }
+                        return delayCount ?
+                            (
+                                C = "delay",
+                                    I = i.createElement(
+                                        "span",
+                                        {className: "delay-count"},
+                                        "（" + delayCount + "次延时）"
+                                    )
+                            )
+                            :
+                            I = null,
+                            status === AUCTION_STATUS.ING && _timeRemaining < k && _timeRemaining >= 0
+                                ?
+                                i.createElement(
+                                    "div",
+                                    {className: prefixCls + " " + props.status + " " + C},
+                                    i.createElement(
+                                        "div",
+                                        {className: "" + _class},
+                                        i.createElement(
+                                            "span",
+                                            {
+                                                className: "status-icon pm-iconfont",
+                                                dangerouslySetInnerHTML: {__html: color}
+                                            }
+                                        ),
+                                        i.createElement(
+                                            "span",
+                                            {className: "status-flag"},
+                                            status
+                                        ),
+                                        i.createElement(
+                                            "span",
+                                            {className: "main"},
+                                            i.createElement(
+                                                r,
+                                                {
+                                                    completeCallback: this.completeCallback,
+                                                    timeRemaining: _timeRemaining,
+                                                    type: "millisecond",
+                                                    tpl: countdownTpl
+                                                }
+                                            ),
+                                            I
+                                        )
+                                    ),
+                                    showShadow
+                                        ?
+                                        i.createElement(
+                                            "div",
+                                            {className: prefixCls + "-shadow"}
+                                        )
+                                        :
+                                        null
+                                )
+                                :
+                                (_timeRemaining = startTime > serverTime ? startTime - serverTime : _timeRemaining,
+                                        i.createElement(
+                                            "div",
+                                            {className: prefixCls + " " + props.status},
+                                            i.createElement(
+                                                "div",
+                                                {className: "" + _class},
+                                                i.createElement(
+                                                    "span",
+                                                    {
+                                                        className: "status-icon pm-iconfont",
+                                                        dangerouslySetInnerHTML: {__html: color}
+                                                    }
+                                                ),
+                                                i.createElement(
+                                                    "span",
+                                                    {className: "status-flag"},
+                                                    status
+                                                ),
+                                                i.createElement(
+                                                    "span",
+                                                    {className: "main"},
+                                                    _timeRemaining > 0
+                                                        ?
+                                                        i.createElement(
+                                                            r,
+                                                            {
+                                                                tickCallback: this.thirtyLeft,
+                                                                completeCallback: this.completeCallback,
+                                                                timeRemaining: _timeRemaining,
+                                                                tpl: "{d}天{h}时{m}分{s}秒",
+                                                                style: {display: "none"}
+                                                            }
+                                                        )
+                                                        :
+                                                        null,
+                                                    i.createElement(
+                                                        "span",
+                                                        {
+                                                            className: "time",
+                                                            dangerouslySetInnerHTML: {__html: timeHtml}
+                                                        }
+                                                    ),
+                                                    i.createElement(
+                                                        "span",
+                                                        {className: "time-desc"},
+                                                        w
+                                                    ),
+                                                    I
+                                                )
+                                            ),
+                                            showShadow
+                                                ?
+                                                i.createElement(
+                                                    "div",
+                                                    {className: prefixCls + "-shadow"}
+                                                )
+                                                :
+                                                null
+                                        )
+                                )
                     }
-                }
-            }, completeCallback: function p() {
-                window.location.reload(!0)
-            }, thirtyLeft: function d(e) {
-                var t = this.props, n = t.status, i = 18e5;
-                c || a.getAuctionFormatStatus(n) !== a.AUCTION_FORMAT_STATUS.ING || e > i || t.endTime - t.serverTime < i || ($(window).fire("thirtyLeft"), c = !0)
-            }, render: function h() {
-                var e = this.props, t = e.startTime, n = e.endTime, a = e.serverTime, o = e.status, c = e.delayCount, l = e.alignCenter, u = e.isWinner, p = e.isApply, d = e.showShadow, h = e.ceilingPrice, f = e.currentPrice, m = e.prefixCls, g = e.countdownTpl, v = e.AUCTION_STATUS, y = e.AUCTION_STATUS_FLAG, T = e.AUCTION_STAUS_DESC, b, w, S, E, x, I, P, N, C, A = n - a, k = 18e5;
-                switch (P = l ? "align-center" : "align-left", o) {
-                    case v.IN_STOCK:
-                        x = "&#x65f6;", b = y.IN_STOCK;
-                        break;
-                    case v.BEFORE:
-                    case v.ING:
-                        var D = o === v.ING;
-                        x = "&#x65f6;", b = D ? y.ING : y.BEFORE, N = D ? parseInt(n) : parseInt(t), S = s.formatDate(N, parseInt(a), !0), E = "<p>", E += S.smartDate ? "<span>" + S.smartDate + "</span>" : "<b>" + S.M + "</b><span>\u6708</span><b>" + S.D + "</b><span>\u65e5</span>", E += " <b>" + S.h + ":" + S.m + "</b> " + (o === v.ING ? "\u7ed3\u675f" : "\u5f00\u59cb") + "</p>";
-                        break;
-                    case v.END:
-                    case v.FINISH:
-                        x = "&#x6210;", b = y.END, w = u ? h > 0 && h == f ? T.FDJ : T.FINISH : p ? T.END : o === v.FINISH ? T.DEAL : T.NOT_APPLY;
-                        break;
-                    case v.ORDER:
-                        x = "&#x6210;", b = y.END, w = u ? T.ORDER : p ? T.END : T.NOT_APPLY;
-                        break;
-                    case v.WAIT_BUYER_CONFIRM:
-                        x = "&#x6210;", b = y.END, w = T.WAIT_BUYER_CONFIRM;
-                        break;
-                    case v.UNSOLD_UNRESERVE:
-                        x = "&#x6210;", b = y.END, w = T.UNSOLD_UNRESERVE;
-                        break;
-                    case v.UNSOLD:
-                        x = "&#x6210;", b = y.UNSOLD
-                }
-                return c ? (C = "delay", I = i.createElement("span", {className: "delay-count"}, "\uff08" + c + "\u6b21\u5ef6\u65f6\uff09")) : I = null, o === v.ING && A < k && A >= 0 ? i.createElement("div", {className: m + " " + e.status + " " + C}, i.createElement("div", {className: "" + P}, i.createElement("span", {
-                    className: "status-icon pm-iconfont",
-                    dangerouslySetInnerHTML: {__html: x}
-                }), i.createElement("span", {className: "status-flag"}, b), i.createElement("span", {className: "main"}, i.createElement(r, {
-                    completeCallback: this.completeCallback,
-                    timeRemaining: A,
-                    type: "millisecond",
-                    tpl: g
-                }), I)), d ? i.createElement("div", {className: m + "-shadow"}) : null) : (A = t > a ? t - a : A, i.createElement("div", {className: m + " " + e.status}, i.createElement("div", {className: "" + P}, i.createElement("span", {
-                    className: "status-icon pm-iconfont",
-                    dangerouslySetInnerHTML: {__html: x}
-                }), i.createElement("span", {className: "status-flag"}, b), i.createElement("span", {className: "main"}, A > 0 ? i.createElement(r, {
-                    tickCallback: this.thirtyLeft,
-                    completeCallback: this.completeCallback,
-                    timeRemaining: A,
-                    tpl: "{d}\u5929{h}\u65f6{m}\u5206{s}\u79d2",
-                    style: {display: "none"}
-                }) : null, i.createElement("span", {
-                    className: "time",
-                    dangerouslySetInnerHTML: {__html: E}
-                }), i.createElement("span", {className: "time-desc"}, w), I)), d ? i.createElement("div", {className: m + "-shadow"}) : null))
-            }
-        });
+                });
         e.exports = l
     }, function (e, t) {
     }, function (e, t) {
     }, function (e, t, n) {
-        function i(e) {
-            return e < 10 ? "0" + e : "" + e
+        function i(count) {
+            return count < 10 ? "0" + count : "" + count
         }
 
-        var r = n(2), s = n(181), a, o = r.createClass({
-            displayName: "RcCountdown",
-            mixins: [s],
-            propTypes: {
-                cls: r.PropTypes.string,
-                timeRemaining: r.PropTypes.number.isRequired,
-                type: r.PropTypes.oneOf(["second", "millisecond"]),
-                tpl: r.PropTypes.string,
-                formatFunc: r.PropTypes.func,
-                tickCallback: r.PropTypes.func,
-                completeCallback: r.PropTypes.func,
-                style: r.PropTypes.object
-            },
-            getDefaultProps: function c() {
-                return {
-                    cls: "countdown",
-                    type: "second",
-                    tpl: "{d}\u5929{h}\u65f6{m}\u5206{s}\u79d2{ms}",
-                    timeRemaining: 0,
-                    formatFunc: void 0,
-                    tickCallback: void 0,
-                    completeCallback: void 0,
-                    style: {}
-                }
-            },
-            getInitialState: function l() {
-                var e = this.props;
-                return a = e.timeRemaining, {timeRemaining: e.timeRemaining, timeoutId: void 0, prevTime: void 0}
-            },
-            componentWillReceiveProps: function u(e) {
-                var t = this.state;
-                t.timeoutId && clearTimeout(t.timeoutId), this.setState({
-                    prevTime: void 0,
-                    timeRemaining: e.timeRemaining
-                })
-            },
-            componentDidMount: function p() {
-                this.tick()
-            },
-            componentDidUpdate: function d() {
-                var e = this.state;
-                !e.prevTime && e.timeRemaining > 0 && this.isMounted() && this.tick()
-            },
-            componentWillUnmount: function h() {
-                var e = this.state;
-                e.timeoutId && clearTimeout(e.timeoutId)
-            },
-            stop: function f() {
-                this.pause(), this.setState({timeRemaining: 0, timeoutId: void 0})
-            },
-            pause: function m() {
-                var e = this.state;
-                e.timeoutId && (clearTimeout(e.timeoutId), this.setState({timeoutId: void 0}))
-            },
-            resume: function g() {
-                var e = this.state;
-                if (!e.timeoutId) {
-                    var t = Math.max(e.timeRemaining, 0), n = e.prevTime && t <= 0, i = "millisecond" === this.props.type ? 100 : 1e3, r = Date.now();
-                    this.setState({timeoutId: n ? void 0 : setTimeout(this.tick, i), prevTime: r, timeRemaining: t})
-                }
-            },
-            restart: function v(e) {
-                var t = this.props, n = "millisecond" === t.type ? 100 : 1e3;
-                e || (e = t.timeRemaining), this.stop(), this.setState({
-                    timeoutId: setTimeout(this.tick, n),
-                    prevTime: void 0,
-                    timeRemaining: e
-                })
-            },
-            tick: function y() {
-                var e = this.props, t = this.state, n = Date.now(), i = "millisecond" === e.type ? 100 : 1e3, r = t.prevTime ? n - t.prevTime : 0, s;
-                if (a - t.timeRemaining >= 5e3) {
-                    a = t.timeRemaining - 5e3;
-                    var o = i - r % i;
-                    s = o, o < i / 2 && (s += i)
-                } else s = i;
-                var c = Math.max(t.timeRemaining - r, 0), l = t.prevTime && c <= 0;
-                return this.isMounted() && (t.timeoutId && clearTimeout(t.timeoutId), this.setState({
-                    timeoutId: l ? void 0 : setTimeout(this.tick, s),
-                    prevTime: n,
-                    timeRemaining: c
-                })), l ? void($.isFunction(e.completeCallback) && e.completeCallback()) : void($.isFunction(e.tickCallback) && e.tickCallback(c))
-            },
-            getFormattedTime: function T(e) {
-                var t = this.props;
-                if (t.formatFunc)return t.formatFunc(e);
-                var n = Math.floor(e / 1e3), r = Math.round(e / 100) % 10, s = parseInt(n % 60), a = parseInt(n / 60) % 60, o = parseInt(n / 3600) % 24, c = parseInt(n / 3600 / 24);
-                s = i(s), a = i(a), o = i(o), c = i(c);
-                var l = {d: c, h: o, m: a, s: s, ms: r};
-                return $.substitute(t.tpl, l)
-            },
-            render: function b() {
-                var e = this.props, t = this.state.timeRemaining, n = this.getFormattedTime(t);
-                return r.createElement("div", {
-                    className: e.cls,
-                    style: e.style
-                }, r.createElement("div", {dangerouslySetInnerHTML: {__html: n}}))
-            }
-        });
+        var r = n(2),
+            s = n(181),
+            a,
+            o = r.createClass(
+                {
+                    displayName: "RcCountdown",
+                    mixins: [s],
+                    propTypes: {
+                        cls: r.PropTypes.string,
+                        timeRemaining: r.PropTypes.number.isRequired,
+                        type: r.PropTypes.oneOf(["second", "millisecond"]),
+                        tpl: r.PropTypes.string,
+                        formatFunc: r.PropTypes.func,
+                        tickCallback: r.PropTypes.func,
+                        completeCallback: r.PropTypes.func,
+                        style: r.PropTypes.object
+                    },
+                    getDefaultProps: function c() {
+                        return {
+                            cls: "countdown",
+                            type: "second",
+                            tpl: "{d}天{h}时{m}分{s}秒{ms}",
+                            timeRemaining: 0,
+                            formatFunc: void 0,
+                            tickCallback: void 0,
+                            completeCallback: void 0,
+                            style: {}
+                        }
+                    },
+                    getInitialState: function l() {
+                        var e = this.props;
+                        return a = e.timeRemaining, {
+                            timeRemaining: e.timeRemaining,
+                            timeoutId: void 0,
+                            prevTime: void 0
+                        }
+                    },
+                    componentWillReceiveProps: function u(e) {
+                        var t = this.state;
+                        t.timeoutId && clearTimeout(t.timeoutId), this.setState({
+                            prevTime: void 0,
+                            timeRemaining: e.timeRemaining
+                        })
+                    },
+                    componentDidMount: function p() {
+                        this.tick()
+                    },
+                    componentDidUpdate: function d() {
+                        var e = this.state;
+                        !e.prevTime && e.timeRemaining > 0 && this.isMounted() && this.tick()
+                    },
+                    componentWillUnmount: function h() {
+                        var e = this.state;
+                        e.timeoutId && clearTimeout(e.timeoutId)
+                    },
+                    stop: function f() {
+                        this.pause(), this.setState({timeRemaining: 0, timeoutId: void 0})
+                    },
+                    pause: function m() {
+                        var e = this.state;
+                        e.timeoutId && (clearTimeout(e.timeoutId), this.setState({timeoutId: void 0}))
+                    },
+                    resume: function g() {
+                        var e = this.state;
+                        if (!e.timeoutId) {
+                            var t = Math.max(e.timeRemaining, 0), n = e.prevTime && t <= 0, i = "millisecond" === this.props.type ? 100 : 1e3, r = Date.now();
+                            this.setState({
+                                timeoutId: n ? void 0 : setTimeout(this.tick, i),
+                                prevTime: r,
+                                timeRemaining: t
+                            })
+                        }
+                    },
+                    restart: function v(e) {
+                        var t = this.props, n = "millisecond" === t.type ? 100 : 1e3;
+                        e || (e = t.timeRemaining), this.stop(), this.setState({
+                            timeoutId: setTimeout(this.tick, n),
+                            prevTime: void 0,
+                            timeRemaining: e
+                        })
+                    },
+                    tick: function y() {
+                        var e = this.props, t = this.state, n = Date.now(), i = "millisecond" === e.type ? 100 : 1e3, r = t.prevTime ? n - t.prevTime : 0, s;
+                        if (a - t.timeRemaining >= 5e3) {
+                            a = t.timeRemaining - 5e3;
+                            var o = i - r % i;
+                            s = o, o < i / 2 && (s += i)
+                        } else s = i;
+                        var c = Math.max(t.timeRemaining - r, 0), l = t.prevTime && c <= 0;
+                        return this.isMounted() && (t.timeoutId && clearTimeout(t.timeoutId), this.setState({
+                            timeoutId: l ? void 0 : setTimeout(this.tick, s),
+                            prevTime: n,
+                            timeRemaining: c
+                        })), l ? void($.isFunction(e.completeCallback) && e.completeCallback()) : void($.isFunction(e.tickCallback) && e.tickCallback(c))
+                    },
+                    getFormattedTime: function T(e) {
+                        var t = this.props;
+                        if (t.formatFunc)return t.formatFunc(e);
+                        var n = Math.floor(e / 1e3), r = Math.round(e / 100) % 10, s = parseInt(n % 60), a = parseInt(n / 60) % 60, o = parseInt(n / 3600) % 24, c = parseInt(n / 3600 / 24);
+                        s = i(s), a = i(a), o = i(o), c = i(c);
+                        var l = {d: c, h: o, m: a, s: s, ms: r};
+                        return $.substitute(t.tpl, l)
+                    },
+                    render: function b() {
+                        var props = this.props,
+                            timeRemaining = this.state.timeRemaining,
+                            formattedTime = this.getFormattedTime(timeRemaining);
+                        return r.createElement(
+                            "div",
+                            {
+                                className: props.cls,
+                                style: props.style
+                            },
+                            r.createElement(
+                                "div",
+                                {dangerouslySetInnerHTML: {__html: formattedTime}}
+                            )
+                        )
+                    }
+                });
         e.exports = o
     }, function (e, t) {
         var n = {
@@ -1364,26 +1553,43 @@ webpackJsonp([7], [
                     return t < 10 ? "0" + t : "" + t
                 }
                 return e
-            }, parseDate: function r(e) {
+            },
+            parseDate: function r(e) {
                 if (void 0 == e)return e;
                 var t = e.split(/[^0-9]/), n = null;
                 return 3 == t.length ? n = new Date(t[0], t[1] - 1, t[2]) : t.length >= 6 && (n = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5])), n
-            }, getTimestamp: function s(e) {
+            },
+            getTimestamp: function s(e) {
                 return this.parseDate(e).getTime()
-            }, formatDate: function a(e, t, n) {
-                var i = this;
+            },
+            formatDate: function a(e, t, n) {
+                var _this = this;
                 t = t || (new Date).getTime();
-                var r = new Date(e), s = {
-                    Y: i.addZero(r.getFullYear()),
-                    M: i.addZero(r.getMonth() + 1),
-                    D: i.addZero(r.getDate()),
-                    h: i.addZero(r.getHours()),
-                    m: i.addZero(r.getMinutes()),
-                    s: i.addZero(r.getSeconds())
-                };
+                var r = new Date(e),
+                    s = {
+                        Y: _this.addZero(r.getFullYear()),
+                        M: _this.addZero(r.getMonth() + 1),
+                        D: _this.addZero(r.getDate()),
+                        h: _this.addZero(r.getHours()),
+                        m: _this.addZero(r.getMinutes()),
+                        s: _this.addZero(r.getSeconds())
+                    };
                 if (n && t > 0 && e > t) {
-                    var a = new Date(t), o = [i.addZero(a.getFullYear()), i.addZero(a.getMonth() + 1), i.addZero(a.getDate())], c = i.getTimestamp(o.join("/")), l = 864e5, u = 2 * l, p = e - c;
-                    p >= l && p < u ? s.smartDate = "\u660e\u5929" : p <= l && (s.smartDate = "\u4eca\u5929")
+                    var a = new Date(t),
+                        o = [
+                            _this.addZero(a.getFullYear()),
+                            _this.addZero(a.getMonth() + 1),
+                            _this.addZero(a.getDate())
+                        ],
+                        c = _this.getTimestamp(o.join("/")),
+                        l = 864e5,
+                        u = 2 * l,
+                        p = e - c;
+                    p >= l && p < u
+                        ?
+                        s.smartDate = "明天"
+                        :
+                    p <= l && (s.smartDate = "今天")
                 }
                 return s
             }
@@ -3389,7 +3595,8 @@ webpackJsonp([7], [
             }
         };
         e.exports = a
-    }, function (e, t, n) {
+    },
+    function (e, t, n) {
         var i = Object.assign || function (e) {
                 for (var t = 1; t < arguments.length; t++) {
                     var n = arguments[t];
@@ -3398,103 +3605,154 @@ webpackJsonp([7], [
                 return e
             };
         n(357), n(196);
-        var r = n(2), s = n(162), a = n(181), o = n(358), c = n(234), l = c.PanGestureEvent, u = n(220), p = n(308), d = n(205), h = n(378), f = n(382), m = n(384), g = n(391), v = n(251), y = n(393), T = n(296), b = n(394), w = d(), S = r.createClass({
-            displayName: "FirstScreen",
-            mixins: [a, s.listenTo(T, "onUpdateRecords")],
-            propTypes: {images: r.PropTypes.array, status: r.PropTypes.string, appBanner: r.PropTypes.object},
-            getDefaultProps: function E() {
-                return {images: [], appBanner: {}}
-            },
-            getInitialState: function x() {
-                var e = this;
-                return {images: [], appBanner: e.props.appBanner}
-            },
-            onUpdateRecords: function I() {
-                var e = T.getDiffRecords();
-                this.refs.paiRecord.pushNewRecords(e.length ? e : T.getBidRecords())
-            },
-            componentDidMount: function P() {
-                var e = this, t = e.props, n = $(e.refs.firstScreen), i = $(window), r = 0;
-                n.on(l.PAN_END, function (t) {
-                    e.props.ssInited || i.scrollTop() + i.height() < n.outerHeight(!0) || (r += 1, r >= 1 && "up" === t.direction && Math.abs(t.deltaY) >= 5 && e.slideToDetail())
-                }), u.pageUtil.share({
-                    image: t.images[0] + "_800x800Q50.jpg",
-                    url: location.href,
-                    title: t.title,
-                    text: t.title
-                })
-            },
-            slideToDetail: function N() {
-                this.props.slideToDetail && this.props.slideToDetail()
-            },
-            slideChange: function C() {
-                u.goldLog("/tbauctionh.21.1.1", "H46956129")
-            },
-            slideClick: function A(e) {
-                !e && u.goldLog("/tbauctionh.21.1.2", "H46956151")
-            },
-            componentWillMount: function k() {
-                var e = [], t = this;
-                $.each(this.props.images, function (t) {
-                    var n = "DAILY" === w ? t + "_Q50.jpg 1x," + t + "_Q50.jpg 2x," + t + "_Q50.jpg 3x" : t + "_320x320.jpg 1x," + t + "_800x800.jpg 2x," + t + "_1136x1136.jpg 3x";
-                    e.push(y(n))
-                }), Promise.all(e).then(function (e) {
-                    t.setState({images: e})
-                }), $.isEmptyObject(t.state.appBanner) && p.ems("rgn/app-banner", function (e) {
-                    e.success && t.setState({appBanner: e.data})
-                })
-            },
-            render: function D() {
-                var e = this, t, n = e.props, s = e.state, a = b.isOfflineSpecial(), c = b.isVisualSpecial(), l = b.getAuctionSignup();
-                a && (t = r.createElement("div", {className: "special offline-special"}, r.createElement("h4", null, "\u652f\u4ed8\u65b9\u5f0f\uff1a"), r.createElement("p", null, "\u7ade\u62cd\u6210\u529f\u540e\uff0c\u5c3e\u6b3e\u81f3\u7ebf\u4e0b\u95e8\u5e97\u652f\u4ed8\uff1b\u751f\u6210\u7684\u8ba2\u5355\u5728\u5df2\u4e70\u5230\u5b9d\u8d1d\u4ec5\u652f\u6301\u7535\u8111\u7aef\u5c55\u793a\u3002"))), c && (t = r.createElement("div", {className: "special visual-special"}, r.createElement("h4", null, "\u8fc7\u6237\u8bf4\u660e\uff1a"), r.createElement("p", null, "\u8d2d\u4e70\u672c\u62cd\u54c1\u7684\u8fc7\u6237\u8981\u6c42\u53ca\u6750\u6599\u987b\u9075\u5b88\u5f53\u5730\u8fd0\u8425\u5546\u7684\u76f8\u5173\u4e1a\u52a1\u89c4\u5219\uff0c\u6216\u4e0e\u9001\u62cd\u673a\u6784\u8d74\u5f53\u5730\u7684\u7535\u4fe1\u8fd0\u8425\u5546\u8425\u4e1a\u5385\u5b8c\u6210\u8fc7\u6237\u624b\u7eed\uff0c\u56e0\u4e70\u5bb6\u672a\u53ca\u65f6\u914d\u5408\u9001\u62cd\u673a\u6784\u529e\u7406\u8fc7\u6237\u624b\u7eed\u800c\u5f15\u53d1\u7684\u98ce\u9669\u81ea\u62c5\u3002")));
-                var u = s.images.map(function (e, t) {
-                    return r.createElement("div", {key: t}, r.createElement("img", {src: e, alt: ""}))
-                }), p = $.isEmptyObject(s.appBanner) || !s.appBanner.isShow ? null : r.createElement("div", {
-                    className: "app-banner",
-                    "data-spm": "app"
-                }, r.createElement("a", {href: s.appBanner.link}, r.createElement("img", {
-                    src: s.appBanner.img,
-                    alt: "\u5e94\u7528\u4e0b\u8f7d"
-                })));
-                return r.createElement("div", {
-                        ref: "firstScreen",
-                        className: "first-screen"
-                    }, r.createElement(o, {
-                        ref: "slide",
-                        slideToDetailEnd: this.slideToDetail,
-                        edgeEvent: $.noop,
-                        slideToDetail: {},
-                        afterChange: this.slideChange,
-                        imageClick: this.slideClick,
-                        slideToDetailDiff: 50
-                    }, u), r.createElement(v, i({}, n.statusBarInfo, {
-                        status: n.status,
-                        alignCenter: !1,
-                        showShadow: !0
-                    })), r.createElement(h, i({
-                        status: n.status,
-                        title: n.title,
-                        tags: n.tags,
-                        foregiftBizTypes: l && l.foregiftBizTypes || [],
-                        shareImg: n.images[0],
-                        onShowMessage: n.onShowMessage
-                    }, n.paiBasicInfo)), t, r.createElement(f, {
-                        ref: "paiRecord",
-                        bidderCnt: n.bidderCnt,
-                        auctionId: n.auctionId
-                    }),
-                    r.createElement(m, n.agentInfo),
-                    r.createElement(g, n.masterInfo),
-                    p,
-                    r.createElement("div", {className: "slide-tip"},
-                        r.createElement("div", {className: "slide-text"}, "\u62d6\u52a8\uff0c\u67e5\u770b\u62cd\u54c1\u63cf\u8ff0")))
-            }
-        });
+        var r = n(2),
+            s = n(162),
+            a = n(181),
+            o = n(358),
+            c = n(234),
+            l = c.PanGestureEvent,
+            u = n(220),
+            p = n(308),
+            d = n(205),
+            h = n(378),
+            f = n(382),
+            m = n(384),
+            g = n(391),
+            v = n(251),
+            y = n(393),
+            T = n(296),
+            b = n(394),
+            w = d(),
+            S = r.createClass({
+                displayName: "FirstScreen",
+                mixins: [a, s.listenTo(T, "onUpdateRecords")],
+                propTypes: {images: r.PropTypes.array, status: r.PropTypes.string, appBanner: r.PropTypes.object},
+                getDefaultProps: function E() {
+                    return {images: [], appBanner: {}}
+                },
+                getInitialState: function x() {
+                    var e = this;
+                    return {images: [], appBanner: e.props.appBanner}
+                },
+                onUpdateRecords: function I() {
+                    var e = T.getDiffRecords();
+                    this.refs.paiRecord.pushNewRecords(e.length ? e : T.getBidRecords())
+                },
+                componentDidMount: function P() {
+                    var e = this, t = e.props, n = $(e.refs.firstScreen), i = $(window), r = 0;
+                    n.on(l.PAN_END, function (t) {
+                        e.props.ssInited || i.scrollTop() + i.height() < n.outerHeight(!0) || (r += 1, r >= 1 && "up" === t.direction && Math.abs(t.deltaY) >= 5 && e.slideToDetail())
+                    }), u.pageUtil.share({
+                        image: t.images[0] + "_800x800Q50.jpg",
+                        url: location.href,
+                        title: t.title,
+                        text: t.title
+                    })
+                },
+                slideToDetail: function N() {
+                    this.props.slideToDetail && this.props.slideToDetail()
+                },
+                slideChange: function C() {
+                    u.goldLog("/tbauctionh.21.1.1", "H46956129")
+                },
+                slideClick: function A(e) {
+                    !e && u.goldLog("/tbauctionh.21.1.2", "H46956151")
+                },
+                componentWillMount: function k() {
+                    var e = [], t = this;
+                    $.each(this.props.images, function (t) {
+                        var n = "DAILY" === w ? t + "_Q50.jpg 1x," + t + "_Q50.jpg 2x," + t + "_Q50.jpg 3x" : t + "_320x320.jpg 1x," + t + "_800x800.jpg 2x," + t + "_1136x1136.jpg 3x";
+                        e.push(y(n))
+                    }), Promise.all(e).then(function (e) {
+                        t.setState({images: e})
+                    }), $.isEmptyObject(t.state.appBanner) && p.ems("rgn/app-banner", function (e) {
+                        e.success && t.setState({appBanner: e.data})
+                    })
+                },
+                render: function D() {
+                    var e = this, t, n = e.props, s = e.state, a = b.isOfflineSpecial(), c = b.isVisualSpecial(), l = b.getAuctionSignup();
+                    a && (t = r.createElement("div", {className: "special offline-special"}, r.createElement("h4", null, "\u652f\u4ed8\u65b9\u5f0f\uff1a"), r.createElement("p", null, "\u7ade\u62cd\u6210\u529f\u540e\uff0c\u5c3e\u6b3e\u81f3\u7ebf\u4e0b\u95e8\u5e97\u652f\u4ed8\uff1b\u751f\u6210\u7684\u8ba2\u5355\u5728\u5df2\u4e70\u5230\u5b9d\u8d1d\u4ec5\u652f\u6301\u7535\u8111\u7aef\u5c55\u793a\u3002"))), c && (t = r.createElement("div", {className: "special visual-special"}, r.createElement("h4", null, "\u8fc7\u6237\u8bf4\u660e\uff1a"), r.createElement("p", null, "\u8d2d\u4e70\u672c\u62cd\u54c1\u7684\u8fc7\u6237\u8981\u6c42\u53ca\u6750\u6599\u987b\u9075\u5b88\u5f53\u5730\u8fd0\u8425\u5546\u7684\u76f8\u5173\u4e1a\u52a1\u89c4\u5219\uff0c\u6216\u4e0e\u9001\u62cd\u673a\u6784\u8d74\u5f53\u5730\u7684\u7535\u4fe1\u8fd0\u8425\u5546\u8425\u4e1a\u5385\u5b8c\u6210\u8fc7\u6237\u624b\u7eed\uff0c\u56e0\u4e70\u5bb6\u672a\u53ca时\u914d\u5408\u9001\u62cd\u673a\u6784\u529e\u7406\u8fc7\u6237\u624b\u7eed\u800c\u5f15\u53d1\u7684\u98ce\u9669\u81ea\u62c5\u3002")));
+                    var u = s.images.map(function (e, t) {
+                        return r.createElement("div", {key: t}, r.createElement("img", {src: e, alt: ""}))
+                    }), p = $.isEmptyObject(s.appBanner) || !s.appBanner.isShow ? null : r.createElement("div", {
+                        className: "app-banner",
+                        "data-spm": "app"
+                    }, r.createElement("a", {href: s.appBanner.link}, r.createElement("img", {
+                        src: s.appBanner.img,
+                        alt: "应用下载"
+                    })));
+                    return r.createElement(
+                        "div",
+                        {
+                            ref: "firstScreen",
+                            className: "first-screen"
+                        },
+                        r.createElement(
+                            o,
+                            {
+                                ref: "slide",
+                                slideToDetailEnd: this.slideToDetail,
+                                edgeEvent: $.noop,
+                                slideToDetail: {},
+                                afterChange: this.slideChange,
+                                imageClick: this.slideClick,
+                                slideToDetailDiff: 50
+                            },
+                            u
+                        ),
+                        r.createElement(
+                            v,
+                            i({}, n.statusBarInfo,
+                                {
+                                    status: n.status,
+                                    alignCenter: !1,
+                                    showShadow: !0
+                                }
+                            )
+                        ),
+                        r.createElement(
+                            h,
+                            i(
+                                {
+                                    status: n.status,
+                                    title: n.title,
+                                    tags: n.tags,
+                                    foregiftBizTypes: l && l.foregiftBizTypes || [],
+                                    shareImg: n.images[0],
+                                    onShowMessage: n.onShowMessage
+                                },
+                                n.paiBasicInfo
+                            )
+                        ),
+                        t,
+                        r.createElement(
+                            f,
+                            {
+                                ref: "paiRecord",
+                                bidderCnt: n.bidderCnt,
+                                auctionId: n.auctionId
+                            }
+                        ),
+                        r.createElement(m, n.agentInfo),
+                        r.createElement(g, n.masterInfo),
+                        p,
+                        r.createElement(
+                            "div",
+                            {className: "slide-tip"},
+                            r.createElement(
+                                "div",
+                                {className: "slide-text"},
+                                "拖动，查看拍品描述")
+                        )
+                    )
+                }
+            });
         e.exports = S
     }, function (e, t) {
     }, function (e, t, n) {
         n(359);
-        var i = n(2), r = n(360),
+        var i = n(2),
+            r = n(360),
             s = i.createClass({
                 displayName: "RcSlide",
                 propTypes: {
@@ -3532,24 +3790,25 @@ webpackJsonp([7], [
                     }
                 },
                 render: function o() {
-                    var e = this.props, t = {
-                        dots: e.showNav,
-                        infinite: e.isLoop,
-                        speed: e.speed,
-                        initialSlide: e.defaultIndex,
-                        imageClick: e.imageClick,
-                        afterChange: e.afterChange,
-                        beforeChange: e.beforeChange,
-                        edgeEvent: e.edgeEvent,
-                        swipeEvent: e.swipeEvent,
-                        slideToDetail: e.slideToDetail,
-                        slideToDetailEvent: e.slideToDetailEvent,
-                        slideToDetailDiff: e.slideToDetailDiff,
-                        slideToDetailEnd: e.slideToDetailEnd,
-                        arrows: e.showArrow,
-                        lazyLoad: e.lazyload,
-                        edgeFriction: .3
-                    };
+                    var e = this.props,
+                        t = {
+                            dots: e.showNav,
+                            infinite: e.isLoop,
+                            speed: e.speed,
+                            initialSlide: e.defaultIndex,
+                            imageClick: e.imageClick,
+                            afterChange: e.afterChange,
+                            beforeChange: e.beforeChange,
+                            edgeEvent: e.edgeEvent,
+                            swipeEvent: e.swipeEvent,
+                            slideToDetail: e.slideToDetail,
+                            slideToDetailEvent: e.slideToDetailEvent,
+                            slideToDetailDiff: e.slideToDetailDiff,
+                            slideToDetailEnd: e.slideToDetailEnd,
+                            arrows: e.showArrow,
+                            lazyLoad: e.lazyload,
+                            edgeFriction: .3
+                        };
                     return i.createElement("div", {className: e.cls}, i.createElement(r, t, e.children))
                 }
             });
@@ -4283,16 +4542,16 @@ webpackJsonp([7], [
             componentWillReceiveProps: function g(e) {
                 this.setInfoByStatus(e)
             },
-            setInfoByStatus: function v(e) {
-                var t = e.currentPrice, n = r(t / 100), i = parseFloat(n), s = i.toString().split("."), a = s.length < 2 || s[1].length < 3 ? i : "\u7ea6" + Math.floor(100 * i) / 100, o = n.replace(i, "");
+            setInfoByStatus: function v(status) {
+                var t = status.currentPrice, n = r(t / 100), i = parseFloat(n), s = i.toString().split("."), a = s.length < 2 || s[1].length < 3 ? i : "\u7ea6" + Math.floor(100 * i) / 100, o = n.replace(i, "");
                 this.setState({
-                    priceDesc: this.getPriceTextByAuctionStatus(e),
-                    mainPrice: "\u4ef7\u683c\u5f85\u5b9a" == e.currentPrice ? e.currentPrice : t,
-                    subPrice: "\u4ef7\u683c\u5f85\u5b9a" == e.currentPrice ? e.currentPrice : a + o + "\u5143"
+                    priceDesc: this.getPriceTextByAuctionStatus(status),
+                    mainPrice: "\u4ef7\u683c\u5f85\u5b9a" == status.currentPrice ? status.currentPrice : t,
+                    subPrice: "\u4ef7\u683c\u5f85\u5b9a" == status.currentPrice ? status.currentPrice : a + o + "\u5143"
                 })
             },
             shareClick: function y() {
-                return p.DeviceUtil.isWindVane() ? void p.goldLog("/tbauctionh.21.1.3", "H46956152") : void this.props.onShowMessage("\u8bf7\u901a\u8fc7\u624b\u673a\u6dd8\u5b9d\u6253\u5f00\u6b64\u9875\u9762\u6765\u5206\u4eab")
+                return p.DeviceUtil.isWindVane() ? void p.goldLog("/tbauctionh.21.1.3", "H46956152") : void this.props.onShowMessage("\u8bf7\u901a\u8fc7\u624b\u673a\u6dd8\u5b9d\u6253\u5f00\u6b64\u9875\u9762\u6765分\u4eab")
             },
             getPriceTextByAuctionStatus: function T(e, t) {
                 var n = t || ["\u8d77\u62cd\u4ef7", "\u5f53\u524d\u4ef7", "\u843d\u69cc\u4ef7"], i;
@@ -4363,7 +4622,7 @@ webpackJsonp([7], [
                 return i.createElement("div", {className: e}, i.createElement("div", {
                     className: "rc-mobile-share-wrap",
                     onTouchTap: this.handleChange
-                }, i.createElement("b", {className: "icon pm-util-iconfont"}, "\u4eab"), "\u5206\u4eab"))
+                }, i.createElement("b", {className: "icon pm-util-iconfont"}, "\u4eab"), "分\u4eab"))
             }
         });
         e.exports = o
@@ -5060,8 +5319,8 @@ webpackJsonp([7], [
                     value: d ? "\u6709" : "\u65e0"
                 }), r.items.push({
                     type: 2,
-                    name: "\u5ef6\u65f6\u5468\u671f",
-                    value: h / 60 + "\u5206/\u6b21"
+                    name: "\u5ef6时\u5468\u671f",
+                    value: h / 60 + "分/\u6b21"
                 }), e.push(r);
                 var m = t.services, g = !1;
                 $.each(m, function (e) {

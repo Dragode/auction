@@ -1621,7 +1621,7 @@ html {
 .cdn-content img {
     display: block;
     width: 100%;
-    background: url(../img/tps_i1_TB1o1TjIpXXXXXnXFXXj64lTXXX-167-167.jpg) no-repeat 50% 50% #f5f5f5;
+    background: url(/image/auction.jpg) no-repeat 50% 50% #f5f5f5;
     -webkit-background-size: 33.333333%;
     background-size: 33.333333%
 }
@@ -1825,7 +1825,7 @@ html {
     position: absolute;
     width: 1.3125rem;
     height: 1.3125rem;
-    background: url(../img/gw.alicdn.com_tps_TB1zaGjKFXXXXaoXXXXXXXXXXXX-168-168.png) no-repeat 50% 50%;
+    background: url(/image/videoBackground.png) no-repeat 50% 50%;
     top: 50%;
     left: 50%;
     margin-left: -.65625rem;
@@ -1962,7 +1962,7 @@ html {
 
 .rc-collapse .rc-collapse-content-active .helper-content {
     min-height: 6.25rem;
-    background: url(../img/tps_i1_TB1o1TjIpXXXXXnXFXXj64lTXXX-167-167.jpg) no-repeat 50% 50% #f5f5f5;
+    background: url(/image/auction.jpg) no-repeat 50% 50% #f5f5f5;
     -webkit-background-size: 33.333333%;
     background-size: 33.333333%
 }
@@ -2036,7 +2036,7 @@ html {
 
 .may-like .square a .img-wrap img {
     width: 100%;
-    background: url(../img/tps_i1_TB1o1TjIpXXXXXnXFXXj64lTXXX-167-167.jpg) no-repeat 50% 50% #f5f5f5;
+    background: url(/image/auction.jpg) no-repeat 50% 50% #f5f5f5;
     -webkit-background-size: 33.333333%;
     background-size: 33.333333%
 }
@@ -2049,7 +2049,7 @@ html {
     width: 3.84rem;
     height: 1.67111111rem;
     margin: .44444444rem auto .26666667rem;
-    background: url(../img/gw.alicdn.com_tps_TB16UzIMXXXXXbzXXXXXXXXXXXX-432-188.png) no-repeat 50% 50% #f1f2f4;
+    background: url(/image/vipTel.png) no-repeat 50% 50% #f1f2f4;
     -webkit-background-size: 100%;
     background-size: 100%
 }
