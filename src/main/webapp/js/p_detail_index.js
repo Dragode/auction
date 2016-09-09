@@ -3670,17 +3670,25 @@ webpackJsonp([7], [
                     })
                 },
                 render: function D() {
-                    var e = this, t, n = e.props, s = e.state, a = b.isOfflineSpecial(), c = b.isVisualSpecial(), l = b.getAuctionSignup();
+                    var e = this,
+                        t,
+                        n = e.props,
+                        s = e.state,
+                        a = b.isOfflineSpecial(),
+                        c = b.isVisualSpecial(),
+                        l = b.getAuctionSignup();
                     a && (t = r.createElement("div", {className: "special offline-special"}, r.createElement("h4", null, "\u652f\u4ed8\u65b9\u5f0f\uff1a"), r.createElement("p", null, "\u7ade\u62cd\u6210\u529f\u540e\uff0c\u5c3e\u6b3e\u81f3\u7ebf\u4e0b\u95e8\u5e97\u652f\u4ed8\uff1b\u751f\u6210\u7684\u8ba2\u5355\u5728\u5df2\u4e70\u5230\u5b9d\u8d1d\u4ec5\u652f\u6301\u7535\u8111\u7aef\u5c55\u793a\u3002"))), c && (t = r.createElement("div", {className: "special visual-special"}, r.createElement("h4", null, "\u8fc7\u6237\u8bf4\u660e\uff1a"), r.createElement("p", null, "\u8d2d\u4e70\u672c\u62cd\u54c1\u7684\u8fc7\u6237\u8981\u6c42\u53ca\u6750\u6599\u987b\u9075\u5b88\u5f53\u5730\u8fd0\u8425\u5546\u7684\u76f8\u5173\u4e1a\u52a1\u89c4\u5219\uff0c\u6216\u4e0e\u9001\u62cd\u673a\u6784\u8d74\u5f53\u5730\u7684\u7535\u4fe1\u8fd0\u8425\u5546\u8425\u4e1a\u5385\u5b8c\u6210\u8fc7\u6237\u624b\u7eed\uff0c\u56e0\u4e70\u5bb6\u672a\u53ca时\u914d\u5408\u9001\u62cd\u673a\u6784\u529e\u7406\u8fc7\u6237\u624b\u7eed\u800c\u5f15\u53d1\u7684\u98ce\u9669\u81ea\u62c5\u3002")));
                     var u = s.images.map(function (e, t) {
-                        return r.createElement("div", {key: t}, r.createElement("img", {src: e, alt: ""}))
-                    }), p = $.isEmptyObject(s.appBanner) || !s.appBanner.isShow ? null : r.createElement("div", {
-                        className: "app-banner",
-                        "data-spm": "app"
-                    }, r.createElement("a", {href: s.appBanner.link}, r.createElement("img", {
-                        src: s.appBanner.img,
-                        alt: "应用下载"
-                    })));
+                            return r.createElement("div", {key: t}, r.createElement("img", {src: e, alt: ""}))
+                        }),
+                        p = $.isEmptyObject(s.appBanner) || !s.appBanner.isShow ? null : r.createElement("div", {
+                                className: "app-banner",
+                                "data-spm": "app"
+                            },
+                            r.createElement("a", {href: s.appBanner.link}, r.createElement("img", {
+                                src: s.appBanner.img,
+                                alt: "应用下载"
+                            })));
                     return r.createElement(
                         "div",
                         {
@@ -3790,26 +3798,30 @@ webpackJsonp([7], [
                     }
                 },
                 render: function o() {
-                    var e = this.props,
+                    var _props = this.props,
                         t = {
-                            dots: e.showNav,
-                            infinite: e.isLoop,
-                            speed: e.speed,
-                            initialSlide: e.defaultIndex,
-                            imageClick: e.imageClick,
-                            afterChange: e.afterChange,
-                            beforeChange: e.beforeChange,
-                            edgeEvent: e.edgeEvent,
-                            swipeEvent: e.swipeEvent,
-                            slideToDetail: e.slideToDetail,
-                            slideToDetailEvent: e.slideToDetailEvent,
-                            slideToDetailDiff: e.slideToDetailDiff,
-                            slideToDetailEnd: e.slideToDetailEnd,
-                            arrows: e.showArrow,
-                            lazyLoad: e.lazyload,
+                            dots: _props.showNav,
+                            infinite: _props.isLoop,
+                            speed: _props.speed,
+                            initialSlide: _props.defaultIndex,
+                            imageClick: _props.imageClick,
+                            afterChange: _props.afterChange,
+                            beforeChange: _props.beforeChange,
+                            edgeEvent: _props.edgeEvent,
+                            swipeEvent: _props.swipeEvent,
+                            slideToDetail: _props.slideToDetail,
+                            slideToDetailEvent: _props.slideToDetailEvent,
+                            slideToDetailDiff: _props.slideToDetailDiff,
+                            slideToDetailEnd: _props.slideToDetailEnd,
+                            arrows: _props.showArrow,
+                            lazyLoad: _props.lazyload,
                             edgeFriction: .3
                         };
-                    return i.createElement("div", {className: e.cls}, i.createElement(r, t, e.children))
+                    return i.createElement(
+                        "div",
+                        {className: _props.cls},
+                        i.createElement(r, t, _props.children)
+                    )
                 }
             });
         e.exports = s

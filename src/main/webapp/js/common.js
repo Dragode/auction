@@ -11,7 +11,7 @@
         for (var s, l, c = 0, p = []; c < a.length; c++)
             l = a[c],
             r[l] && p.push.apply(p, r[l]),
-            r[l] = 0;
+                r[l] = 0;
         for (s in u)
             e[s] = u[s];
         for (n && n(a, u); p.length;)
@@ -20,29 +20,37 @@
             return o[0] = 0, t(0)
     };
 
-    var o = {}, r = {12: 0};
+    var o = {},
+        r = {12: 0};
     t.e = function a(e, n) {
         if (0 === r[e])
             return n.call(null, t);
         if (void 0 !== r[e])r[e].push(n); else {
             r[e] = [n];
-            var o = document.getElementsByTagName("head")[0], i = document.createElement("script");
-            i.type = "text/javascript", i.charset = "utf-8", i.async = !0, i.src = t.p + "" + e + "." + ({
-                    0: "p/bid-hall/index",
-                    1: "p/bid-record/index",
-                    2: "p/deposit-address/index",
-                    3: "p/deposit-buyer-identity/index",
-                    4: "p/deposit-check-identity/index",
-                    5: "p/deposit-service/index",
-                    6: "p/deposit-submit/index",
-                    7: "p/detail/index",
-                    8: "p/hao-detail/index",
-                    9: "p/hao-list/index",
-                    10: "p/seller-detail/index",
-                    11: "p/similar-auction/index"
-                }[e] || e) + ".js", o.appendChild(i)
+            var o = document.getElementsByTagName("head")[0],
+                i = document.createElement("script");
+            i.type = "text/javascript",
+                i.charset = "utf-8",
+                i.async = !0,
+                i.src = t.p + "" + e + "." + ({
+                        0: "p/bid-hall/index",
+                        1: "p/bid-record/index",
+                        2: "p/deposit-address/index",
+                        3: "p/deposit-buyer-identity/index",
+                        4: "p/deposit-check-identity/index",
+                        5: "p/deposit-service/index",
+                        6: "p/deposit-submit/index",
+                        7: "p/detail/index",
+                        8: "p/hao-detail/index",
+                        9: "p/hao-list/index",
+                        10: "p/seller-detail/index",
+                        11: "p/similar-auction/index"
+                    }[e] || e) + ".js", o.appendChild(i)
         }
-    }, t.m = e, t.c = o, t.p = "/build/"
+    },
+        t.m = e,
+        t.c = o,
+        t.p = "/build/"
 }([, , function (e, t, n) {
     e.exports = n(3)
 }, function (e, t, n) {

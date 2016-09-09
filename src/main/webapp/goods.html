@@ -305,6 +305,75 @@
     webpackJsonp([7], [
         function (e, t, n) {
             console.log("ok");
+        },
+        function (e, t, n) {
+            n(359);
+            var i = n(2),
+                    r = n(360),
+                    s = i.createClass({
+                        displayName: "RcSlide",
+                        propTypes: {
+                            cls: i.PropTypes.string,
+                            showNav: i.PropTypes.bool,
+                            showArrow: i.PropTypes.bool,
+                            isLoop: i.PropTypes.bool,
+                            autoplay: i.PropTypes.bool,
+                            lazyload: i.PropTypes.bool,
+                            speed: i.PropTypes.number,
+                            autoplaySpeed: i.PropTypes.number,
+                            defaultIndex: i.PropTypes.number,
+                            imageClick: i.PropTypes.func,
+                            afterChange: i.PropTypes.func,
+                            beforeChange: i.PropTypes.func,
+                            edgeEvent: i.PropTypes.func,
+                            swipeEvent: i.PropTypes.func,
+                            slideToDetail: i.PropTypes.object,
+                            slideToDetailDiff: i.PropTypes.number,
+                            slideToDetailEvent: i.PropTypes.func,
+                            slideToDetailEnd: i.PropTypes.func
+                        },
+                        getDefaultProps: function a() {
+                            return {
+                                cls: "rc-slide",
+                                showNav: !0,
+                                showArrow: !1,
+                                isLoop: !1,
+                                autoplay: !1,
+                                lazyload: !0,
+                                speed: 300,
+                                autoplaySpeed: 3e3,
+                                defaultIndex: 0,
+                                slideToDetailDiff: 50
+                            }
+                        },
+                        render: function o() {
+                            var _props = this.props,
+                                    t = {
+                                        dots: _props.showNav,
+                                        infinite: _props.isLoop,
+                                        speed: _props.speed,
+                                        initialSlide: _props.defaultIndex,
+                                        imageClick: _props.imageClick,
+                                        afterChange: _props.afterChange,
+                                        beforeChange: _props.beforeChange,
+                                        edgeEvent: _props.edgeEvent,
+                                        swipeEvent: _props.swipeEvent,
+                                        slideToDetail: _props.slideToDetail,
+                                        slideToDetailEvent: _props.slideToDetailEvent,
+                                        slideToDetailDiff: _props.slideToDetailDiff,
+                                        slideToDetailEnd: _props.slideToDetailEnd,
+                                        arrows: _props.showArrow,
+                                        lazyLoad: _props.lazyload,
+                                        edgeFriction: .3
+                                    };
+                            return i.createElement(
+                                    "div",
+                                    {className: _props.cls},
+                                    i.createElement(r, t, _props.children)
+                            )
+                        }
+                    });
+            e.exports = s
         }
     ]);
 </script>
