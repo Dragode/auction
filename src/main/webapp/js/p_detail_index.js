@@ -3129,8 +3129,18 @@ webpackJsonp([7], [
                 return g.foregiftBizTypesToBe(t, e)
             },
             payForegift: function P(e) {
-                var t = this.props, n = t.isOffline, i = t.auctionTag, r = t.isNoBankAuth, s = "normal" === t.accountStatus, a = d.getNewDomain();
-                return p.goldLog("/tbauctionh.21.2.1", "H46956129"), t.isSelf ? (t.onShowMessage("\u5bf9\u4e0d\u8d77\uff0c\u81ea\u5df1\u4e0d\u80fd\u62a5\u540d\u81ea\u5df1\u7684\u5546\u54c1"), void m.record(26001, "pmp", {msg: "\u62a5\u540d\u7528\u6237\u4e3a\u5356\u5bb6"})) : (this.foregiftBizTypesToBe(y.ALBUM) ? (a = d.getBaseDomain() + "v3/give-deposit.html?albumId=" + this.props.albumId + "&jump=" + encodeURIComponent(location.href), m.record(26001, "pmp", {url: a})) : a += f.SpecialProtocal.indexOf(i) > -1 ? "deposit-service/index.html?itemId=" + t.itemId + "&isOffline=" + n + "&auctionTag=" + i : r && !s ? "deposit-check-identity/index.html" : "deposit-submit/index.html?itemId=" + t.itemId, m.record(26001, "pmp", {url: a}), void p.pageUtil.openWindow(a, !0, e.currentTarget))
+                var t = this.props,
+                    n = t.isOffline,
+                    i = t.auctionTag,
+                    r = t.isNoBankAuth,
+                    s = "normal" === t.accountStatus,
+                    a = d.getNewDomain();
+                return p.goldLog("/tbauctionh.21.2.1", "H46956129"),
+                    t.isSelf
+                        ?
+                        (t.onShowMessage("对不起，自己不能报名自己的商品"), void m.record(26001, "pmp", {msg: "报名用户为卖家"}))
+                        :
+                        (this.foregiftBizTypesToBe(y.ALBUM) ? (a = d.getBaseDomain() + "v3/give-deposit.html?albumId=" + this.props.albumId + "&jump=" + encodeURIComponent(location.href), m.record(26001, "pmp", {url: a})) : a += f.SpecialProtocal.indexOf(i) > -1 ? "deposit-service/index.html?itemId=" + t.itemId + "&isOffline=" + n + "&auctionTag=" + i : r && !s ? "deposit-check-identity/index.html" : "deposit-submit/index.html?itemId=" + t.itemId, m.record(26001, "pmp", {url: a}), void p.pageUtil.openWindow(a, !0, e.currentTarget))
             },
             redirectToHall: function N(e) {
                 p.goldLog("/tbauctionh.21.2.8", "H46956157"), p.pageUtil.openWindow(d.getNewDomain() + "bid-hall/index.html?itemId=" + this.props.itemId, !0, e.currentTarget)
@@ -3147,25 +3157,98 @@ webpackJsonp([7], [
             },
             getMainDesc: function D() {
                 var e = this.state.opState;
-                return e === v.NOT_LOGIN || e === v.NO_APPLY ? i.createElement("div", {
-                    className: "main-btn",
-                    onClick: e === v.NOT_LOGIN ? this.jumpToLogin : this.payForegift
-                }, i.createElement("div", {className: "jiaobao"}, i.createElement("p", {className: "action"}, "\u53bb\u62a5\u540d"), i.createElement("p", {className: "foregift"}, "(\u4fdd\u8bc1\u91d1\u91d1\u989d ", i.createElement("b", null, "\uffe5"), this.props.foregiftPrice, ")"))) : e === v.ENTER_HALL || e === v.CONFIRM_RESERVE ? i.createElement("div", {
-                    className: "main-btn",
-                    onClick: this.redirectToHall
-                }, i.createElement("p", {className: "enter-hall"}, i.createElement("b", {className: "pai-icon"}, "\u9524"), "\u8fdb\u5165\u7ade\u4ef7\u5927\u5385")) : e === v.SEE_ORDER ? i.createElement("div", {
-                    className: "main-btn",
-                    onClick: this.viewOrder
-                }, "\u67e5\u770b\u8ba2\u5355") : e === v.SEE_FOREGIFT ? i.createElement("div", {className: "main-btn"}, i.createElement("div", {
-                    className: "left column",
-                    onClick: this.viewForegift
-                }, "\u67e5\u770b\u4fdd\u8bc1\u91d1"), i.createElement("div", {
-                    className: "column",
-                    onClick: this.viewSimilar
-                }, "\u770b\u76f8\u4f3c\u62cd\u54c1")) : e === v.WAIT_ORDER ? i.createElement("div", {className: "main-btn wait-order"}, "\u7b49\u5f85\u8ba2\u5355\u751f\u6210") : e === v.SEE_SIMILAR ? i.createElement("div", {
-                    className: "main-btn",
-                    onClick: this.viewSimilar
-                }, "\u770b\u76f8\u4f3c\u62cd\u54c1") : void 0
+                return e === v.NOT_LOGIN || e === v.NO_APPLY
+                    ?
+                    i.createElement(
+                        "div",
+                        {
+                            className: "main-btn",
+                            onClick: e === v.NOT_LOGIN ? this.jumpToLogin : this.payForegift
+                        },
+                        i.createElement(
+                            "div",
+                            {className: "jiaobao"},
+                            i.createElement(
+                                "p",
+                                {className: "action"},
+                                "去报名"
+                            ),
+                            i.createElement(
+                                "p",
+                                {className: "foregift"},
+                                "(保证金金额 ", i.createElement("b", null, "￥"), this.props.foregiftPrice, ")"
+                            )
+                        )
+                    )
+                    :
+                    e === v.ENTER_HALL || e === v.CONFIRM_RESERVE
+                        ?
+                        i.createElement(
+                            "div",
+                            {
+                                className: "main-btn",
+                                onClick: this.redirectToHall
+                            },
+                            i.createElement(
+                                "p",
+                                {className: "enter-hall"},
+                                i.createElement("b", {className: "pai-icon"}, "锤"), "进入竞价大厅")
+                        )
+                        :
+                        e === v.SEE_ORDER
+                            ?
+                            i.createElement(
+                                "div",
+                                {
+                                    className: "main-btn",
+                                    onClick: this.viewOrder
+                                },
+                                "查看订单"
+                            )
+                            :
+                            e === v.SEE_FOREGIFT
+                                ?
+                                i.createElement(
+                                    "div",
+                                    {className: "main-btn"},
+                                    i.createElement(
+                                        "div",
+                                        {
+                                            className: "left column",
+                                            onClick: this.viewForegift
+                                        },
+                                        "查看保证金"
+                                    ),
+                                    i.createElement(
+                                        "div",
+                                        {
+                                            className: "column",
+                                            onClick: this.viewSimilar
+                                        },
+                                        "看相似拍品"
+                                    )
+                                )
+                                :
+                                e === v.WAIT_ORDER
+                                    ?
+                                    i.createElement(
+                                        "div",
+                                        {className: "main-btn wait-order"},
+                                        "等待订单生成"
+                                    )
+                                    :
+                                    e === v.SEE_SIMILAR
+                                        ?
+                                        i.createElement(
+                                            "div",
+                                            {
+                                                className: "main-btn",
+                                                onClick: this.viewSimilar
+                                            },
+                                            "看相似拍品"
+                                        )
+                                        :
+                                        void 0
             },
             wwClick: function O() {
                 p.goldLog("/tbauctionh.21.1.4", "H46956153")

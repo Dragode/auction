@@ -22,6 +22,11 @@
     </style>
     <script src="/js/m-base_2.0.1_index.js"></script>
     <script src="/js/hairlines_0.0.2_index.js"></script>
+    <script type="text/javascript" src="/js/common/sea.js"></script>
+    <script type="text/javascript" src="/js/package.js"></script>
+    <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
+    <script type="text/javascript" src="/js/common/touch.js"></script>
+    <script type="text/javascript" src="/js/bridge-api.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/m-base_2.0.1_reset.css">
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <link rel="stylesheet" type="text/css" href="/css/p_detail_index.css">
@@ -83,7 +88,7 @@
             <div class="rc-statusbar before">
                 <div class="align-left">
                     <span class="status-icon pm-iconfont">时</span>
-                    <span class="status-flag">即将开始</span>
+                    <span class="status-flag">即将开始</span><!--TODO 动态获取-->
                     <span class="main">
                         <div class="countdown" style="display: none;">
                             <div>04天21时24分03秒</div>
@@ -282,19 +287,21 @@
                     </div>
                 </div>
                 <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
-                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>
+                <!--<div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>-->
             </div>
             <div class="main-btn">
-                <div class="jiaobao"><p class="action">去报名</p>
-                    <p class="foregift"><!-- react-text: 104 -->(保证金金额 <!-- /react-text --><b>￥</b>
-                        <!-- react-text: 106 -->200<!-- /react-text --><!-- react-text: 107 -->)<!-- /react-text --></p>
+                <div class="jiaobao">
+                    <p class="action">去报名</p>
+                    <p class="foregift">
+                        (保证金金额<b>￥</b>200)
+                    </p>
                 </div>
             </div>
         </section>
-        <div class="rc-top rc-top-hidden">
+       <!-- <div class="rc-top rc-top-hidden">
             <i class="top-icon pm-util-iconfont">顶</i>
             <span class="text">顶部</span>
-        </div>
+        </div>-->
         <!-- react-empty: 111 -->
     </div>
 </div>
@@ -302,11 +309,54 @@
 <script src="/js/common.js"></script>
 <!--<script src="/js/p_detail_index.js"></script>-->
 <script type="application/javascript">
+    var imports = [];
+    <!---js对应的路径-->
+    imports.push('/js/config.js');
+    imports.push('/js/utils.js');
+    //imports.push('/js/ListView.js');
+    imports.push('/js/template.js');
+    imports.push('/js/iscroll5.js');
+    imports.push('/js/timeHelper.js');
+    imports.push('/js/DateUtil.min.js');
+    imports.push('/js/StringUtil.min.js');
+    imports.push('/js/StringExt.min.js');
+    imports.push('/js/DateExt.min.js');
+    //开始引入资源文件
+    seajs.use(imports, function () {
+        Zepto("#jiaobao").on($().conditionUtil.hasTouch(), function (event) {
+            /*$.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
+             //TODO 处理异常情况
+             alert("设置成功");
+             });*/
+            Zepto("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
+        });
+    });
+
+    /*$(document).ready(function () {
+        $("#jiaobao").on($().conditionUtil.hasTouch(), function (event) {
+            /!*$.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
+             //TODO 处理异常情况
+             alert("设置成功");
+             });*!/
+            $("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
+        });
+    });*/
+
+
+
+
+    /*function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) return unescape(r[2]);
+        return null; //返回参数值
+    }
+
     webpackJsonp([7], [
         function (e, t, n) {
             console.log("ok");
         }
-    ]);
+    ]);*/
 </script>
 </body>
 </html>

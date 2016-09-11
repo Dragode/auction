@@ -4,14 +4,9 @@ import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.GoodsResponse;
 import dragode.auction.controller.response.SessionDetailResponse;
-import dragode.auction.model.Goods;
-import dragode.auction.model.Session;
-import dragode.auction.model.SessionReminder;
-import dragode.auction.model.User;
-import dragode.auction.repository.GoodsRepository;
-import dragode.auction.repository.SessionReminderRepository;
-import dragode.auction.repository.SessionRepository;
-import dragode.auction.repository.UserRepository;
+import dragode.auction.model.*;
+import dragode.auction.repository.*;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 public class SessionController {
@@ -31,6 +27,8 @@ public class SessionController {
     private UserRepository userRepository;
     @Resource
     private GoodsRepository goodsRepository;
+    @Resource
+    private GoodsPicturesRepository goodsPicturesRepository;
 
     /**
      * 获取所有拍卖专场
@@ -89,17 +87,38 @@ public class SessionController {
         Goods one = goodsRepository.findOne(goodsId);
 
         GoodsResponse goods = new GoodsResponse();
-        goods.setBannerUrl("exampleImg/goodsExample.jpg");
-        goods.setTitle("商品详情-接口");
-        goods.setBidCount((long) 88);
-        goods.setPrice((long) 88888);
+        goods.setId(one.getId());
+        goods.setSessionId(one.getSessionId());
+        goods.setBannerUrl(one.getBannerUrl());
+        goods.setTitle(one.getTitle());
+        goods.setBidCount(one.getBidCount());
+        goods.setStartingPrice(one.getStartingPrice());
+        goods.setCashDeposit(one.getCashDeposit());
+        goods.setBidIncrement(one.getBidIncrement());
+        goods.setPrice(one.getPrice());
         goods.setShowPics(new LinkedList<String>());
-        goods.getShowPics().add("exampleImg/goodsShowExample1.jpg");
+        List<GoodsPictures> goodsShowPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.SHOW_PIC);
+        if (!CollectionUtils.isEmpty(goodsShowPictures)) {
+            for (GoodsPictures goodsShowPicture : goodsShowPictures) {
+                goods.getShowPics().add(goodsShowPicture.getRelativeUrl());
+            }
+        }
+        /*goods.getShowPics().add("exampleImg/goodsShowExample1.jpg");
         goods.getShowPics().add("exampleImg/goodsShowExample2.jpg");
-        goods.getShowPics().add("exampleImg/goodsShowExample3.jpg");
+        goods.getShowPics().add("exampleImg/goodsShowExample3.jpg");*/
         goods.setDescPics(new LinkedList<String>());
-        goods.getDescPics().add("exampleImg/goodsDescExample1.jpg");
-        goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
+        List<GoodsPictures> goodsDescPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.DESC_PIC);
+        for (GoodsPictures goodsDescPicture : goodsDescPictures) {
+            goods.getDescPics().add(goodsDescPicture.getRelativeUrl());
+        }
+        //goods.getDescPics().add("exampleImg/goodsDescExample1.jpg");
+        //goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
         return goods;
+    }
+
+    @RequestMapping(path = "signUpSession")
+    public void signUpSession(@RequestParam Integer userId,
+                              @RequestParam String sessionId){
+        User user = userRepository.findOne(userId);
     }
 }
