@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -29,7 +30,7 @@ import static dragode.auction.service.wx.WxMsgType.*;
 /**
  * 微信Controller
  */
-@RestController()
+@RestController
 @RequestMapping(path = "/wx")
 public class WxController {
     private static Logger logger = LoggerFactory.getLogger(WxController.class);

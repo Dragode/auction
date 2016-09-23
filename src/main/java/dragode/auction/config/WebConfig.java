@@ -36,10 +36,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setDefaultCharset(Charset.forName("UTF-8"));
-        List<MediaType> supportedMediaTypes = new ArrayList<>();
-        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
-        supportedMediaTypes.add(MediaType.TEXT_HTML);
-        stringHttpMessageConverter.setSupportedMediaTypes(supportedMediaTypes);
         converters.add(stringHttpMessageConverter);
 
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
