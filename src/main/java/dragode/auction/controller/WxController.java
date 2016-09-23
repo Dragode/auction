@@ -5,50 +5,45 @@ import dragode.auction.intf.TemplateMessage;
 import dragode.auction.intf.WxInterface;
 import dragode.auction.model.User;
 import dragode.auction.repository.UserRepository;
-import dragode.auction.utils.HttpRequestPrinter;
-import org.springframework.util.StringUtils;
+import dragode.auction.service.wx.WxEventHandler;
+import dragode.auction.utils.HttpRequestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static dragode.auction.service.wx.WxMsgType.*;
+
 /**
- * ******************************************
- * <p/>
- * Copyright 2016
- * NetDragon All rights reserved
- * <p/>
- * *****************************************
- * <p/>
- * *** Company ***
- * NetDragon
- * <p/>
- * *****************************************
- * <p/>
- * *** Team ***
- * SmartQ
- * <p/>
- * *****************************************
- *
- * @author 俞建龙(300116)
- * @version V1.0
- * @Title WxController
- * @Package dragode.auction.controller
- * <p/>
- * *****************************************
- * @Description
- * @date 2016/8/31 0031
+ * 微信Controller
  */
-@RestController
+@RestController()
+@RequestMapping(path = "/wx")
 public class WxController {
+    private static Logger logger = LoggerFactory.getLogger(WxController.class);
 
     @Resource
     private UserRepository userRepository;
+
+    @Autowired(required = false)
+    private WxEventHandler wxEventHandler;
+
+    private void logRequestIfDebug(HttpServletRequest request) {
+        logger.info("[Method = " + request.getMethod() + "]" +
+                "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
+    }
 
     /**
      * 接入微信开发者
@@ -56,48 +51,63 @@ public class WxController {
      * @param request Http请求
      * @return echostr
      */
-    @RequestMapping(path = "/accessWx")
+    @RequestMapping(path = "/receiveWxPush", method = RequestMethod.GET)
     public String accessWx(HttpServletRequest request) throws Exception {
-        System.out.println(HttpRequestPrinter.tranferRequestToString(request));
-        System.out.println(request.getMethod());
-
-        if (request.getMethod().equals("POST")) {
-            StringBuffer sb = new StringBuffer();
-            BufferedReader bufferedReader = null;
-            String content = "";
-
-            try {
-                //InputStream inputStream = request.getInputStream();
-                //inputStream.available();
-                //if (inputStream != null) {
-                bufferedReader = request.getReader(); //new BufferedReader(new InputStreamReader(inputStream));
-                char[] charBuffer = new char[128];
-                int bytesRead;
-                while ((bytesRead = bufferedReader.read(charBuffer)) != -1) {
-                    sb.append(charBuffer, 0, bytesRead);
-                }
-                //} else {
-                //        sb.append("");
-                //}
-
-            } catch (IOException ex) {
-                throw ex;
-            } finally {
-                if (bufferedReader != null) {
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException ex) {
-                        throw ex;
-                    }
-                }
-            }
-
-            String postBody = sb.toString();
-            System.out.println(postBody);
-        }
+        logRequestIfDebug(request);
 
         //TODO 校验是否为微信的请求
+
         return request.getParameter("echostr");
+    }
+
+    /**
+     * 接受微信消息推送
+     *
+     * @param request Http请求
+     * @return 返回给用户的消息
+     */
+    @RequestMapping(path = "/receiveWxPush", method = RequestMethod.POST)
+    //TODO 有的请求是Json DTO，有的请求是Xml DTO，SpringMVC要怎么设置
+    public String receiveWxPush(HttpServletRequest request) {
+        logRequestIfDebug(request);
+
+        //TODO 校验是否为微信的请求
+
+        String postBody = HttpRequestUtils.retrievePostBody(request);
+        logger.info("[postBody = " + postBody + "]");
+
+        //解析XMl
+        if (wxEventHandler != null) {
+            Document document;
+            try {
+                document = org.dom4j.DocumentHelper.parseText(postBody);
+            } catch (DocumentException e) {
+                //TODO 处理异常
+                throw new RuntimeException(e);
+            }
+            Element rootElement = document.getRootElement();
+            String openId = rootElement.elementText("FromUserName");
+
+            //判断消息类型
+            String msgType = rootElement.elementText("MsgType");
+            if (StringUtils.equals(msgType, EVENT)) {
+                String event = rootElement.elementText("Event");
+                if (StringUtils.equals(event, SUBSCRIBE_EVENT)) {
+                    return wxEventHandler.subscribe(openId);
+                } else if (StringUtils.equals(event, UNSUBSCRIBE_EVENT)) {
+                    return wxEventHandler.unsubscribe(openId);
+                } else {
+                    logger.warn("Unknowing event:" + postBody);
+                    return "";
+                }
+            } else {
+                logger.warn("Unknowing MsgType:" + postBody);
+                return "";
+            }
+        }
+
+        //默认返回空字符串
+        return "";
     }
 
 
@@ -110,7 +120,7 @@ public class WxController {
      */
     @RequestMapping(path = "/wxOauth2")
     public void wxOauth2(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(HttpRequestPrinter.tranferRequestToString(request));
+        System.out.println(HttpRequestUtils.transferRequestToString(request));
         String state = request.getParameter("state");//回传参数state
 
         String openId = getAndCacheOpenId(request);

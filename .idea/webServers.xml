@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b0c83175-92a1-47db-aaa7-7dd4dd483a6a" name="auction" url="http://119.29.162.156">
+        <fileTransfer host="119.29.162.156" port="22" rootFolder="/home/auction/tomcat/webapps" accessType="SFTP" username="root">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
