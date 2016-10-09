@@ -34,39 +34,48 @@ function Adaptor(mData, viewList) {
 
 function JsListView(listViewConfig, parentContainer) {
     "use strict";
+
     function getView(index) {
         var viewType = _this.adaptor.getViewType(index);
-        if ("undefined" == typeof v[viewType])
+        if ("undefined" == typeof viewMap[viewType]) {
             return void 0;
-        var lastView = v[viewType].pop();
-        return lastView && (lastView.style.display = ""), lastView
+        }
+        var lastView = viewMap[viewType].pop();
+        if (lastView) {
+            lastView.style.display = "";
+        }
+        return lastView;
     }
 
-    function d(a) {
-        var b = a.viewType;
-        a.style.display = "none",
-        "undefined" == typeof v[b] && (v[b] = []),
-            v[b].push(a)
+    function addView(view) {
+        var viewType = view.viewType;
+        view.style.display = "none";
+        if ("undefined" == typeof viewMap[viewType]) {
+            viewMap[viewType] = [];
+        }
+        viewMap[viewType].push(view);
     }
 
     function getPositionInfo() {
-        if (hasDataToRecover === !1)
+        if (hasDataToRecover === !1) {
             return {top: 0, firstPosition: 0};
+        }
         hasDataToRecover = !1;
         var top = sessionStorage[id + "top"];
         if (void 0 !== top) {
             var firstPosition = sessionStorage[id + "firstPosition"];
-            return delete sessionStorage[id + "top"],
-                delete sessionStorage[id + "firstPosition"],
-            {top: parseInt(top), firstPosition: parseInt(firstPosition)}
+            delete sessionStorage[id + "top"];
+            delete sessionStorage[id + "firstPosition"];
+            return {top: parseInt(top), firstPosition: parseInt(firstPosition)};
         } else {
-            return {top: 0, firstPosition: 0}
+            return {top: 0, firstPosition: 0};
         }
     }
 
-    function f(a) {
-        var b = _this.adaptor.viewList[a].cloneNode(!0);
-        return b.viewType = a, b
+    function getViewByViewType(viewType) {
+        var views = _this.adaptor.viewList[viewType].cloneNode(!0);
+        views.viewType = viewType;
+        return views;
     }
 
     function resolveValueOfDefault(value, defaultValue) {
@@ -77,113 +86,122 @@ function JsListView(listViewConfig, parentContainer) {
         return a.offsetTop + a.offsetHeight
     }
 
-    function i(a) {
-        return a[a.length - 1]
+    function pop(array) {
+        return array[array.length - 1]
     }
 
     function j() {
-        var a = i(viewDatas), b = F;
-        for (a && (b = h(a)), y++; G + H > b && y <= _this.adaptor.getCount() - 1;) {
+        var lastView = pop(viewDatas),
+            b = F;
+        for (lastView && (b = h(lastView)), y++; G + H > b && y <= _this.adaptor.getCount() - 1;) {
             var d;
-            d = getView(y), "undefined" == typeof d && (d = f(_this.adaptor.getViewType(y)), listViewContainer.appendChild(d)), viewDatas.push(d), d.style.position = "absolute", d.style.top = b + "px", _this.adaptor.renderView(d, y), a = i(viewDatas), b = h(a), y++
+            d = getView(y),
+            "undefined" == typeof d && (d = getViewByViewType(_this.adaptor.getViewType(y)), listViewContainer.appendChild(d)),
+                viewDatas.push(d),
+                d.style.position = "absolute",
+                d.style.top = b + "px",
+                _this.adaptor.renderView(d, y),
+                lastView = pop(viewDatas),
+                b = h(lastView),
+                y++
         }
-        y--, y > _this.adaptor.getCount() - 1 && (y = _this.adaptor.getCount() - 1);
+        y--,
+        y > _this.adaptor.getCount() - 1 && (y = _this.adaptor.getCount() - 1);
         var e = b - G;
-        if (0 > e)for (var g = 0; g < viewDatas.length; g++)viewDatas[g].style.top = -e + viewDatas[g].offsetTop + "px";
-        return a
+        if (0 > e)
+            for (var g = 0; g < viewDatas.length; g++)
+                viewDatas[g].style.top = -e + viewDatas[g].offsetTop + "px";
+        return lastView
     }
 
     function k() {
-        var a = viewDatas[0], b = G;
-        for (a && (b = a.offsetTop), firstPosition--; b > F - H && firstPosition >= 0;) {
-            var d = getView(firstPosition);
-            "undefined" == typeof d && (d = f(_this.adaptor.getViewType(firstPosition)), listViewContainer.appendChild(d)), viewDatas.unshift(d), d.style.position = "absolute", _this.adaptor.renderView(d, firstPosition), d.style.top = b - d.offsetHeight + "px", a = viewDatas[0], b = a.offsetTop, firstPosition--
+        var firstView = viewDatas[0], b = G;
+        for (firstView && (b = firstView.offsetTop), firstPosition--; b > F - H && firstPosition >= 0;) {
+            var view = getView(firstPosition);
+            "undefined" == typeof view && (view = getViewByViewType(_this.adaptor.getViewType(firstPosition)), listViewContainer.appendChild(view)), viewDatas.unshift(view), view.style.position = "absolute", _this.adaptor.renderView(view, firstPosition), view.style.top = b - view.offsetHeight + "px", firstView = viewDatas[0], b = firstView.offsetTop, firstPosition--
         }
         firstPosition++, 0 > firstPosition && (firstPosition = 0);
         var e = b - F;
         if (e > 0)for (var g = 0; g < viewDatas.length; g++)viewDatas[g].style.top = -e + viewDatas[g].offsetTop + "px";
-        return a
+        return firstView
     }
 
-    function l(a) {
+    function l(yMoveDistance) {
         if (0 != viewDatas.length) {
-            var b,
-                c = !1,
-                e = !1;
-            if (a > 0) {
-                var f = viewDatas[0];
+            var view,
+                triggerTopListener = !1,
+                triggerBottoemListener = !1;
+            if (yMoveDistance > 0) {
+                var firstView = viewDatas[0];
                 if (0 == firstPosition) {
-                    if (f.offsetTop === F)
+                    if (firstView.offsetTop === F) {
                         return;
-                    f.offsetTop + a > F && (c = !D, a = F - f.offsetTop)
+                    }
+                    if (firstView.offsetTop + yMoveDistance > F) {
+                        triggerTopListener = !NotTriggerTopListener, yMoveDistance = F - firstView.offsetTop
+                    }
                 }
-                for (var g = viewDatas.length - 1; g >= 0; g--)
-                    b = viewDatas[g],
-                        b.style.top = b.offsetTop + a + "px",
-                    b.offsetTop > G + H && (d(viewDatas.pop()), y--);
-                k(), j()
-            } else if (0 > a) {
-                var l = i(viewDatas);
+                for (var i = viewDatas.length - 1; i >= 0; i--) {
+                    view = viewDatas[i];
+                    view.style.top = view.offsetTop + yMoveDistance + "px";
+                    if (view.offsetTop > G + H) {
+                        addView(viewDatas.pop());
+                        y--;
+                    }
+                }
+                k();
+                j();
+            } else if (0 > yMoveDistance) {
+                var lastView = pop(viewDatas);
                 if (y === _this.adaptor.getCount() - 1) {
-                    if (h(l) === G)return;
-                    h(l) + a < G && (e = !E, a = G - h(l))
+                    if (h(lastView) === G) {
+                        return;
+                    }
+                    if (h(lastView) + yMoveDistance < G) {
+                        triggerBottoemListener = !NotTriggerBottoemListener, yMoveDistance = G - h(lastView)
+                    }
                 }
-                for (var g = 0; g < viewDatas.length; g++)
-                    b = viewDatas[g],
-                        b.style.top = b.offsetTop + a + "px",
-                    h(b) < F - H && (d(viewDatas.shift()), g--, firstPosition++);
-                j(),
-                    k()
+                for (var g = 0; g < viewDatas.length; g++) {
+                    view = viewDatas[g];
+                    view.style.top = view.offsetTop + yMoveDistance + "px";
+                    if (h(view) < F - H) {
+                        addView(viewDatas.shift());
+                        g--;
+                        firstPosition++;
+                    }
+                }
+                j();
+                k();
             }
-            c === !0 ?
-                (D = !0, _this.topListener && _this.topListener())
+            triggerTopListener === !0 ?
+                (NotTriggerTopListener = !0, _this.topListener && _this.topListener())
                 :
-            e === !0 && (E = !0, _this.bottomListener && _this.bottomListener()), a > 0 ? _this.downListener && _this.downListener(a, firstPosition, y) : -1e-10 > a && _this.upListener && _this.upListener(a, firstPosition, y), _this.onScroll && _this.onScroll(viewDatas, firstPosition, y)
-        }
-    }
-
-    function handleTouchMoveEvent(a) {
-        var b = a.touches[0], c = parseInt(b.pageY - C), d = parseInt(b.pageX - B);
-        if (!(window.navigator.userAgent.match(/iphone os 7/gi) && d > 0 && Math.abs(c / d) < .5)) {
-            if (config.distance = c, p(c, !1))return void(config.distance < 0 && a.preventDefault());
-            a.preventDefault(), C = b.pageY, B = b.pageX, config._touchMove(c), l(c)
+            triggerBottoemListener === !0 && (NotTriggerBottoemListener = !0, _this.bottomListener && _this.bottomListener()), yMoveDistance > 0 ? _this.downListener && _this.downListener(yMoveDistance, firstPosition, y) : -1e-10 > yMoveDistance && _this.upListener && _this.upListener(yMoveDistance, firstPosition, y), _this.onScroll && _this.onScroll(viewDatas, firstPosition, y)
         }
     }
 
     function n() {
-        config.endTime = Date.now();
-        var a = config.endTime - config.startTime;
-        if (config.currentVelocity * config.velocity > 0) {
-            config.currentVelocity = config.velocity + config.accelerated * a;
-            var b = .5 * (config.velocity + config.currentVelocity) * a;
-            config.distance = parseInt(b - config.startPosition), config.velocity > 0 ? config.distance = config.distance > 0 ? config.distance : 0 : config.velocity < 0 && (config.distance = config.distance < 0 ? config.distance : 0), config.startPosition = b, o(config.distance) || q(config.distance) ? cancelAnimationFrame() : (l(config.distance), config.animation = requestAnimationFrame(n))
-        } else cancelAnimationFrame()
-    }
-
-    function o() {
-        if (0 === viewDatas.length)return !0;
-        var a = i(viewDatas);
-        return y === _this.adaptor.getCount() - 1 && h(a) === G ? !0 : !1
-    }
-
-    function p(a, b) {
-        return a > 0 && q(0) ? (b === !0 && D === !1 && _this.topListener && _this.topListener(), !0) : 0 > a & o(0) ? (b === !0 && E === !1 && _this.bottomListener && _this.bottomListener(), !0) : !1
-    }
-
-    function q() {
-        if (0 === viewDatas.length)return !0;
-        var a = viewDatas[0];
-        return 0 == firstPosition && a.offsetTop === F ? !0 : !1
+        touchData.endTime = Date.now();
+        var touchTime = touchData.endTime - touchData.startTime;
+        if (touchData.currentVelocity * touchData.velocity > 0) {
+            touchData.currentVelocity = touchData.velocity + touchData.accelerated * touchTime;
+            var b = .5 * (touchData.velocity + touchData.currentVelocity) * touchTime;
+            touchData.distance = parseInt(b - touchData.startPosition),
+                touchData.velocity > 0 ? touchData.distance = touchData.distance > 0 ? touchData.distance : 0 : touchData.velocity < 0 && (touchData.distance = touchData.distance < 0 ? touchData.distance : 0),
+                touchData.startPosition = b,
+                atListViewBottom(touchData.distance) || atListViewTop(touchData.distance) ? cancelAnimationFrame() : (l(touchData.distance), touchData.animation = requestAnimationFrame(n))
+        } else
+            cancelAnimationFrame()
     }
 
     function cancelAnimationFrameAndRest() {
-        null != config.animation && (cancelAnimationFrame(config.animation), config.animation = null)
+        null != touchData.animation && (cancelAnimationFrame(touchData.animation), touchData.animation = null)
     }
 
     //初始化
     var listViewContainer = document.createElement("section");
-    listViewContainer.setAttribute("id", resolveValueOfDefault(listViewConfig.id, "list-") + Math.floor(43114 * Math.random())),
-        listViewContainer.style.position = resolveValueOfDefault(listViewConfig.position, "relative");
+    listViewContainer.setAttribute("id", resolveValueOfDefault(listViewConfig.id, "list-") + Math.floor(43114 * Math.random()));
+    listViewContainer.style.position = resolveValueOfDefault(listViewConfig.position, "relative");
     listViewContainer.style.height = resolveValueOfDefault(listViewConfig.height, "100px");
     listViewContainer.style.width = resolveValueOfDefault(listViewConfig.width, "100px");
     listViewContainer.style.overflow = "hidden";
@@ -191,41 +209,53 @@ function JsListView(listViewConfig, parentContainer) {
 
     var _this = this,
         offsetHeight = listViewContainer.offsetHeight,
-        v = {},
+        viewMap = {},
         viewDatas = [],
         firstPosition = 0,
-        y = 0;
+        y = 0;//bottom?
 
-    this.refreshView = function (a) {
-        if ("undefined" != typeof a)
-            a >= firstPosition && y >= a && _this.adaptor.renderView(viewDatas[a - firstPosition], a);
-        else
-            for (var b = 0; b < viewDatas.length; b++)
-                _this.adaptor.renderView(viewDatas[b], firstPosition + b)
+    /**
+     * 刷新
+     * @param position 要刷新的位置
+     */
+    this.refreshView = function (position) {
+        if ("undefined" != typeof position) {
+            if (position >= firstPosition && y >= position) {
+                _this.adaptor.renderView(viewDatas[position - firstPosition], position);
+            } else {
+                for (var i = 0; i < viewDatas.length; i++) {
+                    _this.adaptor.renderView(viewDatas[i], firstPosition + i)
+                }
+            }
+        }
     };
 
+    /**
+     * 设置Adapter
+     * @param adapterToSet
+     */
     this.setAdaptor = function (adapterToSet) {
-        function initListView(position) {
+        function initListView(positionInfo) {
             var view,
                 count = adapterToSet.getCount();
-            if (position) {
-                var h = position.top;
-                firstPosition = position.firstPosition
+            if (positionInfo) {
+                var top = positionInfo.top;
+                firstPosition = positionInfo.firstPosition;
             } else {
                 var positionInfo = getPositionInfo(),
                     top = positionInfo.top;
                 firstPosition = positionInfo.firstPosition
             }
-            for (var index = firstPosition; offsetHeight > top && count > index;) {
+            for (var index = firstPosition; top < offsetHeight && index < count;) {
                 if (view = getView(index)
-                        || f(adapterToSet.getViewType(index))) {
-                    adapterToSet.renderView(view, index),
-                        listViewContainer.appendChild(view),
-                        view.style.position = "absolute",
-                        view.style.top = top + "px",
-                        top += view.offsetHeight,
-                        viewDatas.push(view),
-                        index++;
+                        || getViewByViewType(adapterToSet.getViewType(index))) {
+                    adapterToSet.renderView(view, index);
+                    listViewContainer.appendChild(view);
+                    view.style.position = "absolute";
+                    view.style.top = top + "px";
+                    top += view.offsetHeight;
+                    viewDatas.push(view);
+                    index++;
                 }
             }
             y = firstPosition + viewDatas.length - 1
@@ -235,11 +265,11 @@ function JsListView(listViewConfig, parentContainer) {
         adapterToSet.notifyDataSetChanged = function (ifReset) {
             if (0 === viewDatas.length || ifReset === !0) {
                 viewDatas = [];
-                v = {};
+                viewMap = {};
                 listViewContainer.innerHTML = "";
                 initListView();
             }
-            l(-1e-10)
+            l(-1e-10);
         };
         _this._initListView = initListView;
         initListView();
@@ -249,7 +279,7 @@ function JsListView(listViewConfig, parentContainer) {
         cancelAnimationFrameAndRest();
         for (var i = 0; i < viewDatas.length; i++) {
             viewDatas[i].style.top = G + "px";
-            d(viewDatas[i]);
+            addView(viewDatas[i]);
         }
         viewDatas = [];
         _this._initListView({top: 0, firstPosition: firstPosition})
@@ -299,44 +329,120 @@ function JsListView(listViewConfig, parentContainer) {
         _this.adaptor.notifyDataSetChanged();
     };
     this.css = function (property, value) {
-        return "undefined" == typeof value ?
-            listViewContainer[property]
-            :
-            listViewContainer.style[property] = value
+        return "undefined" == typeof value ? listViewContainer[property] : listViewContainer.style[property] = value;
     };
 
-    var B,
-        C,
-        D = !1,
-        E = !1;
+    var touchPageX,
+        touchPageY,
+        NotTriggerTopListener = !1,
+        NotTriggerBottoemListener = !1;
+
     listViewContainer.addEventListener("touchstart", function (event) {
-        var b = event.touches[0];
-        C = b.pageY,
-            B = b.pageX,
-        null != config.animation && event.stopPropagation(),
-            cancelAnimationFrameAndRest(),
-            config._touchStart(),
-            D = !1,
-            E = !1
+        var touch = event.touches[0];
+        touchPageY = touch.pageY;
+        touchPageX = touch.pageX;
+        if (null != touchData.animation) {
+            event.stopPropagation();
+            cancelAnimationFrameAndRest();
+            touchData._touchStart();
+            NotTriggerTopListener = !1;
+            NotTriggerBottoemListener = !1;
+        }
     }, !0);
-    listViewContainer.addEventListener("touchmove", handleTouchMoveEvent, !1);
+
+    /**
+     * 判断是否达到ListView顶部或底部
+     * @param distance touch Y方向的位移
+     * @param triggerEvent 是否出发顶部、底部事件
+     * @returns {boolean}
+     */
+    function ifReachTopOrBottom(distance, triggerEvent) {
+        if (distance > 0 && atListViewTop(0)) {
+            if (triggerEvent === !0 && NotTriggerTopListener === !1) {
+                _this.topListener && _this.topListener();
+            }
+            return !0;
+        } else if (0 > distance && atListViewBottom(0)) {
+            if (triggerEvent === !0 && NotTriggerBottoemListener === !1) {
+                _this.bottomListener && _this.bottomListener();
+            }
+            return !0;
+        } else {
+            return !1;
+        }
+    }
+
+    /**
+     * 判断是否到达ListView顶部
+     * @returns {boolean}
+     */
+    function atListViewTop() {
+        if (0 === viewDatas.length) {
+            return !0;
+        }
+        var firstView = viewDatas[0];
+        return 0 == firstPosition && firstView.offsetTop === F ? !0 : !1
+    }
+
+    /**
+     * 判断是否到达ListView底部
+     * @returns {boolean}
+     */
+    function atListViewBottom() {
+        if (0 === viewDatas.length) {
+            return !0;
+        }
+        var lastView = pop(viewDatas);
+        return y === _this.adaptor.getCount() - 1 && h(lastView) === G ? !0 : !1
+    }
+
+    listViewContainer.addEventListener("touchmove", function (event) {
+        var touch = event.touches[0],
+            yMoveDistance = parseInt(touch.pageY - touchPageY),
+            xMoveDistance = parseInt(touch.pageX - touchPageX);
+        if (!(window.navigator.userAgent.match(/iphone os 7/gi) && xMoveDistance > 0 && Math.abs(yMoveDistance / xMoveDistance) < .5)) {
+            if (touchData.distance = yMoveDistance, ifReachTopOrBottom(yMoveDistance, !1)) {
+                return void(touchData.distance < 0 && event.preventDefault());
+            }
+            event.preventDefault();
+            touchPageY = touch.pageY;
+            touchPageX = touch.pageX;
+            touchData._touchMove(yMoveDistance);
+            l(yMoveDistance)
+        }
+    }, !1);
+
     var F = 0,
         G = F + listViewContainer.offsetHeight,
         H = 0;
     listViewContainer.addEventListener("touchend", function () {
-        if (!p(config.distance, !0)) {
-            if (config.upTime < config.moveTime) {
-                var a = config.upTime;
-                config.upTime = config.moveTime, config.moveTime = a
+        if (!ifReachTopOrBottom(touchData.distance, !0)) {
+            if (touchData.upTime < touchData.moveTime) {
+                var upTime = touchData.upTime;
+                touchData.upTime = touchData.moveTime;
+                touchData.moveTime = upTime
             }
-            if (config.velocity = config.distance / (config.upTime - config.moveTime), Math.abs(config.velocity) > config.velocityMinBase) {
-                config.accelerated = config.velocity > 0 ? -config.flingAccelerated : config.flingAccelerated;
-                var b = config.velocity + config.accelerated * (Date.now() - config.upTime) * config.timeFade;
-                config.velocity = b * config.velocity <= 0 ? 0 : b
+            if (touchData.velocity = touchData.distance / (touchData.upTime - touchData.moveTime), Math.abs(touchData.velocity) > touchData.velocityMinBase) {
+                touchData.accelerated = touchData.velocity > 0 ? -touchData.flingAccelerated : touchData.flingAccelerated;
+                var b = touchData.velocity + touchData.accelerated * (Date.now() - touchData.upTime) * touchData.timeFade;
+                touchData.velocity = b * touchData.velocity <= 0 ? 0 : b
             }
-            config.velocity = config.velocity / config.velocityFactor, Math.abs(config.velocity) < config.velocityMinBase || config.distance && 0 !== config.velocity && (config.velocity > config.velocityMaxBase ? config.velocity = config.velocityMaxBase : config.velocity < -config.velocityMaxBase && (config.velocity = -config.velocityMaxBase), config.currentVelocity = config.velocity, config.startTime = config.upTime, config.startPosition = 0, config.accelerated = config.velocity > 0 ? -config.flingAccelerated : config.flingAccelerated, config.animation = requestAnimationFrame(n))
+            touchData.velocity = touchData.velocity / touchData.velocityFactor,
+            Math.abs(touchData.velocity) < touchData.velocityMinBase || touchData.distance
+            && 0 !== touchData.velocity
+            && (touchData.velocity > touchData.velocityMaxBase ?
+                touchData.velocity = touchData.velocityMaxBase
+                :
+            touchData.velocity < -touchData.velocityMaxBase
+            && (touchData.velocity = -touchData.velocityMaxBase),
+                touchData.currentVelocity = touchData.velocity,
+                touchData.startTime = touchData.upTime,
+                touchData.startPosition = 0,
+                touchData.accelerated = touchData.velocity > 0 ? -touchData.flingAccelerated : touchData.flingAccelerated,
+                touchData.animation = requestAnimationFrame(n))
         }
     }, !1);
+
     var requestAnimationFrame = function () {
         return window.requestAnimationFrame
             || window.webkitRequestAnimationFrame
@@ -359,7 +465,7 @@ function JsListView(listViewConfig, parentContainer) {
             || clearTimeout
     }();
 
-    var config = {
+    var touchData = {
         velocity: 0,
         moveTime: 0,
         upTime: 6e4,
@@ -376,17 +482,17 @@ function JsListView(listViewConfig, parentContainer) {
         velocityMinBase: null !== window.navigator.userAgent.match(/iphone/gi) ? .2 : .2,
         flingAccelerated: null !== window.navigator.userAgent.match(/iphone/gi) ? .001 : .001,
         velocityFactor: null !== window.navigator.userAgent.match(/iphone/gi) ? 1.5 : 1.5,
-        _touchMove: function (a) {
-            config.distance = a,
-                0 === config.count ?
-                    (config.moveTime = Date.now(), config.count++)
-                    :
-                    (config.upTime = Date.now(), config.count = 0)
-        },
         _touchStart: function () {
-            config.count = 0,
-                config.moveTime = Date.now(),
-                config.count++
+            touchData.count = 0;
+            touchData.moveTime = Date.now();
+            touchData.count++;
+        },
+        _touchMove: function (yMoveDistance) {
+            touchData.distance = yMoveDistance,
+                0 === touchData.count ?
+                    (touchData.moveTime = Date.now(), touchData.count++)
+                    :
+                    (touchData.upTime = Date.now(), touchData.count = 0)
         }
     }
 }

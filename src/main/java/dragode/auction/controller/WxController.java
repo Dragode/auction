@@ -58,7 +58,9 @@ public class WxController {
 
         //TODO 校验是否为微信的请求
 
-        return request.getParameter("echostr");
+        String echoStr = request.getParameter("echostr");
+        logger.info("echostr=" + echoStr);
+        return echoStr;
     }
 
     /**
