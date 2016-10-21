@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -58,9 +57,9 @@ public class WxController {
 
         //TODO 校验是否为微信的请求
 
-        String echoStr = request.getParameter("echostr");
-        logger.info("echostr=" + echoStr);
-        return echoStr;
+        String echostr = request.getParameter("echostr");
+        logger.info("echostr=" + echostr);
+        return echostr;
     }
 
     /**
