@@ -75,6 +75,7 @@ public class WxController {
 
         //TODO 校验是否为微信的请求
 
+
         String postBody = HttpRequestUtils.retrievePostBody(request);
         logger.info("[postBody = " + postBody + "]");
 
