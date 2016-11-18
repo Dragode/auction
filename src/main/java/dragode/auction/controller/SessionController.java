@@ -174,9 +174,8 @@ public class SessionController {
         String html = SignService.createAutoFormHtml(requestFrontUrl, submitFromData,Constants.encoding_UTF8);   //生成自动跳转的Html表单
 
         logger.info("打印请求HTML，此为请求报文，为联调排查问题的依据："+html);
-        String generateHtml = "";
         try {
-            response.getWriter().print(generateHtml);
+            response.getWriter().print(html);
         } catch (IOException e) {
             e.printStackTrace();
         }
