@@ -49,7 +49,7 @@
           <element id="library" level="project" name="Maven: jaxen:jaxen:1.1.6" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.4" />
           <element id="library" level="project" name="Maven: apache-codec:commons-codec:1.2" />
-          <element id="library" level="project" name="Maven: bouncycastle:bouncycastle-jce-jdk13:112" />
+          <element id="library" level="project" name="Maven: org.bouncycastle:bcprov-jdk16:1.45" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -142,9 +142,9 @@
         </dependency>
 
         <dependency>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bouncycastle-jce-jdk13</artifactId>
-            <version>112</version>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.45</version>
         </dependency>
     </dependencies>
 
