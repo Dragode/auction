@@ -2,27 +2,45 @@
 <html>
 
 <head>
-    <title>所有专场</title>
+    <title>首页</title>
     <meta charset='utf-8'>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0,
-           user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+          content="width=device-width, initial-scale=1.0,user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
-    <meta name="data-spm" content="a2129"/><!--TODO 这是什么-->
     <script type="text/javascript" src="/js/common/sea.js"></script>
-    <script type="text/javascript" src="/js/package.js"></script>
-    <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
+    <!--<script type="text/javascript" src="/js/package.js"></script>-->
+    <script type="text/javascript" src="/js/common/zepto.1.0.4.js" replace="LIB:zepto"></script>
     <script type="text/javascript" src="/js/common/touch.js"></script>
-    <script type="text/javascript" src="/js/bridge-api.js"></script>
+    <!--<script type="text/javascript" src="/js/bridge-api.js"></script>-->
     <link rel="stylesheet" type="text/css" href="/css/pmp.css">
 </head>
 
-<body data-spm="7389565">
-
 <!--主容器-->
 <section id="fframe_container">
-
 </section>
+
+<!--首页专场-->
+<script type="text/plain" id="bannerTemplate">
+     <section class="banner">
+        <img src="<%=item.bannerUrl%>" >
+     </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
 
 <!--专场模板-->
 <script type="text/html" id="listCellTemplate">
@@ -97,25 +115,24 @@
 </script>
 
 </body>
-<script type="text/javascript">
 
-    //var config_ = config('0.5.705', {debug: false, base: '../../'});
+<script type="text/javascript">
     //先配置版本
-    seajs.config({base: '/js/'});//TODO 为什么不行
+    //seajs.config({base: '../js/'});//TODO 为什么不行
     //引入资源文件
     var imports = [];
     <!---js对应的路径-->
-    imports.push('/js/config.js');
+    //imports.push('/js/config.js');
     imports.push('/js/utils.js');
     imports.push('/js/ListView.js');
     imports.push('/js/template.js');
     imports.push('/js/iscroll5.js');
     imports.push('/js/timeHelper.js');
+    imports.push('/js/DateExt.js');
+    imports.push('/js/DateUtil.js');
+    imports.push('/js/StringExt.js');
+    imports.push('/js/StringUtil.js');
     imports.push('/js/sellerAdapter.js');
-    imports.push('/js/DateUtil.min.js');
-    imports.push('/js/StringUtil.min.js');
-    imports.push('/js/StringExt.min.js');
-    imports.push('/js/DateExt.min.js');
     //开始引入资源文件
     seajs.use(imports, function () {
         seajs.use('/js/SellerSessions.js', function (home) {

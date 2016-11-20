@@ -9,8 +9,9 @@
                 }, Zepto("#fframe_container")[0]
             );
             sellerSessionAdapter = new SellerSessionAdapter([], {
-                cell: createDiv("cell"),
-                tip: createDiv("tips")
+                    cell: createDiv("cell"),
+                    tip: createDiv("tips"),
+                    banner: createDiv("banner")
                 }
             );
             window.sellerSessionAdapter = sellerSessionAdapter;
@@ -25,22 +26,28 @@
         }
 
         function getAndRenderItems() {
-            $.getJSON('/getSessions', function (response) {
-                //TODO 处理异常情况
-                Zepto().toastUtil.dismissLoading();
-                var itemsToShow = handleResponse(response);
-                sellerSessionAdapter.addList(itemsToShow);
-                sellerSessionAdapter.notifyDataSetChanged();
-                Zepto().toastUtil.dismissLoading();
-
+            Zepto().toastUtil.dismissLoading();
+            $.getJSON('/getHomePage', function (response) {
+                homePageSession = response;
+                homePageSession.showtype = "banner";
+                $.getJSON('/getSessions', function (response) {
+                    //TODO 处理异常情况
+                    var itemsToShow = handleResponse(response);
+                    sellerSessionAdapter.addList(itemsToShow);
+                    sellerSessionAdapter.notifyDataSetChanged();
+                });
             });
+            Zepto().toastUtil.dismissLoading();
         }
 
+        /*status 0	needStart	0	goldenColor
+         status 1	needStart	0	redColor
+         status 1	needStart	1	grayColor*/
         function handleResponse(response) {
-            /*status 0	needStart	0	goldenColor
-            status 1	needStart	0	redColor
-            status 1	needStart	1	grayColor*/
+
             var itemsToShow = [];
+            itemsToShow.push(homePageSession);
+
             //TODO 为什么Zepto().each不行
             for (var i = 0; i < response.items.length; i++) {
                 var itemToShow = response.items[i];
@@ -74,6 +81,7 @@
             windowWidth = (window.location, Zepto(window).width()),
             pageNum = 1,
             pageSize = 20,
-            nextPage = !1;
+            nextPage = !1,
+            homePageSession;
     })
 }(Zepto, window);
