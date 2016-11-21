@@ -42,8 +42,13 @@ function SellerSessionAdapter(datas, viewList) {
                     cell = getCellOfTitle(data.date);
                     $(viewCell).empty().append(cell);
                     return void(viewCell.tag = index);
+                }else if ("banner" == data.showtype){
+                    cell = getCellByTemplateTom("bannerTemplate", data);
+                }else {
+                    cell = getCellByTemplateTom("listCellTemplate", data);
                 }
-                cell = getCellByTemplateTom("listCellTemplate", data);
+
+
                 if (null != viewCell) {
                     $(viewCell).empty().append(cell);
                 } else {
@@ -87,11 +92,14 @@ function SellerSessionAdapter(datas, viewList) {
         this.viewList = viewList,
         this.viewList.cell.viewType = "cell",
         this.viewList.tip.viewType = "tip",
+        this.viewList.banner.viewType = "banner",
         this.getViewType = function (index) {
             var data = this.mData[index];
             if (void 0 != data.showtype && "tip" == data.showtype) {
                 return this.viewList.tip.viewType
-            } else {
+            } else if (void 0 != data.showtype && "banner" == data.showtype){
+                return this.viewList.banner.viewType
+            }else {
                 return this.viewList.cell.viewType
             }
         }

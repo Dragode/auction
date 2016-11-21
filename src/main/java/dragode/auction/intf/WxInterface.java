@@ -2,55 +2,58 @@ package dragode.auction.intf;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.joda.time.DateTime;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ******************************************
- * <p/>
- * Copyright 2016
- * NetDragon All rights reserved
- * <p/>
- * *****************************************
- * <p/>
- * *** Company ***
- * NetDragon
- * <p/>
- * *****************************************
- * <p/>
- * *** Team ***
- * SmartQ
- * <p/>
- * *****************************************
- *
- * @author 俞建龙(300116)
- * @version V1.0
- * @Title WxInterface
- * @Package dragode.auction.intf
- * <p/>
- * *****************************************
- * @Description
- * @date 2016/9/1 0001
+ * 微信接口
  */
 public class WxInterface {
 
     private static String APP_ID = "wxcecf87b6a40bda8f";
     private static String SECRET = "14adfbebbc1fed16333271190309856b";
+    private static String WX_HOST = "https://api.weixin.qq.com";
+
     private static RestTemplate restTemplate = new RestTemplate();
+
+    /**
+     * access_token
+     */
+    private static String access_token;
+    /**
+     * access_token上次刷新时间
+     */
+    private static Date tokenLastFreshTime;
+    /**
+     * access_token过期时间间隔
+     * 2小时（7200000） - 网络延迟100秒（200000），等于7000000
+     */
+    private static long TOKEN_FRESH_INTERVAL = 7000000l;
 
     /**
      * 获取AccessToken
      *
      * @return AccessToken
      */
-    //TODO 自动刷新
     public static String getAccessToken() {
-        String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
-        String response = restTemplate.getForObject(accessTokenUrl, String.class, APP_ID, SECRET);
-        JSONObject jsonObjectResponse = convertToJsonObject(response);
-        return jsonObjectResponse.getString("access_token");
+        Date now = new Date();
+        //未获取access_token，或access_token获取，则重新获取access_token
+        if (StringUtils.isEmpty(access_token)
+                || null == tokenLastFreshTime
+                || tokenLastFreshTime.getTime() - now.getTime() > TOKEN_FRESH_INTERVAL) {
+            String accessTokenUrl = WX_HOST + "/cgi-bin/access_token?grant_type=client_credential&appid={appid}&secret={secret}";
+            String response = restTemplate.getForObject(accessTokenUrl, String.class, APP_ID, SECRET);
+            JSONObject jsonObjectResponse = convertToJsonObject(response);
+            //TODO 异常处理
+            access_token = jsonObjectResponse.getString("access_token");
+            tokenLastFreshTime = now;
+        }
+        return access_token;
     }
 
     /**
@@ -60,7 +63,7 @@ public class WxInterface {
      * @return AccessToken
      */
     public static JSONObject getOAuthAccessToken(String code) {
-        String accessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
+        String accessTokenUrl = WX_HOST + "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
         HashMap<Object, String> requestParams = new HashMap<>();
         requestParams.put("appid", APP_ID);
         requestParams.put("secret", SECRET);
@@ -80,7 +83,7 @@ public class WxInterface {
      */
     public static void sendTemplateMessage(String templateId, String openId, String topColor, String url,
                                            Map<String, TemplateMessage.DataItem> params) {
-        String templateMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={accessToken}";
+        String templateMessageUrl = WX_HOST + "/cgi-bin/message/template/send?access_token={accessToken}";
 
         TemplateMessage templateMessage = new TemplateMessage();
         templateMessage.setTouser(openId);
@@ -104,7 +107,11 @@ public class WxInterface {
     }
 
     public static void main(String[] args) {
-        String accessToken = getAccessToken();
-        System.out.println(accessToken);
+       /* String accessToken = getAccessToken();
+        System.out.println(accessToken);*/
+        DateTime dateTime = new DateTime(2016, 10, 1, 8, 0);
+        DateTime dateTime2 = new DateTime(2016, 10, 1, 10, 0);
+        long interval = dateTime2.toDate().getTime() - dateTime.toDate().getTime();
+        System.out.println(interval);
     }
 }

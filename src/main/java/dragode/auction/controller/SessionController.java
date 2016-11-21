@@ -30,6 +30,8 @@ public class SessionController {
     private static Logger logger = LoggerFactory.getLogger(SessionController.class);
 
     @Resource
+    private HomePageRepository homePageRepository;
+    @Resource
     private SessionRepository sessionRepository;
     @Resource
     private SessionReminderRepository sessionReminderRepository;
@@ -39,6 +41,13 @@ public class SessionController {
     private GoodsRepository goodsRepository;
     @Resource
     private GoodsPicturesRepository goodsPicturesRepository;
+
+    @RequestMapping(path = "/getHomePage")
+    public Session getHomePage() {
+        HomePage homePage = homePageRepository.findAll().get(0);
+        Session homePageSession = sessionRepository.findOne(homePage.getSessionId());
+        return homePageSession;
+    }
 
     /**
      * 获取所有拍卖专场
@@ -128,7 +137,7 @@ public class SessionController {
 
     @RequestMapping(path = "/signUpSession")
     public void signUpSession(@RequestParam Integer userId,
-                              @RequestParam String sessionId){
+                              @RequestParam String sessionId) {
         User user = userRepository.findOne(userId);
     }
 
