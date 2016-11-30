@@ -47,14 +47,14 @@ public class TaskService {
 
     @Scheduled(fixedDelay = 1000)
     public void checkUserToRemind() {
-        List<SessionReminder> all = sessionReminderRepository.findAllByStatus(SessionReminder.WAIT_FOR_REMIND);
+        /*List<SessionReminder> all = sessionReminderRepository.findAllByStatus(SessionReminder.WAIT_FOR_REMIND);
         Date now = new Date();
         long nowTime = now.getTime();
         for (SessionReminder sessionReminder : all) {
             if (sessionReminder.getSessionStartTime().getTime() - nowTime >= 0) {
                 remindUser(sessionReminder);
             }
-        }
+        }*/
     }
 
     //TODO 异步执行
