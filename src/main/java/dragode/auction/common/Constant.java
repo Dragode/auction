@@ -3,9 +3,10 @@ package dragode.auction.common;
 import dragode.auction.utils.constantUtil.LoadProperties;
 
 import static dragode.auction.utils.FileUtils.getAbsolutePath;
+import static dragode.auction.utils.constantUtil.ConstantUtil.getAsInteger;
 import static dragode.auction.utils.constantUtil.ConstantUtil.getAsString;
 
-@LoadProperties(files = {"/payment.properties"})
+@LoadProperties(files = {"/payment.properties", "/qCloudSms.properties"})
 public class Constant {
 
     public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss";
@@ -26,7 +27,9 @@ public class Constant {
     /**
      * 银联支付证书相关
      */
-    /** 证书使用模式(单证书/多证书) */
+    /**
+     * 证书使用模式(单证书/多证书)
+     */
     public static final Boolean SINGLE_MODE = true;
     public static final String CER_RELATIVE_PATH = "/certs";
     public static final String CER_ABSOLUTE_PATH = getAbsolutePath(CER_RELATIVE_PATH);
@@ -37,4 +40,12 @@ public class Constant {
     public static final String CER_ENCRYPT_TRACK_KEY_MODULUS = "";
     public static final String CER_ENCRYPT_TRACK_KEY_EXPONENT = "";
     public static final String CER_VALIDATE_DIR = CER_ABSOLUTE_PATH;
+
+    /**
+     * 腾讯云短信接口参数
+     */
+    public static final String QC_SMS_URL = getAsString("QC_SMS_URL");
+    public static final Integer QC_SMS_SDK_APP_ID = getAsInteger("QC_SMS_SDK_APP_ID");
+    public static final String QC_SMS_APP_KEY = getAsString("QC_SMS_APP_KEY");
+    public static final Integer QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID = getAsInteger("QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID");
 }

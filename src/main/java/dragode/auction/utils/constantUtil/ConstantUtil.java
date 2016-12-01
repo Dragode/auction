@@ -77,4 +77,14 @@ public class ConstantUtil {
         }
         return null;
     }
+
+    public static Integer getAsInteger(String key) {
+        loadProperties();
+
+        final Object value = props.get(key);
+        if (value != null) {
+            return Integer.parseInt(value.toString());
+        }
+        return null;
+    }
 }

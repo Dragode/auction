@@ -1,131 +1,56 @@
 package dragode.auction.service.Impl;
 
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import dragode.auction.intf.QCloudSmsInterface;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
+import java.util.List;
 
+import static dragode.auction.common.Constant.*;
+import static dragode.auction.intf.QCloudSmsInterface.SmsType;
+
+@Service
 public class TxSmsService {
 
-    public static void main(String[] args) {
-        // 下面的 sdkappid 和 appkey 都是无法使用，开放者实际发送短信时请使用申请的 sdkappid 和 appkey
-        SmsMultiSender sender = new SmsMultiSender(1400019575, "e74a8f29c22eb931336bcecf65077dab");
+    private QCloudSmsInterface qCloudSmsIntf = null;
 
-        ArrayList<String> phoneNumbers = new ArrayList<>();
-        // 下列手机号码均不存在，请替换成实际存在的
-        phoneNumbers.add("18750916516");
+    private static String CHINA_NATION_CODE = "86";
+    private static Integer VERIFICATION_CODE_SMS_TEMPLATE_ID = QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID;
 
-        // 请确保签名和模板审核通过
-        sender.sendMsg("86", phoneNumbers, "验证码 1234");
+    public TxSmsService() {
+        qCloudSmsIntf = new QCloudSmsInterface(QC_SMS_SDK_APP_ID, QC_SMS_APP_KEY);
+    }
+
+    /**
+     * 发送验证码短信
+     *
+     * @param phoneNumber 接收验证码的手机号
+     */
+    public Boolean sendVerificationCodeSms(String phoneNumber) {
+        return sendVerificationCodeSms(Arrays.asList(phoneNumber));
+    }
+
+    /**
+     * 群发发送验证码短信
+     *
+     * @param phoneNumbers 接收验证码的手机号列表
+     */
+    public Boolean sendVerificationCodeSms(List<String> phoneNumbers) {
+        String response = qCloudSmsIntf.sendMsgByTemplate(CHINA_NATION_CODE, phoneNumbers, SmsType.NORMAL,
+                VERIFICATION_CODE_SMS_TEMPLATE_ID, Arrays.asList(generateVerificationCode()));
+        if (StringUtils.isEmpty(response)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private String generateVerificationCode() {
+        return RandomStringUtils.randomNumeric(6);
     }
 }
 
-class SmsMultiSender {
-    Random random = new Random();
-    int sdkappid;
-    String appkey;
-    // 请根据我们的说明文档适时调整 url
-    final String url = "https://yun.tim.qq.com/v3/tlssmssvr/sendmultisms2";
 
-    public SmsMultiSender(int sdkappid, String appkey) {
-        this.sdkappid = sdkappid;
-        this.appkey = appkey;
-    }
-
-    public void sendMsg(String nationCode, ArrayList<String> phoneNumbers, String content) {
-        if (0 == phoneNumbers.size()) {
-            return;
-        }
-
-        long rnd = random.nextInt(999999) % (999999 - 100000 + 1) + 100000;
-        String wholeUrl = String.format("%s?sdkappid=%d&random=%d", url, sdkappid, rnd);
-        try {
-            URL object = new URL(wholeUrl);
-            HttpURLConnection con = (HttpURLConnection) object.openConnection();
-            con.setDoOutput(true);
-            con.setDoInput(true);
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("Accept", "application/json");
-            con.setRequestMethod("POST");
-            JSONObject data = new JSONObject();
-
-            JSONArray tel = new JSONArray();
-
-            int i = 0;
-            do {
-                JSONObject telElement = new JSONObject();
-                telElement.put("nationcode", nationCode);
-                telElement.put("phone", phoneNumbers.get(i));
-                tel.add(telElement);
-            } while (++i < phoneNumbers.size());
-
-            data.put("tel", tel);
-            data.put("type", "0");
-            //data.put("msg", content);
-            data.put("tpl_id", 5681);
-            data.put("params", Arrays.asList("123"));
-
-            String sig = calculateSig(appkey, phoneNumbers);
-            data.put("sig", sig);
-            OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream(), "utf-8");
-            wr.write(data.toString());
-            wr.flush();
-
-            System.out.println(data.toString());
-
-            // 显示 POST 请求返回的内容
-            StringBuilder sb = new StringBuilder();
-            int HttpResult = con.getResponseCode();
-            if (HttpResult == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                br.close();
-                System.out.println("" + sb.toString());
-            } else {
-                System.out.println(con.getResponseMessage());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String calculateSig(String appkey, ArrayList<String> phoneNumbers) throws NoSuchAlgorithmException {
-        String phoneNumbersString = phoneNumbers.get(0);
-        for (int i = 1; i < phoneNumbers.size(); i++) {
-            phoneNumbersString += "," + phoneNumbers.get(i);
-        }
-        return stringMD5(appkey.concat(phoneNumbersString));
-    }
-
-    private static String stringMD5(String input) throws NoSuchAlgorithmException {
-        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-        byte[] inputByteArray = input.getBytes();
-        messageDigest.update(inputByteArray);
-        byte[] resultByteArray = messageDigest.digest();
-        return byteArrayToHex(resultByteArray);
-    }
-
-    private static String byteArrayToHex(byte[] byteArray) {
-        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] resultCharArray = new char[byteArray.length * 2];
-        int index = 0;
-        for (byte b : byteArray) {
-            resultCharArray[index++] = hexDigits[b >>> 4 & 0xf];
-            resultCharArray[index++] = hexDigits[b & 0xf];
-        }
-        return new String(resultCharArray);
-    }
-}
