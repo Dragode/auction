@@ -1,4 +1,4 @@
-package dragode.auction.intf;
+package dragode.wechat.intf;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class WxInterface {
 
+    //TODO 改到配置文件
     private static String APP_ID = "wxcecf87b6a40bda8f";
     private static String SECRET = "14adfbebbc1fed16333271190309856b";
     private static String WX_HOST = "https://api.weixin.qq.com";

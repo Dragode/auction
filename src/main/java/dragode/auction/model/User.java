@@ -6,31 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * ******************************************
- * <p/>
- * Copyright 2016
- * NetDragon All rights reserved
- * <p/>
- * *****************************************
- * <p/>
- * *** Company ***
- * NetDragon
- * <p/>
- * *****************************************
- * <p/>
- * *** Team ***
- * SmartQ
- * <p/>
- * *****************************************
  *
- * @author 俞建龙(300116)
- * @version V1.0
- * @Title User
- * @Package dragode.auction.model
- * <p/>
- * *****************************************
- * @Description
- * @date 2016/9/5 0005
  */
 @Entity
 @Table(name = "user")

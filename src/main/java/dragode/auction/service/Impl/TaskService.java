@@ -1,16 +1,14 @@
 package dragode.auction.service.Impl;
 
-import dragode.auction.intf.TemplateMessage;
-import dragode.auction.intf.WxInterface;
+import dragode.wechat.intf.TemplateMessage;
+import dragode.wechat.intf.WxInterface;
 import dragode.auction.model.SessionReminder;
 import dragode.auction.repository.SessionReminderRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * ******************************************

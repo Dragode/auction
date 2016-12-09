@@ -1,33 +1,9 @@
-package dragode.auction.intf;
+package dragode.wechat.intf;
 
 import java.util.Map;
 
 /**
- * ******************************************
- * <p/>
- * Copyright 2016
- * NetDragon All rights reserved
- * <p/>
- * *****************************************
- * <p/>
- * *** Company ***
- * NetDragon
- * <p/>
- * *****************************************
- * <p/>
- * *** Team ***
- * SmartQ
- * <p/>
- * *****************************************
- *
- * @author 俞建龙(300116)
- * @version V1.0
- * @Title TemplateMessage
- * @Package dragode.auction.intf
- * <p/>
- * *****************************************
- * @Description
- * @date 2016/9/1 0001
+ * 微信模板消息POJO
  */
 public class TemplateMessage {
     /**
@@ -94,7 +70,7 @@ public class TemplateMessage {
     /**
      * 模板消息数据项
      */
-    public static class DataItem{
+    public static class DataItem {
         /**
          * 数值值
          */

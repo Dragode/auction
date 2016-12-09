@@ -21,7 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "dragode.auction")
+@ComponentScan(basePackages = "dragode")
 @EnableScheduling
 public class WebConfig extends WebMvcConfigurerAdapter {
 
