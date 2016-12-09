@@ -100,6 +100,10 @@ public class WxService {
         return "";
     }
 
+    public void oauth2(String code,String state){
+
+    }
+
     /**
      * 微信接口校验模式
      */

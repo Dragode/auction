@@ -2,6 +2,7 @@ package dragode.wechat.intf;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import dragode.wechat.intf.response.OAuthAccessToken;
 import org.joda.time.DateTime;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -16,9 +17,11 @@ import java.util.Map;
 public class WxInterface {
 
     //TODO 改到配置文件
-    private static String APP_ID = "wxcecf87b6a40bda8f";
-    private static String SECRET = "14adfbebbc1fed16333271190309856b";
-    private static String WX_HOST = "https://api.weixin.qq.com";
+    private static final String APP_ID = "wxcecf87b6a40bda8f";
+    private static final String SECRET = "14adfbebbc1fed16333271190309856b";
+    private static final String WX_HOST = "https://api.weixin.qq.com";
+    private static final String ACCESS_TOKE_NURL = "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
+
 
     private static RestTemplate restTemplate = new RestTemplate();
 
@@ -27,9 +30,17 @@ public class WxInterface {
      */
     private static String access_token;
     /**
+     * access_token
+     */
+    private static String oauth_access_token;
+    /**
      * access_token上次刷新时间
      */
     private static Date tokenLastFreshTime;
+    /**
+     * oauth_access_token上次刷新时间
+     */
+    private static Date oauthTokenExpiredTime;
     /**
      * access_token过期时间间隔
      * 2小时（7200000） - 网络延迟100秒（200000），等于7000000
@@ -63,14 +74,15 @@ public class WxInterface {
      * @param code code
      * @return AccessToken
      */
-    public static JSONObject getOAuthAccessToken(String code) {
-        String accessTokenUrl = WX_HOST + "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
-        HashMap<Object, String> requestParams = new HashMap<>();
-        requestParams.put("appid", APP_ID);
-        requestParams.put("secret", SECRET);
-        requestParams.put("code", code);
-        String response = restTemplate.getForObject(accessTokenUrl, String.class, APP_ID, SECRET, code);
-        return convertToJsonObject(response);
+    public static String getOAuthAccessToken(String code) {
+        OAuthAccessToken accessToken = restTemplate.getForObject(WX_HOST + ACCESS_TOKE_NURL, OAuthAccessToken.class,
+                APP_ID, SECRET, code);
+        /*JSONObject accessTokenResponse = WxInterface.getOAuthAccessToken(code);
+        if (accessTokenResponse == null
+                || !accessTokenResponse.containsKey("openid")) {
+            throw new RuntimeException("Response does not contains openid.");
+        }*/
+        return accessToken.getAccess_token();
     }
 
     /**

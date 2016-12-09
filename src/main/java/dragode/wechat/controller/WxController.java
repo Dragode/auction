@@ -94,7 +94,7 @@ public class WxController {
             //TODO 用户不同意授权
         }else {
             //用户同意授权
-            String openId = getOpenId(code);
+            String openId = WxInterface.getOAuthAccessToken(code);
             logger.info("openId=" + openId);
             try {
                 response.sendRedirect("/auctionList.html");
@@ -102,21 +102,6 @@ public class WxController {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * 获取openid
-     *
-     * @param code code
-     * @return openid
-     */
-    private String getOpenId(String code) {
-        JSONObject accessTokenResponse = WxInterface.getOAuthAccessToken(code);
-        if (accessTokenResponse == null
-                || !accessTokenResponse.containsKey("openid")) {
-            throw new RuntimeException("Response does not contains openid.");
-        }
-        return accessTokenResponse.getString("openid");
     }
 
     /**
@@ -143,7 +128,7 @@ public class WxController {
     @RequestMapping(path = "/redirectToAuctionList")
     public void redirectToAuctionList(@RequestParam String code,@RequestParam String state,
                                       HttpServletRequest request, HttpServletResponse response) {
-        String openId = getOpenId(code);
+        String openId = WxInterface.getOAuthAccessToken(code);
         User user = userRepository.findByOpenId(openId);
         try {
             response.sendRedirect("/auctionList.html?userId=" + user.getId());
