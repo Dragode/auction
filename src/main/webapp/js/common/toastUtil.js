@@ -50,7 +50,7 @@ var toastUtil = {
                 loadingCore.css("position", "absolute");
                 loadingCore.css("height", "12px");
                 loadingCore.css("width", "30px");
-                loadingCore.css("background", "url(//assets.alicdn.com/mw/base/styles/component/more/images/loading.gif)");
+                loadingCore.css("background", "url(/image/loading.gif)");
                 loadingCore.css("background-repeat", "no-repeat");
                 loadingCore.css("background-position", "center");
                 loadingCore.css("background-size", "cover");
