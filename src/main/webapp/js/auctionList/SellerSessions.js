@@ -1,65 +1,73 @@
-!function (Zepto, window) {
+!function (zepto, window) {
     define(function (require, exports, module) {
         function init() {
-            window.location, window.location.href;
-            Zepto("#fframe_container").css("width", windowWidth + "px");
+            //window.location, window.location.href;
+            zepto("#fframe_container").css("width", windowWidth + "px");
             listView = new JsListView({
                     width: "100%",
                     height: windowHeight + "px"
-                }, Zepto("#fframe_container")[0]
+                }, zepto("#fframe_container")[0]
             );
             sellerSessionAdapter = new SellerSessionAdapter([], {
+                    banner: createDiv("banner"),
                     cell: createDiv("cell"),
-                    tip: createDiv("tips"),
-                    banner: createDiv("banner")
+                    tip: createDiv("tips")
                 }
             );
             window.sellerSessionAdapter = sellerSessionAdapter;
             listView.setAdaptor(sellerSessionAdapter);
             sellerSessionAdapter.setListView(listView);
             listView.topListener = function () {
+                //TODO 添加上拉刷新
             };
             listView.bottomListener = function () {
-                (1 == nextPage || "true" == nextPage) && (pageNum == pageNum++, getAndRenderItems())
+                //TODO 分页添加数据
+                //(1 == hasNextPage || "true" == hasNextPage) && (pageNum == pageNum++, getAndRenderItems())
             };
             getAndRenderItems();
         }
 
         function getAndRenderItems() {
-            Zepto().toastUtil.dismissLoading();
+            zepto().toastUtil.showLoading();
             $.getJSON('/getHomePage', function (response) {
                 homePageSession = response;
                 homePageSession.showtype = "banner";
+                //TODO 分页获取数据
                 $.getJSON('/getSessions', function (response) {
                     //TODO 处理异常情况
-                    var itemsToShow = handleResponse(response);
+                    var itemsToShow = handleResponse(response,homePageSession);
                     sellerSessionAdapter.addList(itemsToShow);
                     sellerSessionAdapter.notifyDataSetChanged();
                 });
             });
-            Zepto().toastUtil.dismissLoading();
+            zepto().toastUtil.dismissLoading();
         }
 
-        /*status 0	needStart	0	goldenColor
-         status 1	needStart	0	redColor
-         status 1	needStart	1	grayColor*/
-        function handleResponse(response) {
+        /**
+         * 处理
+         *
+         * status 0    needStart    0    goldenColor
+         * status 1    needStart    0    redColor
+         * status 1    needStart    1    grayColor
+         * @param response
+         * @returns {Array}
+         */
+        function handleResponse(response,homePageSession) {
 
             var itemsToShow = [];
             itemsToShow.push(homePageSession);
 
-            //TODO 为什么Zepto().each不行
             for (var i = 0; i < response.items.length; i++) {
                 var itemToShow = response.items[i];
                 var now = new Date();
-                var startTime = Zepto().dateUtil.parse(itemToShow.startTime, "yyyy-MM-dd hh:mm:ss");
-                var endTime = Zepto().dateUtil.parse(itemToShow.startTime, "yyyy-MM-dd hh:mm:ss");
+                var startTime = zepto().dateUtil.parse(itemToShow.startTime, "yyyy-MM-dd hh:mm:ss");
+                var endTime = zepto().dateUtil.parse(itemToShow.startTime, "yyyy-MM-dd hh:mm:ss");
                 if (now.getTime() >= startTime.getTime()) {
                     itemToShow.needStart = "0";
-                    itemToShow.showtext = Zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
+                    itemToShow.showtext = zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
                 } else {
                     itemToShow.needStart = "1";
-                    itemToShow.showtext = Zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
+                    itemToShow.showtext = zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
                 }
                 itemToShow.showtype = "data";
                 itemsToShow.push(itemToShow);
@@ -76,12 +84,12 @@
 
         exports.initialize = init;
         var listView = null,
-            windowHeight = Zepto(window).height(),
-            sellerSessionAdapter = null,
-            windowWidth = (window.location, Zepto(window).width()),
-            pageNum = 1,
+            windowWidth = (window.location, zepto(window).width()),
+            windowHeight = zepto(window).height(),
+            sellerSessionAdapter = null;
+            /*pageNum = 1,
             pageSize = 20,
-            nextPage = !1,
-            homePageSession;
+            hasNextPage = !1;*/
+            //homePageSession;
     })
 }(Zepto, window);

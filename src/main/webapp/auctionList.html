@@ -24,22 +24,6 @@
      <section class="banner">
         <img src="<%=item.bannerUrl%>" >
      </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
 
 <!--专场模板-->
@@ -55,15 +39,13 @@
             <section class="countclass">
                 <section class="count">
                     <% if((item.status == 0 ||item.status == '0') && item.needStart != '1' && item.needStart != 1 ){%>
-                <span class="numverclass goldenColor">
-                <%} else if(item.status == 1 ||item.status == '1' ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
-                <span class="numverclass redColor">
-                <%}else{ %>
-                <span class="numverclass grayColor">
-                <%}%>
-
-                <%=item.itemNum%></span>
-
+                    <span class="numverclass goldenColor">
+                    <%} else if(item.status == 1 ||item.status == '1' ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
+                    <span class="numverclass redColor">
+                    <%}else{ %>
+                    <span class="numverclass grayColor">
+                    <%}%>
+                    <%=item.itemNum%></span>
                     件宝贝
                 </section>
 
@@ -72,46 +54,43 @@
                 <section class="bidcount">
                 <span class="numverclass goldenColor">
                 <%} else if(item.status == 1 ||item.status == '1' ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
-            <section class="bidcount">
+                <section class="bidcount">
                 <span class="numverclass redColor">
                 <%}else{ %>
-            <section class="bidcount2">
+                <section class="bidcount2">
                 <span class="numverclass grayColor">
                 <%}%>
-
                 <%=item.bidCount%></span>&nbsp;人出价
-            </section>
+                </section>
             </section>
 
             <% if((item.status == 0 ||item.status == '0') &&  item.needStart != '1' && item.needStart != 1 ){%>
-                <section class="bidTime goldenBackgroundColor">
-                    <!--<span class="iconClock">&#xe60b</span>-->
-
-                    <span id="bidtext-<%=item.albumId%>">
-                        <%=item.showtext%>
-                    </span>
-                    <div class="cornertobe"></div>
-                </section>
-            <%} else if(item.status == 1 ||item.status == '1'  ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
-                <section class="bidTime redBackgroundColor">
-                    <!--<span class="iconClock">&#xe60b</span>-->
-                    <span id="bidtext-<%=item.albumId%>">
+            <section class="bidTime goldenBackgroundColor">
+                <!--<span class="iconClock">&#xe60b</span>-->
+                <span id="bidtext-<%=item.albumId%>">
                     <%=item.showtext%>
-                    </span>
+                </span>
+                <div class="cornertobe"></div>
+            </section>
+            <%} else if(item.status == 1 ||item.status == '1'  ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
+            <section class="bidTime redBackgroundColor">
+                <!--<span class="iconClock">&#xe60b</span>-->
+                <span id="bidtext-<%=item.albumId%>">
+                    <%=item.showtext%>
+                </span>
 
-                    <div class="cornerbidding"></div>
-                </section>
+                <div class="cornerbidding"></div>
+            </section>
             <%}else{ %>
-                <section class="bidTime2 grayBackgroundColor">
-                    <span>已结束</span>
-                    <div class="cornerbided"></div>
-                </section>
+            <section class="bidTime2 grayBackgroundColor">
+                <span>已结束</span>
+                <div class="cornerbided"></div>
+            </section>
             <%}%>
 
 
-                </section>
-
-            </section>
+        </section>
+    </section>
 </script>
 
 </body>
@@ -119,6 +98,7 @@
 <script type="text/javascript">
     //先配置版本
     //seajs.config({base: '../js/'});//TODO 为什么不行
+
     //引入资源文件
     var imports = [];
     <!---js对应的路径-->
@@ -132,10 +112,11 @@
     imports.push('/js/DateUtil.js');
     imports.push('/js/StringExt.js');
     imports.push('/js/StringUtil.js');
-    imports.push('/js/sellerAdapter.js');
+    imports.push('/js/auctionList/sellerAdapter.js');
+
     //开始引入资源文件
     seajs.use(imports, function () {
-        seajs.use('/js/SellerSessions.js', function (home) {
+        seajs.use('/js/auctionList/SellerSessions.js', function (home) {
             home.initialize();
         })
     });

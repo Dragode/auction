@@ -790,6 +790,8 @@
             }, !1), b.moreNavItems && b.moreNavItems("share"))
         }
     }
-}(Zepto, window), String.prototype.StartWith = function (a) {
-    return null == a || "" == a || 0 == this.length || a.length > this.length ? !1 : this.substr(0, a.length) == a ? !0 : !1
+}(Zepto, window);
+
+String.prototype.StartWith = function (prefix) {
+    return null == prefix || "" == prefix || 0 == this.length || prefix.length > this.length ? !1 : this.substr(0, prefix.length) == prefix ? !0 : !1
 };

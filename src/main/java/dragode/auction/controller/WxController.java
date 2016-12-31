@@ -1,11 +1,11 @@
-package dragode.wechat.controller;
+package dragode.auction.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import dragode.auction.model.User;
 import dragode.auction.repository.UserRepository;
 import dragode.auction.utils.HttpRequestUtils;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
+import dragode.wechat.intf.response.OAuthUserInfo;
 import dragode.wechat.service.WxService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,23 +47,18 @@ public class WxController {
     @RequestMapping(path = "/receiveWxPush", method = RequestMethod.GET)
     public String accessWx(@RequestParam String signature, @RequestParam String timestamp,
                            @RequestParam String nonce, @RequestParam String echostr,
-                           @RequestParam Map<String,String> requestParams,
+                           @RequestParam Map<String, String> requestParams,
                            HttpServletRequest request) throws Exception {
         logRequestIfDebug(request);
 
-        //TODO 校验是否为微信的请求
         logger.info("echostr=" + echostr);
-        if (wxService.validateWxRequest(signature,timestamp,nonce)) {
+        if (wxService.validateWxRequest(signature, timestamp, nonce)) {
             return echostr;
-        }else {
+        } else {
             return "";
         }
     }
 
-    private void logRequestIfDebug(HttpServletRequest request) {
-        logger.info("[Method = " + request.getMethod() + "]" +
-                "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
-    }
 
     /**
      * 接受微信消息推送
@@ -78,30 +75,6 @@ public class WxController {
 
         //默认返回空字符串
         return wxService.handleWxPush(postBody);
-    }
-
-    /**
-     * 微信网页授权接口
-     *
-     * @param request Http请求
-     */
-    @RequestMapping(path = "/wxOauth2",method = RequestMethod.GET)
-    public void wxOauth2(@RequestParam String code,@RequestParam String state,
-                         HttpServletRequest request, HttpServletResponse response) {
-        logRequestIfDebug(request);
-
-        if (StringUtils.isEmpty(code)) {
-            //TODO 用户不同意授权
-        }else {
-            //用户同意授权
-            String openId = WxInterface.getOAuthAccessToken(code);
-            logger.info("openId=" + openId);
-            try {
-                response.sendRedirect("/auctionList.html");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -124,16 +97,56 @@ public class WxController {
         return "sended";
     }
 
-    //TODO 重构
+    /**
+     * 微信网页授权后，跳转到拍卖专场列表页
+     *
+     * @param code
+     * @param state
+     * @param request
+     * @param response
+     */
     @RequestMapping(path = "/redirectToAuctionList")
-    public void redirectToAuctionList(@RequestParam String code,@RequestParam String state,
+    public void redirectToAuctionList(@RequestParam String code, @RequestParam String state,
                                       HttpServletRequest request, HttpServletResponse response) {
-        String openId = WxInterface.getOAuthAccessToken(code);
-        User user = userRepository.findByOpenId(openId);
-        try {
-            response.sendRedirect("/auctionList.html?userId=" + user.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
+        logRequestIfDebug(request);
+
+        if (StringUtils.isEmpty(code)) {
+            //TODO 优化
+            PrintWriter writer = null;
+            try {
+                writer = response.getWriter();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            writer.write("请授权！");
+            writer.flush();
+        } else {
+            String openId = wxService.getOpenId(code);
+            User user = userRepository.findByOpenId(openId);
+            if (user == null) {
+                user = new User();
+                user.setOpenId(openId);
+                user.setBalance(0);
+                userRepository.save(user);
+            }
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            try {
+                response.sendRedirect("/auctionList.html");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    @RequestMapping(path = "/testGetUserInfo")
+    public OAuthUserInfo testGetUserInfo(@RequestParam String code) {
+        OAuthUserInfo userInfo = wxService.getUserInfo(code);
+        return userInfo;
+    }
+
+    private void logRequestIfDebug(HttpServletRequest request) {
+        logger.info("[Method = " + request.getMethod() + "]" +
+                "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
     }
 }

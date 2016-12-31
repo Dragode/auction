@@ -1,7 +1,7 @@
 package dragode.wechat.intf.response;
 
 /**
- * OAuth接口相应报文POJO
+ * OAuth AccessToken 对应的POJO
  */
 //TODO 用Lombok
 public class OAuthAccessToken {

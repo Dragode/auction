@@ -3,12 +3,12 @@ package dragode.wechat.intf;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import dragode.wechat.intf.response.OAuthAccessToken;
+import dragode.wechat.intf.response.OAuthUserInfo;
 import org.joda.time.DateTime;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,8 +20,10 @@ public class WxInterface {
     private static final String APP_ID = "wxcecf87b6a40bda8f";
     private static final String SECRET = "14adfbebbc1fed16333271190309856b";
     private static final String WX_HOST = "https://api.weixin.qq.com";
-    private static final String ACCESS_TOKE_NURL = "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
+    private static final String OAUTH_ACCESS_TOKE_URL = "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
+    private static final String OAUTH_USER_INFO_URL = "/sns/userinfo?access_token={accessToken}&openid={openid}&lang={lang}";
 
+    private static final String ZH_CN = "zh_CN";
 
     private static RestTemplate restTemplate = new RestTemplate();
 
@@ -74,15 +76,21 @@ public class WxInterface {
      * @param code code
      * @return AccessToken
      */
-    public static String getOAuthAccessToken(String code) {
-        OAuthAccessToken accessToken = restTemplate.getForObject(WX_HOST + ACCESS_TOKE_NURL, OAuthAccessToken.class,
+    public static OAuthAccessToken getOAuthAccessToken(String code) {
+        OAuthAccessToken accessToken = restTemplate.getForObject(WX_HOST + OAUTH_ACCESS_TOKE_URL, OAuthAccessToken.class,
                 APP_ID, SECRET, code);
-        /*JSONObject accessTokenResponse = WxInterface.getOAuthAccessToken(code);
-        if (accessTokenResponse == null
-                || !accessTokenResponse.containsKey("openid")) {
-            throw new RuntimeException("Response does not contains openid.");
-        }*/
-        return accessToken.getAccess_token();
+        return accessToken;
+    }
+
+    /**
+     * 获取网页授权用户信息
+     * @param oAuthAccessToken 网页授权AccessToken
+     * @return 用户信息
+     */
+    public static OAuthUserInfo getUserInfo(OAuthAccessToken oAuthAccessToken) {
+        OAuthUserInfo userInfo = restTemplate.getForObject(WX_HOST + OAUTH_USER_INFO_URL, OAuthUserInfo.class,
+                oAuthAccessToken.getAccess_token(), oAuthAccessToken.getOpenid(), ZH_CN);
+        return userInfo;
     }
 
     /**

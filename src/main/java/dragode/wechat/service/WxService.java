@@ -1,6 +1,9 @@
 package dragode.wechat.service;
 
 import dragode.auction.service.wx.WxEventHandler;
+import dragode.wechat.intf.WxInterface;
+import dragode.wechat.intf.response.OAuthAccessToken;
+import dragode.wechat.intf.response.OAuthUserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -9,10 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
-import static dragode.auction.service.wx.WxMsgType.EVENT;
-import static dragode.auction.service.wx.WxMsgType.SUBSCRIBE_EVENT;
-import static dragode.auction.service.wx.WxMsgType.UNSUBSCRIBE_EVENT;
+import static dragode.auction.service.wx.WxMsgType.*;
 
 /**
  * 微信服务
@@ -33,40 +35,42 @@ public class WxService {
 
     /**
      * 校验微信接口有效性
+     *
      * @param signature 微信加密签名
      * @param timestamp 时间戳
-     * @param nonce	随机数
+     * @param nonce     随机数
      * @return 是否通过
      */
-    public Boolean validateWxRequest(String signature,String timestamp, String nonce){
+    public Boolean validateWxRequest(String signature, String timestamp, String nonce) {
 
         switch (validateType) {
             case CLEAR_TEXT:
-                return validateInClearText(signature,timestamp,nonce);
+                return validateInClearText(signature, timestamp, nonce);
             case CIPHER_TEXT:
-                return validateInCipherText(signature,timestamp,nonce);
+                return validateInCipherText(signature, timestamp, nonce);
             default:
-                logger.error("未知加密类型[validateType="+validateType.toString()+"]，默认返回False。");
+                logger.error("未知加密类型[validateType=" + validateType.toString() + "]，默认返回False。");
                 return false;
         }
     }
 
-    private Boolean validateInClearText(String signature,String timestamp, String nonce){
+    private Boolean validateInClearText(String signature, String timestamp, String nonce) {
         //TODO 校验
         return true;
     }
 
-    private Boolean validateInCipherText(String signature,String timestamp, String nonce){
+    private Boolean validateInCipherText(String signature, String timestamp, String nonce) {
         //TODO 校验
         return true;
     }
 
     /**
      * 接受微信推送消息
+     *
      * @param pushMessage 推送报文
      * @return 相应推送的报文
      */
-    public String handleWxPush(String pushMessage){
+    public String handleWxPush(String pushMessage) {
         if (wxEventHandler != null) {
             Document document;
             try {
@@ -100,14 +104,36 @@ public class WxService {
         return "";
     }
 
-    public void oauth2(String code,String state){
+    /**
+     * 微信网页授权 —— 静默授权
+     * 静默授权，只能获取用户openid。
+     *
+     * @param code 微信授权Code
+     */
+    public String getOpenId(String code) {
+        Assert.hasText(code);
 
+        OAuthAccessToken accessToken = WxInterface.getOAuthAccessToken(code);
+        return accessToken.getOpenid();
+    }
+
+    /**
+     * 微信网页授权 —— 获取用户信息
+     *
+     * @param code 微信授权Code
+     */
+    public OAuthUserInfo getUserInfo(String code) {
+        Assert.hasText(code);
+
+        OAuthAccessToken accessToken = WxInterface.getOAuthAccessToken(code);
+        OAuthUserInfo userInfo = WxInterface.getUserInfo(accessToken);
+        return userInfo;
     }
 
     /**
      * 微信接口校验模式
      */
-    enum ValidateType{
+    enum ValidateType {
         /**
          * 明文模式
          */
@@ -115,7 +141,6 @@ public class WxService {
         /**
          * 安全模式
          */
-        CIPHER_TEXT,
-        ;
+        CIPHER_TEXT,;
     }
 }
