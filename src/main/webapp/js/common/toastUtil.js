@@ -18,7 +18,8 @@ var toastUtil = {
         if (a.length > 0) {
             var c = a[0], d = c.indexOf("::");
             if (d > 0) {
-                if (c = c.substring(d + 2, c.length), c && c.indexOf("HSF") >= 0)return void $().toastUtil.showError("系统繁忙，请稍候重试", b);
+                if (c = c.substring(d + 2, c.length), c && c.indexOf("HSF") >= 0)
+                    return void $().toastUtil.showError("系统繁忙，请稍候重试", b);
                 this.showError(c, b)
             }
         }

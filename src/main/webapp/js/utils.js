@@ -33,7 +33,7 @@
                 0 == c.length && ($("body").append('<section id="loading" style="position: static;"><div id="loadingCore"></div></section>'), c = $("#loadingCore"), d = $("loading"), d.css("position", "absolute"), d.css({
                     top: "0px",
                     left: "0px"
-                }), d.css("height", "100%"), d.css("width", "100%"), d.css("z-index", "99999"), c.css("position", "absolute"), c.css("height", "12px"), c.css("width", "30px"), c.css("background", "url(//assets.alicdn.com/mw/base/styles/component/more/images/loading.gif)"), c.css("background-repeat", "no-repeat"), c.css("background-position", "center"), c.css("background-size", "cover"), c.css("z-index", "99999")), a || (a = window.scrollX + $(window).width() / 2 - 15), b || (b = window.scrollY + $(window).height() / 2 - 6), c.css({
+                }), d.css("height", "100%"), d.css("width", "100%"), d.css("z-index", "99999"), c.css("position", "absolute"), c.css("height", "12px"), c.css("width", "30px"), c.css("background", "url(/image/loading.gif)"), c.css("background-repeat", "no-repeat"), c.css("background-position", "center"), c.css("background-size", "cover"), c.css("z-index", "99999")), a || (a = window.scrollX + $(window).width() / 2 - 15), b || (b = window.scrollY + $(window).height() / 2 - 6), c.css({
                     top: b,
                     left: a
                 }), c.css("display", "-webkit-box"), d.css("display", "-webkit-box")

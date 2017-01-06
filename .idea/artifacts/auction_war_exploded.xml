@@ -7,7 +7,6 @@
           <element id="module-output" name="auction" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: dragode:WechatFramework:1.0-SNAPSHOT" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:4.3.1.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-aop:4.3.1.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:4.3.1.RELEASE" />

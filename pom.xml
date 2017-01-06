@@ -39,11 +39,11 @@
 
     <dependencies>
 
-        <dependency>
+        <!--<dependency>
             <groupId>dragode</groupId>
             <artifactId>WechatFramework</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework</groupId>

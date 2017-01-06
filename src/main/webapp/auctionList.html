@@ -8,18 +8,39 @@
           content="width=device-width, initial-scale=1.0,user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <script type="text/javascript" src="/js/common/sea.js"></script>
-    <!--<script type="text/javascript" src="/js/package.js"></script>-->
     <script type="text/javascript" src="/js/common/zepto.1.0.4.js" replace="LIB:zepto"></script>
     <script type="text/javascript" src="/js/common/touch.js"></script>
-    <!--<script type="text/javascript" src="/js/bridge-api.js"></script>-->
     <link rel="stylesheet" type="text/css" href="/css/pmp.css">
+    <style>html{font-size:37.5px!important;}body{font-size:14.0625px}</style>
 </head>
 
-<!--主容器-->
-<section id="fframe_container">
-</section>
+<div class="main-container">
+    <div class="wrapper">
+        <div class="first-screen">
+            <!--拍卖专场列表-->
+            <section id="fframe_container">
+            </section>
+        </div>
 
-<!--首页专场-->
+
+        <section class="main-op" data-spm="main-op">
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!--首页-->
 <script type="text/plain" id="bannerTemplate">
      <section class="banner">
         <img src="<%=item.bannerUrl%>" >
