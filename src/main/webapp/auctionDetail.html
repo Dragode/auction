@@ -6,10 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0, user-scalable=no" name="viewport">
     <link type="text/css" rel="stylesheet" href="/css/special.css">
     <script type="text/javascript" src="/js/common/sea.js"></script>
-    <script type="text/javascript" src="/js/package.js"></script>
     <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
     <script type="text/javascript" src="/js/common/touch.js"></script>
-    <script type="text/javascript" src="/js/bridge-api.js"></script>
 </head>
 <body onload="afterRender()">
 <!--顶部提示-->
@@ -25,7 +23,6 @@
      <section class="banner">
         <img src="<%=item.src%>" >
      </section>
-
 </script>
 
 <!--专场描述模板-->
@@ -74,14 +71,14 @@
     imports.push('/js/template.js');
     imports.push('/js/iscroll5.js');
     imports.push('/js/timeHelper.js');
-    imports.push('/js/sessionDetailListAdapter.js');
+    imports.push('/js/auctionDetail_new/sessionDetailListAdapter.js');
     imports.push('/js/DateUtil.min.js');
     imports.push('/js/StringUtil.min.js');
     imports.push('/js/StringExt.min.js');
     imports.push('/js/DateExt.min.js');
     //开始引入资源文件
     seajs.use(imports, function () {
-        seajs.use('/js/SessionDetail.js', function (home) {
+        seajs.use('/js/auctionDetail_new/SessionDetail.js', function (home) {
             home.initialize();
         })
     });

@@ -6,23 +6,14 @@ import dragode.auction.controller.response.GoodsResponse;
 import dragode.auction.controller.response.SessionDetailResponse;
 import dragode.auction.model.*;
 import dragode.auction.repository.*;
-import dragode.auction.service.payment.SignService;
-import dragode.auction.utils.Constants;
-import dragode.auction.utils.HttpRequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 public class SessionController {
@@ -42,7 +33,10 @@ public class SessionController {
     @Resource
     private GoodsPicturesRepository goodsPicturesRepository;
 
-    @RequestMapping(path = "/getHomePage")
+    /**
+     * 获取首页Banner的专场
+     */
+    @RequestMapping(path = "/homePage", method = RequestMethod.GET)
     public Session getHomePage() {
         HomePage homePage = homePageRepository.findAll().get(0);
         Session homePageSession = sessionRepository.findOne(homePage.getSessionId());
@@ -54,7 +48,7 @@ public class SessionController {
      *
      * @return
      */
-    @RequestMapping(path = "/getSessions")
+    @RequestMapping(path = "/session", method = RequestMethod.GET)
     public BaseListResponse<Session> getSessions() {
         return new BaseListResponse<>(sessionRepository.findAll());
     }
@@ -65,7 +59,7 @@ public class SessionController {
      * @param sessionId 专场ID
      * @return
      */
-    @RequestMapping(path = "/getSessionDetail/{sessionId}")
+    @RequestMapping(path = "/session/{sessionId}", method = RequestMethod.GET)
     public SessionDetailResponse getSessionDetail(@PathVariable Integer sessionId) {
         SessionDetailResponse sessionDetailResponse = new SessionDetailResponse();
         sessionDetailResponse.setSession(sessionRepository.findOne(sessionId));

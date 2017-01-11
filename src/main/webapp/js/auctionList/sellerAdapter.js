@@ -33,6 +33,8 @@ function SellerSessionAdapter(datas, viewList) {
                 return void(viewCell.tag = index);
             } else if ("banner" == data.showtype) {
                 cell = getCellByTemplateTom("bannerTemplate", data);
+            }else if("desc" == data.showtype){
+                cell = getCellByTemplateTom("titleTemplate", data);
             } else {
                 cell = getCellByTemplateTom("listCellTemplate", data);
             }
@@ -81,12 +83,15 @@ function SellerSessionAdapter(datas, viewList) {
     this.viewList.cell.viewType = "cell";
     this.viewList.tip.viewType = "tip";
     this.viewList.banner.viewType = "banner";
+    this.viewList.desc.viewType = "desc";
     this.getViewType = function (index) {
         var data = this.mData[index];
         if (void 0 != data.showtype && "tip" == data.showtype) {
             return this.viewList.tip.viewType
         } else if (void 0 != data.showtype && "banner" == data.showtype) {
             return this.viewList.banner.viewType
+        }else if (void 0 != data.showtype && "desc" == data.showtype) {
+            return this.viewList.desc.viewType
         } else {
             return this.viewList.cell.viewType
         }

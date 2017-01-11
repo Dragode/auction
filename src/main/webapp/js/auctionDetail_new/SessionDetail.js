@@ -31,6 +31,25 @@
             return div;
         }
 
+        function getAndRender() {
+            $.getJSON('/session/' + getUrlParam("sessionId"), function (response) {
+                //TODO 处理异常情况
+                Zepto().toastUtil.showLoading();
+                renderToolTip(response.session);
+                var itemsToShow = handleResponse(response);
+                sessionDetailAdapter.addList(itemsToShow);
+                sessionDetailAdapter.notifyDataSetChanged();
+                Zepto().toastUtil.dismissLoading();
+
+                Zepto("#alarmWrap").on($().conditionUtil.hasTouch(), function (event) {
+                    $.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId"), function (response) {
+                        //TODO 处理异常情况
+                        alert("设置成功");
+                    });
+                });
+            });
+        }
+
         function handleResponse(response) {
             var itemToShow = [];
             var banner = {
@@ -50,26 +69,6 @@
                 itemToShow.push(goods);
             }
             return itemToShow;
-        }
-
-        function getAndRender() {
-            $.getJSON('/getSessionDetail/' + getUrlParam("sessionId"), function (response) {
-                //TODO 处理异常情况
-                Zepto().toastUtil.dismissLoading();
-                /*renderSessionDesc(response.session);*/
-                renderToolTip(response.session);
-                var itemsToShow = handleResponse(response);
-                sessionDetailAdapter.addList(itemsToShow);
-                sessionDetailAdapter.notifyDataSetChanged();
-                Zepto().toastUtil.dismissLoading();
-
-                Zepto("#alarmWrap").on($().conditionUtil.hasTouch(), function (event) {
-                    $.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
-                        //TODO 处理异常情况
-                        alert("设置成功");
-                    });
-                });
-            });
         }
 
         function renderToolTip(session) {

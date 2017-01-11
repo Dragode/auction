@@ -10,10 +10,10 @@
             );
             sellerSessionAdapter = new SellerSessionAdapter([], {
                     banner: createDiv("banner"),
+                    desc: createDiv("item_desc_container"),
                     cell: createDiv("cell"),
                     tip: createDiv("tips")
-                }
-            );
+            });
             window.sellerSessionAdapter = sellerSessionAdapter;
             listView.setAdaptor(sellerSessionAdapter);
             sellerSessionAdapter.setListView(listView);
@@ -29,11 +29,11 @@
 
         function getAndRenderItems() {
             zepto().toastUtil.showLoading();
-            $.getJSON('/getHomePage', function (response) {
+            $.getJSON('/homePage', function (response) {
                 homePageSession = response;
                 homePageSession.showtype = "banner";
                 //TODO 分页获取数据
-                $.getJSON('/getSessions', function (response) {
+                $.getJSON('/session', function (response) {
                     //TODO 处理异常情况
                     var itemsToShow = handleResponse(response,homePageSession);
                     sellerSessionAdapter.addList(itemsToShow);
@@ -56,6 +56,9 @@
 
             var itemsToShow = [];
             itemsToShow.push(homePageSession);
+
+            var desc = {showtype:"desc",title:homePageSession.title};
+            itemsToShow.push(desc);
 
             for (var i = 0; i < response.items.length; i++) {
                 var itemToShow = response.items[i];
