@@ -12,23 +12,30 @@
            user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="shortcut icon" type="image/x-icon" href="/image/favicon.ico">
     <style>
-        html {            font-size: 40px !important;        }
-        body {            font-size: 15px        }
+        html {
+            font-size: 40px !important;
+        }
+
+        body {
+            font-size: 15px
+        }
     </style>
-    <script src="/js/m-base_2.0.1_index.js"></script>
-    <script src="/js/hairlines_0.0.2_index.js"></script>
+    <!--<script src="/js/m-base_2.0.1_index.js"></script>
+    <script src="/js/hairlines_0.0.2_index.js"></script>-->
     <script type="text/javascript" src="/js/common/sea.js"></script>
-    <script type="text/javascript" src="/js/package.js"></script>
+    <!--<script type="text/javascript" src="/js/package.js"></script>-->
     <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
-    <script type="text/javascript" src="/js/common/touch.js"></script>
-    <script type="text/javascript" src="/js/bridge-api.js"></script>
+    <!--<script type="text/javascript" src="/js/common/touch.js"></script>-->
+    <!--<script type="text/javascript" src="/js/bridge-api.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/m-base_2.0.1_reset.css">
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <link rel="stylesheet" type="text/css" href="/css/p_detail_index.css">
 </head>
-<body data-spm="7905538">
-<div id="J_App" class="main-container">
-    <div data-reactroot="" class="wrapper">
+
+<body>
+<div id="goods-detail" class="main-container">
+    <div class="wrapper">
         <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
         <div class="loading hidden">
             <div class="km-loading">
@@ -36,55 +43,41 @@
             </div>
         </div>
         <div class="first-screen">
+            <!--图片轮播-->
             <div class="rc-slide">
-                <div class="slick-initialized slick-slider">
-                    <div class="slick-list">
-                        <div class="slick-track"
-                             style="opacity: 1; width: 2625px; transform: translate3d(0px, 0px, 0px);">
-                            <div data-index="0" class="slick-slide slick-active" style="width: 375px;">
-                                <img
-                                        src="/exampleImg/goodDetail.jpg"
-                                        alt=""></div>
-                            <div data-index="1" class="slick-slide" style="width: 400px;"><img
-                                    src="/exampleImg/goodDetail.jpg"
-                                    alt=""></div>
-                            <!--<div data-index="2" class="slick-slide" style="width: 400px;"></div>
-                            <div data-index="3" class="slick-slide" style="width: 400px;"></div>
-                            <div data-index="4" class="slick-slide" style="width: 400px;"></div>-->
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+                    </ol>
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <img src="/exampleImg/goodDetail.jpg" alt="">
                         </div>
-                        <table class="slide-to-detail">
-                            <tbody>
-                            <tr>
-                                <td class="slide-icon"><p class="pm-util-iconfont">返</p></td>
-                                <td class="slide-text">滑动查看详情</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <div class="item">
+                            <img src="/exampleImg/goodDetail.jpg" alt="">
+                        </div>
+                        <div class="item">
+                            <img src="/exampleImg/goodDetail.jpg" alt="">
+                        </div>
                     </div>
-                    <ul class="slick-dots" style="display: block;">
-                        <li class="slick-active">
-                            <button>0</button>
-                        </li>
-                        <li class="">
-                            <button>1</button>
-                        </li>
-                        <li class="">
-                            <button>2</button>
-                        </li>
-                        <li class="">
-                            <button>3</button>
-                        </li>
-                        <li class="">
-                            <button>4</button>
-                        </li>
-                    </ul>
                 </div>
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-            <div class="rc-statusbar before">
-                <div class="align-left">
-                    <span class="status-icon pm-iconfont">时</span>
-                    <span class="status-flag">即将开始</span><!--TODO 动态获取-->
-                    <span class="main">
+        </div>
+        <div class="rc-statusbar before">
+            <div class="align-left">
+                <span class="status-icon pm-iconfont">时</span>
+                <span class="status-flag">即将开始</span><!--TODO 动态获取-->
+                <span class="main">
                         <div class="countdown" style="display: none;">
                             <div>04天21时24分03秒</div>
                         </div>
@@ -93,111 +86,125 @@
                         </span>
                         <span class="time-desc"></span>
                     </span>
-                </div>
-                <div class="rc-statusbar-shadow"></div>
             </div>
-            <section class="pai-info pai-info-before">
-                <div class="header">
-                    <p class="title">油润光亮 西伯利亚猛犸象牙手链 质地细腻【福寿常在】寓意极佳</p>
-                    <!--<div class="rc-mobile-share pm-share">
-                        <div class="rc-mobile-share-wrap">
-                            <b class="icon pm-util-iconfont">享</b>&lt;!&ndash; react-text: 32 &ndash;&gt;
-                            分享&lt;!&ndash; /react-text &ndash;&gt;</div>
-                    </div>-->
-                </div>
-                <div class="basic-price">
-                    <div class="unit"><b>RMB</b><span>起拍价</span></div>
-                    <div class="price-number"><span class="price-comma"><em class="price-comma-price">1,300</em></span>
-                    </div>
-                    <div class="price-format"><!-- react-text: 41 -->(<!-- /react-text --><!-- react-text: 42 -->1300元
-                        <!-- /react-text --><!-- react-text: 43 -->)<!-- /react-text --></div>
-                </div>
-                <div class="count-info"><span class="cell has-next"><span class="title">围观</span><span
-                        class="number">4</span><!-- react-text: 48 -->次<!-- /react-text --></span><span
-                        class="cell has-next has-prev"><span class="title">报名</span><span class="number">0</span>
-                    <!-- react-text: 52 -->人<!-- /react-text --></span><span class="cell has-prev"><span class="title">设置提醒</span><span
-                        class="number">0</span><!-- react-text: 56 -->人<!-- /react-text --></span></div>
-            </section>
-            <section class="pai-record" data-spm="pai-record">
-                <div class="header line"><b class="icon pm-iconfont">录</b><span class="title">拍卖记录</span><span
-                        class="count"><b>0</b><!-- react-text: 63 -->条<!-- /react-text --></span><b
-                        class="right-anchor disabled">右</b></div>
-                <ul class="record-list" style="height: 0rem;"></ul>
-            </section>
+            <div class="rc-statusbar-shadow"></div>
         </div>
-        <div class="second-screen inited" data-spm="second-screen">
-            <div class="rc-tabs-content">
-                <div class=" rc-tabs-tabpane">
-                    <div class="rc-param">
-                        <dl class="list">
-                            <dt class="list-title">拍品信息</dt>
-                            <dd class="twoColumn item">
-                                <div class="param-name">起拍价</div>
-                                <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
-                                        class="price-comma-price">1,300</em></span></div>
-                            </dd>
-                            <dd class="twoColumn item">
-                                <div class="param-name">保证金</div>
-                                <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
-                                        class="price-comma-price">200</em></span></div>
-                            </dd>
-                            <dd class="twoColumn item">
-                                <div class="param-name">加价幅度</div>
-                                <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
-                                        class="price-comma-price">200</em></span></div>
-                            </dd>
-                            <dd class="twoColumn item">
-                                <div class="param-name">拍卖佣金</div>
-                                <div class="param-value">无</div>
-                            </dd>
-                            <dd class="twoColumn item no-border">
-                                <div class="param-name">保留价</div>
-                                <div class="param-value">无</div>
-                            </dd>
-                            <dd class="twoColumn item no-border">
-                                <div class="param-name">延时周期</div>
-                                <div class="param-value">5分/次</div>
-                            </dd>
-                        </dl>
-                        <dl class="list">
-                            <dt class="list-title">拍品特色服务</dt>
-                            <dd class="oneColumn item">
-                                <div class="param-name">鉴定证书</div>
-                                <div class="param-value">此款拍品已取得省级以上鉴定证书或作者本人出具的书面鉴定文本</div>
-                            </dd>
-                            <dd class="oneColumn item">
-                                <div class="param-name">拍前预展</div>
-                                <div class="param-value">此款拍品提供线下预展，欢迎现场鉴赏</div>
-                            </dd>
-                            <dd class="oneColumn item no-border">
-                                <div class="param-name">艺术家授权</div>
-                                <div class="param-value">此款拍品拍卖已得到原作者授权，拍品更可靠</div>
-                            </dd>
-                        </dl>
+        <section class="pai-info pai-info-before">
+            <div class="header">
+                <p class="title">{{title}}</p>
+                <div class="rc-mobile-share pm-share">
+                    <div class="rc-mobile-share-wrap">
+                        <b class="icon pm-util-iconfont">空</b>分享
                     </div>
-                    <div>
-                        <div class="help-tips">
-                            <div class="title">友情提示</div>
-                            <div class="text">
-                                真伪：送拍机构的企业资质已审核，但拍品介绍（图片、文字、视频等）及拍品资质文件（来源证明、鉴定证书等）均由机构自行发布并上传，所有拍品相关信息由送拍机构自行承担相应担保责任；
-                                <br> 售后：拍品多为孤品性质类商品，“7天退货”服务为卖家可选服务保障，不强制送拍机构提供，竞拍前请充分考虑；
-                            </div>
+                </div>
+            </div>
+            <div class="basic-price">
+                <div class="unit"><b>RMB</b><span>起拍价</span></div>
+                <div class="price-number"><span class="price-comma"><em class="price-comma-price">1,300</em></span>
+                    <!--TODO 动态获取-->
+                </div>
+                <div class="price-format">1300元</div>
+            </div>
+            <!--参加情况-->
+            <!--<div class="count-info">
+                <span class="cell has-next">
+                    <span class="title">围观</span>
+                    <span class="number">4</span>次
+                </span>
+                <span class="cell has-next has-prev">
+                    <span class="title">报名</span>
+                    <span class="number">0</span>人
+                </span>
+                <span class="cell has-prev">
+                    <span class="title">设置提醒</span>
+                    <span class="number">0</span>人
+                </span>
+            </div>-->
+        </section>
+        <!--拍卖纪录-->
+        <!--<section class="pai-record" data-spm="pai-record">
+            <div class="header line">
+                <b class="icon pm-iconfont">录</b>
+                <span class="title">拍卖记录</span>
+                <span class="count"><b>0</b>条</span>
+                <b class="right-anchor disabled">右</b>
+            </div>
+            <ul class="record-list" style="height: 0rem;"></ul>
+        </section>-->
+    </div>
+    <div class="second-screen inited" data-spm="second-screen">
+        <div class="rc-tabs-content">
+            <div class=" rc-tabs-tabpane">
+                <div class="rc-param">
+                    <dl class="list">
+                        <dt class="list-title">拍品信息</dt>
+                        <dd class="twoColumn item">
+                            <div class="param-name">起拍价</div>
+                            <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
+                                    class="price-comma-price">1,300</em></span></div>
+                        </dd>
+                        <dd class="twoColumn item">
+                            <div class="param-name">保证金</div>
+                            <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
+                                    class="price-comma-price">200</em></span></div>
+                        </dd>
+                        <dd class="twoColumn item">
+                            <div class="param-name">加价幅度</div>
+                            <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
+                                    class="price-comma-price">200</em></span></div>
+                        </dd>
+                        <dd class="twoColumn item">
+                            <div class="param-name">拍卖佣金</div>
+                            <div class="param-value">无</div>
+                        </dd>
+                        <dd class="twoColumn item no-border">
+                            <div class="param-name">保留价</div>
+                            <div class="param-value">无</div>
+                        </dd>
+                        <dd class="twoColumn item no-border">
+                            <div class="param-name">延时周期</div>
+                            <div class="param-value">5分/次</div>
+                        </dd>
+                    </dl>
+                    <dl class="list">
+                        <dt class="list-title">拍品特色服务</dt>
+                        <dd class="oneColumn item">
+                            <div class="param-name">鉴定证书</div>
+                            <div class="param-value">此款拍品已取得省级以上鉴定证书或作者本人出具的书面鉴定文本</div>
+                        </dd>
+                        <dd class="oneColumn item">
+                            <div class="param-name">拍前预展</div>
+                            <div class="param-value">此款拍品提供线下预展，欢迎现场鉴赏</div>
+                        </dd>
+                        <dd class="oneColumn item no-border">
+                            <div class="param-name">艺术家授权</div>
+                            <div class="param-value">此款拍品拍卖已得到原作者授权，拍品更可靠</div>
+                        </dd>
+                    </dl>
+                </div>
+                <div>
+                    <div class="help-tips">
+                        <div class="title">友情提示</div>
+                        <div class="text">
+                            真伪：送拍机构的企业资质已审核，但拍品介绍（图片、文字、视频等）及拍品资质文件（来源证明、鉴定证书等）均由机构自行发布并上传，所有拍品相关信息由送拍机构自行承担相应担保责任；
+                            <br> 售后：拍品多为孤品性质类商品，“7天退货”服务为卖家可选服务保障，不强制送拍机构提供，竞拍前请充分考虑；
                         </div>
                     </div>
-                    <div class="list-title">图文详情</div>
-                    <div class="rc-video">
-                        <video id="rc-video-9" controls="" preload="none"
-                               poster="/exampleImg/videoPoster.jpg">
-                            <source src="/exampleImg/video.m3u8"
-                                    type="application/x-mpegurl">
-                            <source src="/exampleImg/video.mp4"
-                                    type="video/mp4">
-                            <p>您的浏览器不支持视频播放</p></video>
-                    </div>
-                    <div class="cdn-content">
-                        <div class="cdn-content-desc"><p>
-                            <!--商品图片-->
-                            <span style="line-height: 1.5;">
+                </div>
+                <div class="list-title">图文详情</div>
+                <div class="rc-video">
+                    <video id="rc-video-9" controls="" preload="none"
+                           poster="/exampleImg/videoPoster.jpg">
+                        <source src="/exampleImg/video.m3u8"
+                                type="application/x-mpegurl">
+                        <source src="/exampleImg/video.mp4"
+                                type="video/mp4">
+                        <p>您的浏览器不支持视频播放</p></video>
+                </div>
+                <div class="cdn-content">
+                    <div class="cdn-content-desc"><p>
+                        <!--商品图片-->
+                        <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
                                         src="/exampleImg/goodsDescExample1.jpg"
@@ -214,8 +221,8 @@
                                         data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg"
                                         data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg_1080x0.jpg 3x">
                             </span>
-                            <!--企业简介-->
-                            <span style="line-height: 1.5;">
+                        <!--企业简介-->
+                        <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
                                         src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2rTpAaB6xQeBjSsziXXXxVVXa_!!0-paimai.jpg"
@@ -228,23 +235,23 @@
                                         data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg"
                                         data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg_1080x0.jpg 3x">
                             </span>
-                            <!--收藏证书-->
-                            <span style="line-height: 1.5;">
+                        <!--收藏证书-->
+                        <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
                                         src="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg"
                                         data-src="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg"
                                         data-srcset="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg_1080x0.jpg 3x">
                             </span>
-                            <!--授权证书-->
-                            <span style="line-height: 1.5;">
+                        <!--授权证书-->
+                        <span style="line-height: 1.5;">
                                     <img class="J_LazyLoad" data-network="Q75,Q30"
                                          src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg"
                                          data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg"
                                          data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg_1080x0.jpg 3x">
                             </span>
-                            <!--送货相关-->
-                            <span style="line-height: 1.5;">
+                        <!--送货相关-->
+                        <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
                                         src="https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg"
@@ -261,54 +268,56 @@
                                         data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg"
                                         data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg_1080x0.jpg 3x">
                             </span>
-                        </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bid-toast bid-toast-hidden bid-toast">
-            <div class="pm-iconfont icon">警</div>
-            <div class="title">
-                <div class="main-title"></div>
-                <div class="sub-title"></div>
-            </div>
-        </div>
-        <section class="main-op" data-spm="main-op">
-            <div class="pm-remind-wrap">
-                <div class="loading hidden">
-                    <div class="km-loading">
-                        <div class="loading-img"></div>
-                    </div>
-                </div>
-                <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
-                <!--<div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>-->
-            </div>
-            <div class="main-btn">
-                <div class="jiaobao">
-                    <p class="action">去报名</p>
-                    <p class="foregift">
-                        (保证金金额<b>￥</b>200)
                     </p>
+                    </div>
                 </div>
             </div>
-        </section>
-       <!-- <div class="rc-top rc-top-hidden">
-            <i class="top-icon pm-util-iconfont">顶</i>
-            <span class="text">顶部</span>
-        </div>-->
-        <!-- react-empty: 111 -->
+        </div>
     </div>
+    <div class="bid-toast bid-toast-hidden bid-toast">
+        <div class="pm-iconfont icon">警</div>
+        <div class="title">
+            <div class="main-title"></div>
+            <div class="sub-title"></div>
+        </div>
+    </div>
+    <section class="main-op" data-spm="main-op">
+        <div class="pm-remind-wrap">
+            <div class="loading hidden">
+                <div class="km-loading">
+                    <div class="loading-img"></div>
+                </div>
+            </div>
+            <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
+            <!--<div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>-->
+        </div>
+        <div class="main-btn">
+            <div class="jiaobao">
+                <p class="action">去报名</p>
+                <p class="foregift">
+                    (保证金金额<b>￥</b>200)
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- <div class="rc-top rc-top-hidden">
+         <i class="top-icon pm-util-iconfont">顶</i>
+         <span class="text">顶部</span>
+     </div>-->
+    <!-- react-empty: 111 -->
+</div>
 </div>
 <script src="/js/common/kimi-min.js"></script>
 <script src="/js/common.js"></script>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="/js/common/bootstrap.js"></script>
+<script src="/js/common/vue.js"></script>
 <!--<script src="/js/p_detail_index.js"></script>-->
 <script type="application/javascript">
     var imports = [];
     <!---js对应的路径-->
     imports.push('/js/config.js');
     imports.push('/js/utils.js');
-    //imports.push('/js/ListView.js');
     imports.push('/js/template.js');
     imports.push('/js/iscroll5.js');
     imports.push('/js/timeHelper.js');
@@ -318,109 +327,32 @@
     imports.push('/js/DateExt.min.js');
     //开始引入资源文件
     seajs.use(imports, function () {
-        Zepto("#jiaobao").on($().conditionUtil.hasTouch(), function (event) {
-            /*$.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
-             //TODO 处理异常情况
-             alert("设置成功");
-             });*/
-            Zepto("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
+        Zepto().toastUtil.showLoading();
+        $.getJSON('/goods/' + getUrlParam("goodsId"), function (response) {
+            var goodsDetail = new Vue({
+                el: '#goods-detail',
+                data: {
+                    title: response.title
+                }
+            });
+            window.goodsDetail = goodsDetail;
+            Zepto().toastUtil.dismissLoading();
         });
+        /*Zepto("#jiaobao").on($().conditionUtil.hasTouch(), function (event) {
+         /!*$.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
+         //TODO 处理异常情况
+         alert("设置成功");
+         });*!/
+         Zepto("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
+         });*/
     });
 
-    /*$(document).ready(function () {
-        $("#jiaobao").on($().conditionUtil.hasTouch(), function (event) {
-            /!*$.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
-             //TODO 处理异常情况
-             alert("设置成功");
-             });*!/
-            $("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
-        });
-    });*/
-
-
-
-
-    /*function getUrlParam(name) {
+    function getUrlParam(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
         var r = window.location.search.substr(1).match(reg);  //匹配目标参数
         if (r != null) return unescape(r[2]);
         return null; //返回参数值
     }
-
-    webpackJsonp([7], [
-        function (e, t, n) {
-            console.log("ok");
-        },
-        function (e, t, n) {
-            n(359);
-            var i = n(2),
-                    r = n(360),
-                    s = i.createClass({
-                        displayName: "RcSlide",
-                        propTypes: {
-                            cls: i.PropTypes.string,
-                            showNav: i.PropTypes.bool,
-                            showArrow: i.PropTypes.bool,
-                            isLoop: i.PropTypes.bool,
-                            autoplay: i.PropTypes.bool,
-                            lazyload: i.PropTypes.bool,
-                            speed: i.PropTypes.number,
-                            autoplaySpeed: i.PropTypes.number,
-                            defaultIndex: i.PropTypes.number,
-                            imageClick: i.PropTypes.func,
-                            afterChange: i.PropTypes.func,
-                            beforeChange: i.PropTypes.func,
-                            edgeEvent: i.PropTypes.func,
-                            swipeEvent: i.PropTypes.func,
-                            slideToDetail: i.PropTypes.object,
-                            slideToDetailDiff: i.PropTypes.number,
-                            slideToDetailEvent: i.PropTypes.func,
-                            slideToDetailEnd: i.PropTypes.func
-                        },
-                        getDefaultProps: function a() {
-                            return {
-                                cls: "rc-slide",
-                                showNav: !0,
-                                showArrow: !1,
-                                isLoop: !1,
-                                autoplay: !1,
-                                lazyload: !0,
-                                speed: 300,
-                                autoplaySpeed: 3e3,
-                                defaultIndex: 0,
-                                slideToDetailDiff: 50
-                            }
-                        },
-                        render: function o() {
-                            var _props = this.props,
-                                    t = {
-                                        dots: _props.showNav,
-                                        infinite: _props.isLoop,
-                                        speed: _props.speed,
-                                        initialSlide: _props.defaultIndex,
-                                        imageClick: _props.imageClick,
-                                        afterChange: _props.afterChange,
-                                        beforeChange: _props.beforeChange,
-                                        edgeEvent: _props.edgeEvent,
-                                        swipeEvent: _props.swipeEvent,
-                                        slideToDetail: _props.slideToDetail,
-                                        slideToDetailEvent: _props.slideToDetailEvent,
-                                        slideToDetailDiff: _props.slideToDetailDiff,
-                                        slideToDetailEnd: _props.slideToDetailEnd,
-                                        arrows: _props.showArrow,
-                                        lazyLoad: _props.lazyload,
-                                        edgeFriction: .3
-                                    };
-                            return i.createElement(
-                                    "div",
-                                    {className: _props.cls},
-                                    i.createElement(r, t, _props.children)
-                            )
-                        }
-                    });
-            e.exports = s
-        }
-    ]);*/
 </script>
 </body>
 </html>

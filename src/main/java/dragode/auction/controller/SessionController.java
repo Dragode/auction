@@ -95,7 +95,7 @@ public class SessionController {
      * @param goodsId 商品ID
      * @return
      */
-    @RequestMapping(path = "/getGoods/{goodsId}")
+    @RequestMapping(path = "/goods/{goodsId}")
     public GoodsResponse getGoods(@PathVariable Integer goodsId) {
         Goods one = goodsRepository.findOne(goodsId);
 
