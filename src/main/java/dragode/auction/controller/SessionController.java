@@ -98,6 +98,7 @@ public class SessionController {
     @RequestMapping(path = "/goods/{goodsId}")
     public GoodsResponse getGoods(@PathVariable Integer goodsId) {
         Goods one = goodsRepository.findOne(goodsId);
+        Session session = sessionRepository.findOne(one.getSessionId());
 
         GoodsResponse goods = new GoodsResponse();
         goods.setId(one.getId());
@@ -106,9 +107,11 @@ public class SessionController {
         goods.setTitle(one.getTitle());
         goods.setBidCount(one.getBidCount());
         goods.setStartingPrice(one.getStartingPrice());
+        goods.setHasCashDeposit(one.getHasCashDeposit());
         goods.setCashDeposit(one.getCashDeposit());
         goods.setBidIncrement(one.getBidIncrement());
-        goods.setPrice(one.getPrice());
+        goods.setDelayCycle(one.getDelayCycle());
+        goods.setCurrentPrice(one.getCurrentPrice());
         goods.setShowPics(new LinkedList<String>());
         List<GoodsPictures> goodsShowPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.SHOW_PIC);
         if (!CollectionUtils.isEmpty(goodsShowPictures)) {
@@ -126,6 +129,7 @@ public class SessionController {
         }
         //goods.getDescPics().add("exampleImg/goodsDescExample1.jpg");
         //goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
+        goods.setSession(session);
         return goods;
     }
 

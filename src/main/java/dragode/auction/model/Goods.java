@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * Created by Dracode on 2016/8/27.
@@ -18,14 +17,32 @@ public class Goods {
     private Integer sessionId;
     private String bannerUrl;
     private String title;
+
     private Long bidCount;
-    private Long price;//TODO 改成startingPrice
+    /**
+     * 当前价格
+     */
+    private Long currentPrice;
     /**
      * 起拍价
      */
     private Long startingPrice;
+    /**
+     * 是否需要保证金
+     */
+    private Boolean hasCashDeposit;
+    /**
+     * 保证金
+     */
     private Long cashDeposit;
+    /**
+     * 加价幅度
+     */
     private Long bidIncrement;
+    /**
+     * 延迟周期，X分/次，默认5分/次
+     */
+    private Integer delayCycle;
     private String showPics;
     private String descPics;
 
@@ -69,12 +86,12 @@ public class Goods {
         this.bidCount = bidCount;
     }
 
-    public Long getPrice() {
-        return price;
+    public Long getCurrentPrice() {
+        return currentPrice;
     }
 
-    public void setPrice(Long price) {
-        this.price = price;
+    public void setCurrentPrice(Long currentPrice) {
+        this.currentPrice = currentPrice;
     }
 
     public String getDescPics() {
@@ -115,5 +132,21 @@ public class Goods {
 
     public void setBidIncrement(Long bidIncrement) {
         this.bidIncrement = bidIncrement;
+    }
+
+    public Boolean getHasCashDeposit() {
+        return hasCashDeposit;
+    }
+
+    public void setHasCashDeposit(Boolean hasCashDeposit) {
+        this.hasCashDeposit = hasCashDeposit;
+    }
+
+    public Integer getDelayCycle() {
+        return delayCycle;
+    }
+
+    public void setDelayCycle(Integer delayCycle) {
+        this.delayCycle = delayCycle;
     }
 }

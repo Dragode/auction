@@ -20,13 +20,10 @@
             font-size: 15px
         }
     </style>
-    <!--<script src="/js/m-base_2.0.1_index.js"></script>
-    <script src="/js/hairlines_0.0.2_index.js"></script>-->
+    <script src="/js/hairlines_0.0.2_index.js"></script>
     <script type="text/javascript" src="/js/common/sea.js"></script>
-    <!--<script type="text/javascript" src="/js/package.js"></script>-->
     <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
-    <!--<script type="text/javascript" src="/js/common/touch.js"></script>-->
-    <!--<script type="text/javascript" src="/js/bridge-api.js"></script>-->
+    <script type="text/javascript" src="/js/common/zepto-touch.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/m-base_2.0.1_reset.css">
     <link rel="stylesheet" type="text/css" href="/css/common.css">
@@ -47,19 +44,12 @@
             <div class="rc-slide">
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
-                        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                        <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
-                        <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+                        <li data-target="#carousel-example-generic" v-for="(showPic,index) in showPics"
+                            :data-slide-to="index" :class="{active:0==index}"></li>
                     </ol>
                     <div class="carousel-inner" role="listbox">
-                        <div class="item active">
-                            <img src="/exampleImg/goodDetail.jpg" alt="">
-                        </div>
-                        <div class="item">
-                            <img src="/exampleImg/goodDetail.jpg" alt="">
-                        </div>
-                        <div class="item">
-                            <img src="/exampleImg/goodDetail.jpg" alt="">
+                        <div class="item" :class="{active:0==index}" v-for="(showPic,index) in showPics">
+                            <img :src="showPic" alt=""/>
                         </div>
                     </div>
                 </div>
@@ -73,37 +63,35 @@
                 </a>
             </div>
         </div>
-        <div class="rc-statusbar before">
+        <div class="rc-statusbar before"><!--TODO 计算状态-->
             <div class="align-left">
                 <span class="status-icon pm-iconfont">时</span>
-                <span class="status-flag">即将开始</span><!--TODO 动态获取-->
+                <span class="status-flag">{{auctionStatus.desc}}</span>
                 <span class="main">
-                        <div class="countdown" style="display: none;">
-                            <div>04天21时24分03秒</div>
-                        </div>
                         <span class="time">
-                            <p><b>08</b><span>月</span><b>31</b><span>日</span> <b>09:00</b> 开始</p>
+                            {{auctionStatus.showtext}}
                         </span>
-                        <span class="time-desc"></span>
-                    </span>
+                </span>
             </div>
             <div class="rc-statusbar-shadow"></div>
         </div>
         <section class="pai-info pai-info-before">
             <div class="header">
                 <p class="title">{{title}}</p>
-                <div class="rc-mobile-share pm-share">
+                <!--<div class="rc-mobile-share pm-share">
                     <div class="rc-mobile-share-wrap">
-                        <b class="icon pm-util-iconfont">空</b>分享
+                        <b class="icon pm-util-iconfont">空</b>提醒
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="basic-price">
-                <div class="unit"><b>RMB</b><span>起拍价</span></div>
-                <div class="price-number"><span class="price-comma"><em class="price-comma-price">1,300</em></span>
-                    <!--TODO 动态获取-->
+                <div class="unit"><b>RMB</b><span>当前价</span></div>
+                <div class="price-number">
+                    <span class="price-comma">
+                        <em class="price-comma-price">{{currentPrice}}元</em>
+                    </span>
                 </div>
-                <div class="price-format">1300元</div>
+                <!--<div class="price-format">1300元</div>-->
             </div>
             <!--参加情况-->
             <!--<div class="count-info">
@@ -121,7 +109,7 @@
                 </span>
             </div>-->
         </section>
-        <!--拍卖纪录-->
+        <!--拍卖纪录--><!--TODO 增加拍卖纪录-->
         <!--<section class="pai-record" data-spm="pai-record">
             <div class="header line">
                 <b class="icon pm-iconfont">录</b>
@@ -129,7 +117,22 @@
                 <span class="count"><b>0</b>条</span>
                 <b class="right-anchor disabled">右</b>
             </div>
-            <ul class="record-list" style="height: 0rem;"></ul>
+            <ul class="record-list" style="height: 1.0625rem;">
+                <li class="record-row status-lead">
+                    <b class="icon">
+                        <b class="type-icon cell pm-iconfont">显</b>
+                    </b>
+                    <span class="nick cell">Q6059</span>
+                    <span class="status cell">领先</span>
+                    <span class="time cell">01.18 14:56:11</span>
+                    <span class="user-currentPrice cell">
+                        <span class="currentPrice-comma">
+                            <i class="currentPrice-comma-rmb">￥</i>
+                            <em class="currentPrice-comma-currentPrice">10,000</em>
+                        </span>
+                    </span>
+                </li>
+            </ul>
         </section>-->
     </div>
     <div class="second-screen inited" data-spm="second-screen">
@@ -140,30 +143,34 @@
                         <dt class="list-title">拍品信息</dt>
                         <dd class="twoColumn item">
                             <div class="param-name">起拍价</div>
-                            <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
-                                    class="price-comma-price">1,300</em></span></div>
+                            <div class="param-value">
+                                <span class="currentPrice-comma">
+                                    <i class="currentPrice-comma-rmb">￥</i>
+                                    <em class="currentPrice-comma-currentPrice">{{startingPrice}}</em>
+                                </span>
+                            </div>
                         </dd>
-                        <dd class="twoColumn item">
+                        <dd class="twoColumn item" v-if="hasCashDeposit">
                             <div class="param-name">保证金</div>
-                            <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
-                                    class="price-comma-price">200</em></span></div>
+                            <div class="param-value">
+                                <span class="currentPrice-comma">
+                                    <i class="currentPrice-comma-rmb">￥</i>
+                                    <em class="currentPrice-comma-currentPrice">{{cashDeposit}}</em>
+                                </span>
+                            </div>
                         </dd>
                         <dd class="twoColumn item">
                             <div class="param-name">加价幅度</div>
-                            <div class="param-value"><span class="price-comma"><i class="price-comma-rmb">￥</i><em
-                                    class="price-comma-price">200</em></span></div>
+                            <div class="param-value">
+                                <span class="currentPrice-comma">
+                                    <i class="currentPrice-comma-rmb">￥</i>
+                                    <em class="currentPrice-comma-currentPrice">{{bidIncrement}}</em>
+                                </span>
+                            </div>
                         </dd>
                         <dd class="twoColumn item">
-                            <div class="param-name">拍卖佣金</div>
-                            <div class="param-value">无</div>
-                        </dd>
-                        <dd class="twoColumn item no-border">
-                            <div class="param-name">保留价</div>
-                            <div class="param-value">无</div>
-                        </dd>
-                        <dd class="twoColumn item no-border">
                             <div class="param-name">延时周期</div>
-                            <div class="param-value">5分/次</div>
+                            <div class="param-value">{{delayCycle}}分/次</div>
                         </dd>
                     </dl>
                     <dl class="list">
@@ -192,7 +199,7 @@
                     </div>
                 </div>
                 <div class="list-title">图文详情</div>
-                <div class="rc-video">
+                <!--<div class="rc-video">
                     <video id="rc-video-9" controls="" preload="none"
                            poster="/exampleImg/videoPoster.jpg">
                         <source src="/exampleImg/video.m3u8"
@@ -200,75 +207,38 @@
                         <source src="/exampleImg/video.mp4"
                                 type="video/mp4">
                         <p>您的浏览器不支持视频播放</p></video>
-                </div>
+                </div>--><!--TODO 增加视频支持-->
                 <div class="cdn-content">
                     <div class="cdn-content-desc"><p>
                         <!--商品图片-->
                         <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="/exampleImg/goodsDescExample1.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i4/2738770841/TB2gCVFXRLzQeBjSZFCXXXmtXXa_!!2738770841.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i4/2738770841/TB2gCVFXRLzQeBjSZFCXXXmtXXa_!!2738770841.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i4/2738770841/TB2gCVFXRLzQeBjSZFCXXXmtXXa_!!2738770841.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i4/2738770841/TB2gCVFXRLzQeBjSZFCXXXmtXXa_!!2738770841.jpg_1080x0.jpg 3x">
-                                <img
-                                        class="J_LazyLoad" data-network="Q75,Q30"
-                                        src=/exampleImg/goodsDescExample2.jpg
-                                        data-src="https://gw.alicdn.com/imgextra/i3/2738770841/TB2YIdKaqnyQeBjSspeXXa8WpXa_!!2738770841.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i3/2738770841/TB2YIdKaqnyQeBjSspeXXa8WpXa_!!2738770841.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i3/2738770841/TB2YIdKaqnyQeBjSspeXXa8WpXa_!!2738770841.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i3/2738770841/TB2YIdKaqnyQeBjSspeXXa8WpXa_!!2738770841.jpg_1080x0.jpg 3x">
-                                <img
-                                        class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="/exampleImg/goodsDescExample3.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2yp4FaB_xQeBjy0FhXXbAoFXa_!!2738770841.jpg_1080x0.jpg 3x">
-                            </span>
-                        <!--企业简介-->
-                        <span style="line-height: 1.5;">
-                                <img
-                                        class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2rTpAaB6xQeBjSsziXXXxVVXa_!!0-paimai.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2rTpAaB6xQeBjSsziXXXxVVXa_!!0-paimai.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2rTpAaB6xQeBjSsziXXXxVVXa_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2rTpAaB6xQeBjSsziXXXxVVXa_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2rTpAaB6xQeBjSsziXXXxVVXa_!!0-paimai.jpg_1080x0.jpg 3x">
-
-                                <img
-                                        class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2xd4AauTyQeBjSspfXXaI3FXa_!!0-paimai.jpg_1080x0.jpg 3x">
-                            </span>
+                                        v-for="descPic in descPics" :src="descPic">
+                        </span>
                         <!--收藏证书-->
                         <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg_1080x0.jpg 3x">
-                            </span>
+                                        src="https://gw.alicdn.com/imgextra/i4/2738770841/TB2qc9sppXXXXX3XFXXXXXXXXXX_!!0-paimai.jpg">
+                        </span>
                         <!--授权证书-->
                         <span style="line-height: 1.5;">
                                     <img class="J_LazyLoad" data-network="Q75,Q30"
-                                         src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg"
-                                         data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg"
-                                         data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg_1080x0.jpg 3x">
-                            </span>
+                                         src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2HiXyauLyQeBjy0FaXXXiDVXa_!!0-paimai.jpg">
+                        </span>
                         <!--送货相关-->
                         <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg_1080x0.jpg 3x">
+                                        src="https://gw.alicdn.com/imgextra/i2/2738770841/TB2gB8LnVXXXXcWXpXXXXXXXXXX_!!0-paimai.jpg">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="https://gw.alicdn.com/imgextra/i3/2738770841/TB2CcasnVXXXXX7XXXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i3/2738770841/TB2CcasnVXXXXX7XXXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i3/2738770841/TB2CcasnVXXXXX7XXXXXXXXXXXX_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i3/2738770841/TB2CcasnVXXXXX7XXXXXXXXXXXX_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i3/2738770841/TB2CcasnVXXXXX7XXXXXXXXXXXX_!!0-paimai.jpg_1080x0.jpg 3x">
+                                        src="https://gw.alicdn.com/imgextra/i3/2738770841/TB2CcasnVXXXXX7XXXXXXXXXXXX_!!0-paimai.jpg">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
-                                        src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg"
-                                        data-srcset="https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg_320x0.jpg 1x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg_800x0.jpg 2x,https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg_1080x0.jpg 3x">
-                            </span>
-                    </p>
+                                        src="https://gw.alicdn.com/imgextra/i1/2738770841/TB2EBWjnVXXXXaTXXXXXXXXXXXX_!!0-paimai.jpg">
+                        </span>
                     </div>
                 </div>
             </div>
@@ -291,11 +261,11 @@
             <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
             <!--<div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>-->
         </div>
-        <div class="main-btn">
+        <div class="main-btn" id="auction">
             <div class="jiaobao">
-                <p class="action">去报名</p>
-                <p class="foregift">
-                    (保证金金额<b>￥</b>200)
+                <p class="action">竞拍</p>
+                <p class="foregift" v-if="hasCashDeposit">
+                    (保证金金额<b>￥</b>{{cashDeposit}})
                 </p>
             </div>
         </div>
@@ -329,22 +299,51 @@
     seajs.use(imports, function () {
         Zepto().toastUtil.showLoading();
         $.getJSON('/goods/' + getUrlParam("goodsId"), function (response) {
+            //获取拍卖状态和对应文字描述
+            var auctionStatus = {};
+            var now = new Date();
+            var startTime = Zepto().dateUtil.parse(response.session.startTime, "yyyy-MM-dd hh:mm:ss");
+            var endTime = Zepto().dateUtil.parse(response.session.endTime, "yyyy-MM-dd hh:mm:ss");
+            if (now.getTime() >= endTime.getTime()) {
+                auctionStatus.desc = "已结束";
+                auctionStatus.showtext = "";
+            } else if (now.getTime() >= startTime.getTime()) {
+                auctionStatus.desc = "正在拍卖";
+                auctionStatus.showtext = Zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
+            } else {
+                auctionStatus.desc = "即将开始";
+                auctionStatus.showtext = Zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
+            }
+
             var goodsDetail = new Vue({
                 el: '#goods-detail',
                 data: {
-                    title: response.title
+                    title: response.title,
+                    showPics: response.showPics,
+                    auctionStatus: auctionStatus,
+                    startingPrice: response.startingPrice,
+                    currentPrice: response.currentPrice,
+                    bidIncrement: response.bidIncrement,
+                    hasCashDeposit: response.hasCashDeposit,
+                    cashDeposit: response.cashDeposit,
+                    delayCycle: response.delayCycle,
+                    descPics: response.descPics
                 }
             });
             window.goodsDetail = goodsDetail;
+
+            Zepto("#auction").tap(function (event) {
+                $.getJSON('/user', function (response) {
+                    if (!response.phoneNumber) {
+                        window.location.href = "/register.html?from=goods&goodsId=" + getUrlParam("goodsId");
+                    }
+                });
+                /*Zepto("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
+                 });*/
+            });
+
             Zepto().toastUtil.dismissLoading();
         });
-        /*Zepto("#jiaobao").on($().conditionUtil.hasTouch(), function (event) {
-         /!*$.getJSON('/remindWhenAuctionBegin?sessionId=' + getUrlParam("sessionId")+"&userId="+getUrlParam("userId"), function (response) {
-         //TODO 处理异常情况
-         alert("设置成功");
-         });*!/
-         Zepto("#jiaobao").html("<p class='enter-hall'><b class='pai-icon'>锤</b>进入竞价大厅</p>");
-         });*/
     });
 
     function getUrlParam(name) {

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>注册</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="email=no"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" href="/css/h5.css">
+    <script src="/js/register/h5.js"></script>
+</head>
+<body>
+<style>
+    .am-list .am-list-item {
+        min-height: 42px
+    }
+
+    .head {
+        width: 100%;
+        height: 42px;
+        line-height: 42px;
+        border-bottom: 1px solid #C8C8C8;
+        color: #000;
+        text-align: center;
+        font-size: 16px;
+        background-color: #F7F7F8;
+    }
+
+    .am-list .am-list-item .am-list-label, .am-field a {
+        color: #6c6c6c;
+    }
+</style>
+<div class="head">注册
+</div>
+<form id="loginForm" action="" class="mt-10" method="post">
+    <div class="am-list am-list-flat am-list-flat-chip">
+        <div class="am-list-item am-list-item-form am-input-autoclear">
+            <div class="am-list-label">手机号码</div>
+            <div class="am-list-control">
+                <input type="text" class="am-input-required" placeholder="请输入手机号码" id="phoneNumber">
+            </div>
+        </div>
+        <div class="am-list-item am-list-item-form am-input-autoclear" id="checkcodeWarp">
+            <div class="am-list-label">短信校验码</div>
+            <div class="am-list-control">
+                <input type="text" class="am-input-required" id="msgCheckCode" placeholder="短信校验码">
+            </div>
+            <div class="am-list-button">
+                <button type="button" id="getCheckcode" style="width:140px">获取短信校验码</button>
+            </div>
+        </div>
+    </div>
+    <div id="checkcode" style="margin: 5px 0;"></div>
+    <div class="am-field">
+        <button type="button" class="am-button am-button-submit" id="btn-submit">登录</button>
+    </div>
+</form>
+<script src="/js/register/msglogin.js"></script>
+<script>
+
+</script>
+</body>
+</html>

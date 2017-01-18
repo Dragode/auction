@@ -9,6 +9,9 @@ import static dragode.auction.utils.constantUtil.ConstantUtil.getAsString;
 @LoadProperties(files = {"/payment.properties", "/qCloudSms.properties"})
 public class Constant {
 
+    public static final String USER_ID = "USER_ID";
+    public static final String MSG_CHECK_CODE = "MSG_CHECK_CODE";
+
     public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss";
 
     public static final String PROJECT_HOST = getAsString("PROJECT_HOST");

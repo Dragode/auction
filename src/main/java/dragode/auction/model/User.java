@@ -17,6 +17,7 @@ public class User {
     private String openId;
     private Integer balance;
     private Boolean subscribed;
+    private String phoneNumber;
 
     public Integer getId() {
         return id;
@@ -48,5 +49,13 @@ public class User {
 
     public void setSubscribed(Boolean subscribed) {
         this.subscribed = subscribed;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
