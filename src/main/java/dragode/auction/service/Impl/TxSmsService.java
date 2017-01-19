@@ -29,7 +29,7 @@ public class TxSmsService {
      *
      * @param phoneNumber 接收验证码的手机号
      */
-    public Boolean sendVerificationCodeSms(String phoneNumber) {
+    public String sendVerificationCodeSms(String phoneNumber) {
         return sendVerificationCodeSms(Arrays.asList(phoneNumber));
     }
 
@@ -38,13 +38,14 @@ public class TxSmsService {
      *
      * @param phoneNumbers 接收验证码的手机号列表
      */
-    public Boolean sendVerificationCodeSms(List<String> phoneNumbers) {
+    public String sendVerificationCodeSms(List<String> phoneNumbers) {
+        String verificationCode = generateVerificationCode();
         String response = qCloudSmsIntf.sendMsgByTemplate(CHINA_NATION_CODE, phoneNumbers, SmsType.NORMAL,
-                VERIFICATION_CODE_SMS_TEMPLATE_ID, Arrays.asList(generateVerificationCode()));
+                VERIFICATION_CODE_SMS_TEMPLATE_ID, Arrays.asList(verificationCode));
         if (StringUtils.isEmpty(response)) {
-            return false;
+            return "";
         } else {
-            return true;
+            return verificationCode;
         }
     }
 

@@ -11,6 +11,7 @@ public class Constant {
 
     public static final String USER_ID = "USER_ID";
     public static final String MSG_CHECK_CODE = "MSG_CHECK_CODE";
+    public static final String PHONE_NUMBER = "PHONE_NUMBER";
 
     public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss";
 
