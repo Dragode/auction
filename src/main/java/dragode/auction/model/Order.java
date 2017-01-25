@@ -21,11 +21,19 @@ public class Order {
     /**
      * 订单价格，以元为单位
      */
-    private Double price;
+    private Long price;
     /**
      * 订单状态
      */
     private OrderStatus status;
+    /**
+     * 用户Id
+     */
+    private Integer userId;
+    /**
+     * 商品Id
+     */
+    private Integer goodsId;
 
     public Integer getId() {
         return id;
@@ -43,11 +51,11 @@ public class Order {
         this.displayId = displayId;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -63,7 +71,46 @@ public class Order {
         this.status = status;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
+    }
+
     public enum OrderStatus {
-        WAIT_FOR_PAY, PAYING, PAY_SUCCESS, PAY_FAILURE;
+        /**
+         * 代付款
+         */
+        WAIT_FOR_PAY,
+        /**
+         * 付款中
+         */
+        PAYING,
+        /**
+         * 付款成功
+         */
+        PAY_SUCCESS,
+        /**
+         * 付款失败
+         */
+        PAY_FAILURE,
+        /**
+         * 已发货
+         */
+        DILIVERED,
+        /**
+         * 已结束
+         */
+        FINISH;
     }
 }

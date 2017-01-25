@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by Dracode on 2016/9/11.
+ * 商品图片DAO
  */
 @Repository
 public interface GoodsPicturesRepository extends JpaRepository<GoodsPictures, Integer> {

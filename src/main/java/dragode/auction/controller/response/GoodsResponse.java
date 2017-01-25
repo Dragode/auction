@@ -57,6 +57,7 @@ public class GoodsResponse {
     private Integer delayCycle;
     private List<String> showPics;
     private List<String> descPics;
+    private String auctionPic;
 
     private Session session;
 
@@ -170,5 +171,13 @@ public class GoodsResponse {
 
     public void setHasCashDeposit(Boolean hasCashDeposit) {
         this.hasCashDeposit = hasCashDeposit;
+    }
+
+    public String getAuctionPic() {
+        return auctionPic;
+    }
+
+    public void setAuctionPic(String auctionPic) {
+        this.auctionPic = auctionPic;
     }
 }

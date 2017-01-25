@@ -60,7 +60,7 @@ public class WxInterface {
         if (StringUtils.isEmpty(access_token)
                 || null == tokenLastFreshTime
                 || tokenLastFreshTime.getTime() - now.getTime() > TOKEN_FRESH_INTERVAL) {
-            String accessTokenUrl = WX_HOST + "/cgi-bin/access_token?grant_type=client_credential&appid={appid}&secret={secret}";
+            String accessTokenUrl = WX_HOST + "/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
             String response = restTemplate.getForObject(accessTokenUrl, String.class, APP_ID, SECRET);
             JSONObject jsonObjectResponse = convertToJsonObject(response);
             //TODO 异常处理

@@ -1,12 +1,12 @@
 package dragode.auction.repository;
 
-import dragode.auction.model.HomePage;
+import dragode.auction.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * 首页DAO
+ * 订单DAO
  */
 @Repository
-public interface HomePageRepository extends JpaRepository<HomePage,Integer>{
+public interface OrderRepository extends JpaRepository<Order,Integer>{
 }

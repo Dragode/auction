@@ -4,20 +4,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 /**
- *
+ * 拍卖纪录
  */
 @Entity
-@Table(name = "sessionReminder")
-public class SessionReminder {
+@Table(name = "auctionRecord")
+public class AuctionRecord {
     @Id
     @GeneratedValue
     private Integer id;
-    private Integer sessionId;
     private Integer userId;
-    private String openId;
+    private Integer goodsId;
+    private Long price;
 
     public Integer getId() {
         return id;
@@ -27,15 +26,6 @@ public class SessionReminder {
         this.id = id;
     }
 
-    public Integer getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(Integer sessionId) {
-        this.sessionId = sessionId;
-    }
-
-
     public Integer getUserId() {
         return userId;
     }
@@ -44,11 +34,19 @@ public class SessionReminder {
         this.userId = userId;
     }
 
-    public String getOpenId() {
-        return openId;
+    public Integer getGoodsId() {
+        return goodsId;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
     }
 }

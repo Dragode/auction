@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by Dracode on 2016/8/27.
@@ -45,6 +46,18 @@ public class Goods {
     private Integer delayCycle;
     private String showPics;
     private String descPics;
+    /**
+     * 竞拍大厅页面图片
+     */
+    private String auctionPic;
+    /**
+     * 当前竞拍所得用户
+     */
+    private Integer auctionUserId;
+    /**
+     * 用户竞拍时间
+     */
+    private Date lastAuctionDate;
 
     public Integer getId() {
         return id;
@@ -148,5 +161,29 @@ public class Goods {
 
     public void setDelayCycle(Integer delayCycle) {
         this.delayCycle = delayCycle;
+    }
+
+    public String getAuctionPic() {
+        return auctionPic;
+    }
+
+    public void setAuctionPic(String auctionPic) {
+        this.auctionPic = auctionPic;
+    }
+
+    public Integer getAuctionUserId() {
+        return auctionUserId;
+    }
+
+    public void setAuctionUserId(Integer auctionUserId) {
+        this.auctionUserId = auctionUserId;
+    }
+
+    public Date getLastAuctionDate() {
+        return lastAuctionDate;
+    }
+
+    public void setLastAuctionDate(Date lastAuctionDate) {
+        this.lastAuctionDate = lastAuctionDate;
     }
 }

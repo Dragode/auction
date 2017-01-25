@@ -1,17 +1,24 @@
 package dragode.auction.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.GoodsResponse;
 import dragode.auction.controller.response.SessionDetailResponse;
 import dragode.auction.model.*;
 import dragode.auction.repository.*;
+import dragode.wechat.intf.TemplateMessage;
+import dragode.wechat.intf.WxInterface;
+import dragode.wechat.service.WxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +27,8 @@ public class SessionController {
 
     private static Logger logger = LoggerFactory.getLogger(SessionController.class);
 
+    @Resource
+    private WxService wxService;
     @Resource
     private HomePageRepository homePageRepository;
     @Resource
@@ -32,6 +41,8 @@ public class SessionController {
     private GoodsRepository goodsRepository;
     @Resource
     private GoodsPicturesRepository goodsPicturesRepository;
+    @Resource
+    private AuctionRecordRepository auctionRecordRepository;
 
     /**
      * 获取首页Banner的专场
@@ -80,8 +91,6 @@ public class SessionController {
         //TODO 业务逻辑校验
         SessionReminder sessionReminder = new SessionReminder();
         sessionReminder.setSessionId(sessionId);
-        Session session = sessionRepository.findOne(sessionId);
-        sessionReminder.setSessionStartTime(session.getStartTime());
         sessionReminder.setUserId(userId);
         User user = userRepository.findOne(userId);
         sessionReminder.setOpenId(user.getOpenId());
@@ -112,6 +121,7 @@ public class SessionController {
         goods.setBidIncrement(one.getBidIncrement());
         goods.setDelayCycle(one.getDelayCycle());
         goods.setCurrentPrice(one.getCurrentPrice());
+        goods.setAuctionPic(one.getAuctionPic());
         goods.setShowPics(new LinkedList<String>());
         List<GoodsPictures> goodsShowPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.SHOW_PIC);
         if (!CollectionUtils.isEmpty(goodsShowPictures)) {
@@ -139,5 +149,80 @@ public class SessionController {
         User user = userRepository.findOne(userId);
     }
 
+    @RequestMapping(path = "/auction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
+    public String auction(@PathVariable Integer goodsId, HttpServletRequest request,
+                          @PathVariable Long price) {
+        JSONObject response = new JSONObject();
 
+        //Long price = Long.parseLong(requestParams.get("price"));
+        //Assert.notNull(price);
+
+        Goods goods = goodsRepository.findOne(goodsId);
+        Long currentPrice = goods.getCurrentPrice();
+        if (currentPrice >= price) {
+            response.put("code", -1);
+            response.put("message", "有人出价比你高！");
+            response.put("price", goods.getCurrentPrice());
+            return response.toJSONString();
+        }
+
+        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
+
+        AuctionRecord auctionRecord = new AuctionRecord();
+        auctionRecord.setUserId(userId);
+        auctionRecord.setGoodsId(goodsId);
+        auctionRecord.setPrice(price);
+        auctionRecordRepository.save(auctionRecord);
+
+
+        goods.setCurrentPrice(price);
+        goods.setAuctionUserId(userId);
+        goodsRepository.save(goods);
+
+        //出价被超过提醒
+        if (goods.getAuctionUserId() != userId) {
+            User user = userRepository.findOne(userId);
+            String templateId = "iyu51Ee1S8F9Wf-ZX6lBMltv-nONEu3lQvog5W3fDF8";
+            String topcolor = "#FF0000";
+            String url = "http://119.29.159.58/auctionList.html";
+            HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
+            TemplateMessage.DataItem name = new TemplateMessage.DataItem();
+            name.setValue(goods.getTitle());
+            name.setColor("#173177");
+            stringDataItemHashMap.put("name", name);
+            WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+        }
+
+        response.put("code", 0);
+        response.put("message", "成功");
+        return response.toJSONString();
+    }
+
+    @RequestMapping(path = "/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
+    public JSONObject proxyAuction(@PathVariable Integer goodsId, HttpServletRequest request,
+                                   @PathVariable Long price) {
+
+        JSONObject response = new JSONObject();
+
+        //Long price = Long.parseLong(requestParams.get("price"));
+        //Assert.notNull(price);
+
+        Goods goods = goodsRepository.findOne(goodsId);
+        Long currentPrice = goods.getCurrentPrice();
+        if (currentPrice >= price) {
+            response.put("code", -1);
+            response.put("message", "有人出价比你高！");
+            response.put("price", goods.getCurrentPrice());
+            return response;
+        }
+
+        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
+        return response;
+    }
+
+    @RequestMapping(path = "/auctionRecord/goods/{goodsId}")
+    public BaseListResponse<AuctionRecord> getAuctionRecords(@PathVariable Integer goodsId) {
+        List<AuctionRecord> auctionRecords = auctionRecordRepository.findAllByGoodsId(goodsId);
+        return new BaseListResponse<>(auctionRecords);
+    }
 }
