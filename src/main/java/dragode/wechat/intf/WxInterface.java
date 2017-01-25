@@ -128,11 +128,7 @@ public class WxInterface {
     }
 
     public static void main(String[] args) {
-       /* String accessToken = getAccessToken();
-        System.out.println(accessToken);*/
-        DateTime dateTime = new DateTime(2016, 10, 1, 8, 0);
-        DateTime dateTime2 = new DateTime(2016, 10, 1, 10, 0);
-        long interval = dateTime2.toDate().getTime() - dateTime.toDate().getTime();
-        System.out.println(interval);
+        String accessToken = getAccessToken();
+        System.out.println(accessToken);
     }
 }

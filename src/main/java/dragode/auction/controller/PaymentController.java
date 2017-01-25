@@ -94,7 +94,7 @@ public class PaymentController {
         Order order = new Order();
         order.setId(1);
         order.setDisplayId(generateOrderDisplayId());
-        order.setPrice(0.01);
+        order.setPrice(1l);
         order.setStatus(Order.OrderStatus.WAIT_FOR_PAY);
         return order;
     }
