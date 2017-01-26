@@ -40,7 +40,7 @@ public class TaskService {
         List<ProxyAuction> underProxyAuctions = proxyAuctionRepository.findByStatus(ProxyAuction.UNDER_PROXY);
         for (ProxyAuction underProxyAuction : underProxyAuctions) {
             Goods goods = goodsRepository.findOne(underProxyAuction.getGoodsId());
-            if (goods.getAuctionUserId() != underProxyAuction.getGoodsId()) {
+            if (goods.getAuctionUserId().intValue() != underProxyAuction.getUserId().intValue()) {
                 if (goods.getCurrentPrice() < underProxyAuction.getPrice()) {
                     Integer preAuctionUserId = goods.getAuctionUserId();
                     goods.setAuctionUserId(underProxyAuction.getUserId());

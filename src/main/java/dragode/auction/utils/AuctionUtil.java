@@ -1,5 +1,7 @@
 package dragode.auction.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -22,24 +24,38 @@ public class AuctionUtil {
      *
      * @return
      */
-    public static String generateOauthUrl() {
+    public static String generateOauthUrl(String status) {
+        String appid = "wxcecf87b6a40bda8f";
+        String redirectUri = "http://www.ssspaimai.com/wx/redirectToHtml";
+        String scope = SNSAPI_BASE_SCOPE;
+
         String oauthUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}#wechat_redirect";
-        oauthUrl = oauthUrl.replace("{appid}", "wxcecf87b6a40bda8f");
-        //String redirectUri = "http://www.ssspaimai.com/auctionList.html";
-        String redirectUri = "http://www.ssspaimai.com/wx/redirectToAuctionList";
+        String oauthUrlWithStatus = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}&state={state}#wechat_redirect";
+
+        String url;
+        if (StringUtils.isNotBlank(status)) {
+            url = oauthUrlWithStatus;
+            url = url.replace("{state}", status);
+        } else {
+            url = oauthUrl;
+        }
+
+
+        url = url.replace("{appid}", appid);
         try {
-            oauthUrl = oauthUrl.replace("{redirect_uri}", URLEncoder.encode(redirectUri, "UTF-8"));
+            url = url.replace("{redirect_uri}", URLEncoder.encode(redirectUri, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             System.out.println("Error occurred in url encode!");
             e.printStackTrace();
         }
-        oauthUrl = oauthUrl.replace("{scope}", SNSAPI_BASE_SCOPE);
-        System.out.println(oauthUrl);
-        return oauthUrl;
+        url = url.replace("{scope}", scope);
+        return url;
     }
 
 
     public static void main(String[] args) {
-        generateOauthUrl();
+        String status = "myOrders";
+        String url = generateOauthUrl(status);
+        System.out.println(url);
     }
 }

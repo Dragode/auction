@@ -41,6 +41,10 @@ public class SessionController {
     private GoodsPicturesRepository goodsPicturesRepository;
     @Resource
     private AuctionRecordRepository auctionRecordRepository;
+    @Resource
+    private OrderRepository orderRepository;
+    @Resource
+    private ProxyAuctionRepository proxyAuctionRepository;
 
     /**
      * 获取首页Banner的专场
@@ -211,13 +215,10 @@ public class SessionController {
     }
 
     @RequestMapping(path = "/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
-    public JSONObject proxyAuction(@PathVariable Integer goodsId, HttpServletRequest request,
+    public String proxyAuction(@PathVariable Integer goodsId, HttpServletRequest request,
                                    @PathVariable Long price) {
 
         JSONObject response = new JSONObject();
-
-        //Long price = Long.parseLong(requestParams.get("price"));
-        //Assert.notNull(price);
 
         Goods goods = goodsRepository.findOne(goodsId);
         Long currentPrice = goods.getCurrentPrice();
@@ -225,16 +226,37 @@ public class SessionController {
             response.put("code", -1);
             response.put("message", "有人出价比你高！");
             response.put("price", goods.getCurrentPrice());
-            return response;
+            return response.toJSONString();
         }
 
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-        return response;
+
+        goods.setCurrentPrice(goods.getCurrentPrice()+goods.getBidIncrement());
+        goods.setAuctionUserId(userId);
+        goodsRepository.save(goods);
+
+        ProxyAuction proxyAuction = new ProxyAuction();
+        proxyAuction.setUserId(userId);
+        proxyAuction.setGoodsId(goodsId);
+        proxyAuction.setPrice(price);
+        proxyAuction.setStatus(ProxyAuction.UNDER_PROXY);
+        proxyAuctionRepository.save(proxyAuction);
+
+        response.put(Constant.RETURN_CODE, Constant.SUCCESS_CODE);
+        response.put(Constant.RETURN_DESC, Constant.SUCCESS_DESC);
+        return response.toJSONString();
     }
 
     @RequestMapping(path = "/auctionRecord/goods/{goodsId}")
     public BaseListResponse<AuctionRecord> getAuctionRecords(@PathVariable Integer goodsId) {
         List<AuctionRecord> auctionRecords = auctionRecordRepository.findAllByGoodsId(goodsId);
         return new BaseListResponse<>(auctionRecords);
+    }
+
+    @RequestMapping(path = "/order",method = RequestMethod.GET)
+    public BaseListResponse<Order> getOrders(HttpServletRequest request){
+        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
+        List<Order> orders = orderRepository.findAllByUserId(userId);
+        return new BaseListResponse<>(orders);
     }
 }

@@ -3,6 +3,7 @@ package dragode.auction.controller;
 import dragode.auction.common.Constant;
 import dragode.auction.model.User;
 import dragode.auction.repository.UserRepository;
+import dragode.auction.utils.AuctionUtil;
 import dragode.auction.utils.HttpRequestUtils;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
@@ -147,6 +148,55 @@ public class WxController {
         }
     }
 
+    /**
+     * 微信网页授权后，跳转到特定页面
+     *
+     * @param code
+     * @param state
+     * @param request
+     * @param response
+     */
+    @RequestMapping(path = "/redirectToHtml")
+    public void redirectToHtml(@RequestParam String code, @RequestParam String state,
+                               HttpServletRequest request, HttpServletResponse response) {
+        logRequestIfDebug(request);
+
+        if (StringUtils.isEmpty(code)) {
+            //TODO 优化
+            logger.error("code param is empty，or user have not authorized.");
+            PrintWriter writer = null;
+            try {
+                writer = response.getWriter();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            writer.write("请授权！");
+            writer.flush();
+        } else {
+            String openId = null;
+            try {
+                openId = wxService.getOpenId(code);
+            } catch (Exception e) {
+                logger.error("Error occurred in get openId.", e);
+                return;
+            }
+            User user = userRepository.findByOpenId(openId);
+            if (user == null) {
+                user = new User();
+                user.setOpenId(openId);
+                user.setBalance(0);
+                userRepository.save(user);
+            }
+            HttpSession session = request.getSession();
+            session.setAttribute(Constant.USER_ID, user.getId());
+            try {
+                response.sendRedirect("/" + state + ".html");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @RequestMapping(path = "/testGetUserInfo")
     public OAuthUserInfo testGetUserInfo(@RequestParam String code) {
         OAuthUserInfo userInfo = wxService.getUserInfo(code);
@@ -156,5 +206,16 @@ public class WxController {
     private void logRequestIfDebug(HttpServletRequest request) {
         logger.info("[Method = " + request.getMethod() + "]" +
                 "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
+    }
+
+    @RequestMapping(path = "/redirectToWxOauth/{status}")
+    public void oauthRedirect(@PathVariable String status,
+                              HttpServletResponse response){
+        String url = AuctionUtil.generateOauthUrl(status);
+        try {
+            response.sendRedirect(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

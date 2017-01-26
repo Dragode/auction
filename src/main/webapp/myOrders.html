@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0, user-scalable=no" name="viewport">
+    <link type="text/css" rel="stylesheet" href="/css/myOrder.css">
+    <script type="text/javascript" src="/js/common/sea.js"></script>
+    <script type="text/javascript" src="/js/zepto.1.0.4.js" replace="LIB:zepto"></script>
+    <script type="text/javascript" src="/js/common/touch.js"></script>
+</head>
+<body onload="afterRender()">
+
+<!--顶部提示-->
+<section id="topTip">
+</section>
+
+<div class="main-container">
+    <!--<div class="wrapper">
+        <div class="first-screen">-->
+            <!--主容器-->
+            <section id="container" data-spm="albumList" class="">
+            </section>
+        <!--</div>
+
+
+        <section class="main-op" data-spm="main-op">
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>首页</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>购买须知</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>我的</span></div>
+            </div>
+        </section>-->
+    </div>
+</div>
+
+
+<!--专场商品模板-->
+<script type="text/html" id="listCellTemplate">
+    <section class="item clickAndOpenWindow">
+        <section class="left_box">
+            <img class="img"
+                 src="<%=item.bannerUrl%>">
+        </section>
+        <section class="right_box">
+            <section class="top">购买的商品：<%=item.title%></section>
+            <section class="middle">
+                <section>订单状态：</section>
+                <section class="item_price item_time_wait"><%=item.status%></section>
+            </section>
+        </section>
+    </section>
+</script>
+
+</body>
+
+<script type="text/javascript">
+    var imports = [];
+    <!---js对应的路径-->
+    imports.push('/js/config.js');
+    imports.push('/js/utils.js');
+    imports.push('/js/ListView.js');
+    imports.push('/js/template.js');
+    imports.push('/js/iscroll5.js');
+    imports.push('/js/timeHelper.js');
+    imports.push('/js/myOrders/MyOrderListAdapter.js');
+    imports.push('/js/DateUtil.min.js');
+    imports.push('/js/StringUtil.min.js');
+    imports.push('/js/StringExt.min.js');
+    imports.push('/js/DateExt.min.js');
+    //开始引入资源文件
+    seajs.use(imports, function () {
+        seajs.use('/js/myOrders/myOrders.js', function (home) {
+            home.initialize();
+        })
+    });
+
+    $(document).ready(function () {
+
+    })
+
+</script>
+
+</html>

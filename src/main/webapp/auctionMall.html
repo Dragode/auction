@@ -127,6 +127,22 @@
                     </div>
                 </div>
                 <div class="bid-wrap">
+                    <div class="pm-modal pm-modal-hidden" id="proxyFeed">
+                        <div data-visible="false" class="pm-modal-mask"></div>
+                        <div class="pm-modal-wrap" tabindex="0" role="dialog" style="margin: 0px 8.75%; width: 82.5%;">
+                            <div class="pm-modal-content">
+                                <div class="pm-modal-body">
+                                    <p class="title">设置代理价成功</p>
+                                    <p>您已成功设置代理价！且您当前的出价为{{bidPrice}}元</p>
+                                </div>
+                                <div class="pm-modal-footer">
+                                    <button type="button" class="pm-modal-btn btn-ok-half" id="ok4">确 定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bid-wrap">
                     <div class="pm-modal pm-modal-hidden" id="more">
                         <div data-visible="false" class="pm-modal-mask"></div>
                         <div class="pm-modal-wrap" tabindex="0" role="dialog" style="margin: 0px 8.75%; width: 82.5%;">
@@ -241,7 +257,6 @@
                         Zepto("#alert").addClass("pm-modal-hidden");
                         if (response && 0 == response.code) {
                             auctionMall.currentPrice = auctionMall.bidPrice;
-                            auctionMall.bidPrice += bidIncrement;
                             Zepto("#feed").removeClass("pm-modal-hidden");
                         } else if (response && -1 == response.code) {
                             auctionMall.currentPrice = response.price;
@@ -251,7 +266,24 @@
                     }
                 });
             } else if ("proxy" == bidType) {
-
+                $.ajax({
+                    type: 'POST',
+                    url: '/proxyAuction/goods/' + getUrlParam("goodsId") + "/price/" + auctionMall.bidPrice,
+                    data: JSON.stringify({price: auctionMall.bidPrice}),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        Zepto("#alert").addClass("pm-modal-hidden");
+                        if (response && 0 == response.code) {
+                            auctionMall.currentPrice = auctionMall.currentPrice + bidIncrement;
+                            auctionMall.bidPrice = auctionMall.currentPrice;
+                            Zepto("#proxyFeed").removeClass("pm-modal-hidden");
+                        } else if (response && -1 == response.code) {
+                            auctionMall.currentPrice = response.price;
+                            auctionMall.bidPrice = auctionMall.currentPrice + bidIncrement;
+                            Zepto("#more").removeClass("pm-modal-hidden");
+                        }
+                    }
+                });
             }
 
         });
@@ -261,6 +293,7 @@
             if (isJqmGhostClick(event)) {
                 return;
             }
+            auctionMall.bidPrice += bidIncrement;
             Zepto("#feed").addClass("pm-modal-hidden");
         });
 
@@ -270,6 +303,15 @@
                 return;
             }
             Zepto("#more").addClass("pm-modal-hidden");
+        });
+
+        Zepto("#ok4").tap(function (event) {
+            //prevent same event from firing twice
+            if (isJqmGhostClick(event)) {
+                return;
+            }
+            auctionMall.bidPrice = auctionMall.bidPrice + bidIncrement;
+            Zepto("#proxyFeed").addClass("pm-modal-hidden");
         });
     }
 
