@@ -644,13 +644,20 @@ html {
 }
 
 .main-op .main-btn {
-    margin-left: 4.3125rem;
+    /*margin-left: 4.3125rem;*/
     height: 1.5rem;
     line-height: 1.5rem;
-    background-color: #820011;
     color: #fff;
     font-size: .4375rem;
     text-align: center
+}
+
+.main-btn-disable {
+    background-color: grey;
+}
+
+.main-btn-active {
+    background-color: #820011;
 }
 
 .main-op .main-op-ww {

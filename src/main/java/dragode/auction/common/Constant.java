@@ -10,6 +10,18 @@ import static dragode.auction.utils.constantUtil.ConstantUtil.getAsString;
 public class Constant {
 
     /**
+     * response key
+     */
+    public static final String RETURN_CODE = "code";
+    public static final String RETURN_DESC = "desc";
+
+    /**
+     * response value
+     */
+    public static final String SUCCESS_CODE = "0";
+    public static final String SUCCESS_DESC = "success";
+
+    /**
      * request.session keys
      */
     public static final String USER_ID = "USER_ID";

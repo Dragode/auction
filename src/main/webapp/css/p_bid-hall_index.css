@@ -11,6 +11,10 @@ body {
     overflow: hidden
 }
 
+.hide {
+    display: none;
+}
+
 .wrap {
     width: 10rem
 }

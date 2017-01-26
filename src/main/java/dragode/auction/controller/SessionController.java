@@ -28,8 +28,6 @@ public class SessionController {
     private static Logger logger = LoggerFactory.getLogger(SessionController.class);
 
     @Resource
-    private WxService wxService;
-    @Resource
     private HomePageRepository homePageRepository;
     @Resource
     private SessionRepository sessionRepository;
@@ -52,6 +50,20 @@ public class SessionController {
         HomePage homePage = homePageRepository.findAll().get(0);
         Session homePageSession = sessionRepository.findOne(homePage.getSessionId());
         return homePageSession;
+    }
+
+    /**
+     * 设置首页Banner的专场
+     */
+    @RequestMapping(path = "/homePage/{sessionId}", method = RequestMethod.POST)
+    public String setHomePage(@PathVariable Integer sessionId) {
+        HomePage homePage = homePageRepository.findAll().get(0);
+        homePage.setSessionId(sessionId);
+
+        JSONObject response = new JSONObject();
+        response.put(Constant.RETURN_CODE, Constant.SUCCESS_CODE);
+        response.put(Constant.RETURN_DESC, Constant.SUCCESS_DESC);
+        return response.toJSONString();
     }
 
     /**

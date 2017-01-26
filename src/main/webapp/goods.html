@@ -31,7 +31,7 @@
 </head>
 
 <body>
-<div id="goods-detail" class="main-container">
+<div id="goods-detail" class="main-container hide">
     <div class="wrapper">
         <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
         <div class="loading hidden">
@@ -261,7 +261,7 @@
             <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
             <!--<div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>提醒</span></div>-->
         </div>
-        <div class="main-btn" id="auction">
+        <div class="main-btn" id="auction" :class="{'main-btn-disable':!auctionStatus.underAuction,'main-btn-active':auctionStatus.underAuction}">
             <div class="jiaobao">
                 <p class="action">竞拍</p>
                 <p class="foregift" v-if="hasCashDeposit">
@@ -295,6 +295,8 @@
     imports.push('/js/StringUtil.min.js');
     imports.push('/js/StringExt.min.js');
     imports.push('/js/DateExt.min.js');
+
+    var endTime;
     //开始引入资源文件
     seajs.use(imports, function () {
         Zepto().toastUtil.showLoading();
@@ -303,18 +305,22 @@
             var auctionStatus = {};
             var now = new Date();
             var startTime = Zepto().dateUtil.parse(response.session.startTime, "yyyy-MM-dd hh:mm:ss");
-            var endTime = Zepto().dateUtil.parse(response.session.endTime, "yyyy-MM-dd hh:mm:ss");
+            endTime = Zepto().dateUtil.parse(response.session.endTime, "yyyy-MM-dd hh:mm:ss");
             if (now.getTime() >= endTime.getTime()) {
+                auctionStatus.underAuction = false;
                 auctionStatus.desc = "已结束";
                 auctionStatus.showtext = "";
             } else if (now.getTime() >= startTime.getTime()) {
+                auctionStatus.underAuction = true;
                 auctionStatus.desc = "正在拍卖";
                 auctionStatus.showtext = Zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
             } else {
+                auctionStatus.underAuction = false;
                 auctionStatus.desc = "即将开始";
                 auctionStatus.showtext = Zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
             }
 
+            console.log("auctionStatus.underAuction=" + auctionStatus.underAuction)
             var goodsDetail = new Vue({
                 el: '#goods-detail',
                 data: {
@@ -333,12 +339,19 @@
             window.goodsDetail = goodsDetail;
 
             Zepto("#auction").tap(function (event) {
-                $.getJSON('/user', function (response) {
-                    if (!response.phoneNumber) {
-                        window.location.href = "/register.html?from=goods&goodsId=" + getUrlParam("goodsId");
-                    }
-                });
+                //判断拍卖是否结束
+                if ("正在拍卖" == auctionStatus.desc) {
+                    $.getJSON('/user', function (response) {
+                        if (!response.phoneNumber) {
+                            window.location.href = "/register.html?from=goods&goodsId=" + getUrlParam("goodsId");
+                        } else {
+                            window.location.href = "/auctionMall.html?goodsId=" + getUrlParam("goodsId");
+                        }
+                    });
+                }
             });
+
+            Zepto("#goods-detail").removeClass("hide");
 
             Zepto().toastUtil.dismissLoading();
         });

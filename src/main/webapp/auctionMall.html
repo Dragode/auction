@@ -22,7 +22,7 @@
     <link rel="stylesheet" type="text/css" href="/css/p_bid-hall_index.css">
 </head>
 <body>
-<div id="auction-mall">
+<div id="auction-mall" class="hide">
     <div class="wrap">
         <div class="rc-toast rc-toast-out" style="left: 200%; visibility: hidden;"></div>
         <div class="loading hidden">
@@ -177,6 +177,7 @@
         window.auctionMall = auctionMall;
 
         addTap();
+        Zepto("#auction-mall").removeClass("hide");
     });
 
     function addTap() {
