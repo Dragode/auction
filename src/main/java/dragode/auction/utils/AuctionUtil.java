@@ -26,7 +26,7 @@ public class AuctionUtil {
         String oauthUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}#wechat_redirect";
         oauthUrl = oauthUrl.replace("{appid}", "wxcecf87b6a40bda8f");
         //String redirectUri = "http://www.ssspaimai.com/auctionList.html";
-        String redirectUri = "http://www.baidu.com";
+        String redirectUri = "http://www.ssspaimai.com/wx/redirectToAuctionList";
         try {
             oauthUrl = oauthUrl.replace("{redirect_uri}", URLEncoder.encode(redirectUri, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
