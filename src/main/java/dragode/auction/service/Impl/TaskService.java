@@ -117,7 +117,7 @@ public class TaskService {
                     Order order = new Order();
                     order.setDisplayId(String.valueOf(now.getTime()));
                     order.setPrice(goods.getCurrentPrice());
-                    order.setStatus(Order.OrderStatus.WAIT_FOR_PAY);
+                    order.setOrderStatus(Order.OrderStatus.WAIT_FOR_PAY.getCode());
                     order.setUserId(goods.getAuctionUserId());
                     order.setGoodsId(goods.getId());
                     orderRepository.save(order);

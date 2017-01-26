@@ -9,7 +9,7 @@ import javax.persistence.Table;
  * 订单
  */
 @Entity
-@Table(name = "order")
+@Table(name = "auctionOrder")
 public class Order {
     @Id
     @GeneratedValue
@@ -25,7 +25,7 @@ public class Order {
     /**
      * 订单状态
      */
-    private OrderStatus status;
+    private String orderStatus;
     /**
      * 用户Id
      */
@@ -63,12 +63,12 @@ public class Order {
         return String.valueOf((int) (price * 100));
     }
 
-    public OrderStatus getStatus() {
-        return status;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Integer getUserId() {
@@ -91,26 +91,36 @@ public class Order {
         /**
          * 代付款
          */
-        WAIT_FOR_PAY,
+        WAIT_FOR_PAY("WAIT_FOR_PAY"),
         /**
          * 付款中
          */
-        PAYING,
+        PAYING("PAYING"),
         /**
          * 付款成功
          */
-        PAY_SUCCESS,
+        PAY_SUCCESS("PAY_SUCCESS"),
         /**
          * 付款失败
          */
-        PAY_FAILURE,
+        PAY_FAILURE("PAY_FAILURE"),
         /**
          * 已发货
          */
-        DILIVERED,
+        DILIVERED("DILIVERED"),
         /**
          * 已结束
          */
-        FINISH;
+        FINISH("FINISH");
+
+        private String code;
+
+        OrderStatus(String code) {
+            this.code = code;
+        }
+
+        public String getCode(){
+            return code;
+        }
     }
 }

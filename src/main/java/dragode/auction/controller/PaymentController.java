@@ -32,7 +32,8 @@ public class PaymentController {
                     HttpServletResponse response) {
         Order order = getOrder(orderId);
         String responseString = "";
-        switch (order.getStatus()) {
+        //TODO 暂不支持支付功能
+        /*switch (order.getStatus()) {
             case PAYING:
                 logger.info("支付中，继续支付");
             case PAY_FAILURE:
@@ -43,7 +44,7 @@ public class PaymentController {
             case PAY_SUCCESS:
                 responseString = "已支付成功";
                 break;
-        }
+        }*/
 
         try {
             response.getWriter().print(responseString);
@@ -95,7 +96,8 @@ public class PaymentController {
         order.setId(1);
         order.setDisplayId(generateOrderDisplayId());
         order.setPrice(1l);
-        order.setStatus(Order.OrderStatus.WAIT_FOR_PAY);
+        //TODO 暂不支持支付功能
+        //order.setStatus(Order.OrderStatus.WAIT_FOR_PAY);
         return order;
     }
 

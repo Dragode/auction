@@ -11,7 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface SessionReminderRepository extends JpaRepository<SessionReminder, Integer> {
-
-    List<SessionReminder> findAllByStatus(String status);
     List<SessionReminder> findAllBySessionId(Integer sessionId);
 }
