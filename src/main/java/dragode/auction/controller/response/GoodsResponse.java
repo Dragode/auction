@@ -5,31 +5,7 @@ import dragode.auction.model.Session;
 import java.util.List;
 
 /**
- * ******************************************
- * <p/>
- * Copyright 2016
- * NetDragon All rights reserved
- * <p/>
- * *****************************************
- * <p/>
- * *** Company ***
- * NetDragon
- * <p/>
- * *****************************************
- * <p/>
- * *** Team ***
- * SmartQ
- * <p/>
- * *****************************************
- *
- * @author 俞建龙(300116)
- * @version V1.0
- * @Title GoodsResponse
- * @Package dragode.auction.controller.response
- * <p/>
- * *****************************************
- * @Description
- * @date 2016/9/5 0005
+ * 商品相应报文
  */
 public class GoodsResponse {
     private Integer id;

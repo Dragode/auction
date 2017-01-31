@@ -7,6 +7,7 @@ import dragode.wechat.intf.WxInterface;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -152,6 +153,8 @@ public class TaskService {
 
     //TODO 异步执行
     public void remindUser(SessionReminder sessionReminder, Session session) {
+        User user = userRepository.findOne(sessionReminder.getUserId());
+
         String templateId = "ADHrbX8R1mB736XPDyT9HNxD4-3EIhqE--2go8YrVlA";
         String topcolor = "#FF0000";
         String url = "http://119.29.159.58/auctionList.html";
@@ -160,6 +163,6 @@ public class TaskService {
         name.setValue(session.getTitle());
         name.setColor("#173177");
         stringDataItemHashMap.put("name", name);
-        WxInterface.sendTemplateMessage(templateId, sessionReminder.getOpenId(), topcolor, url, stringDataItemHashMap);
+        WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
     }
 }

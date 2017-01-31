@@ -38,8 +38,6 @@ public class SessionController {
     @Resource
     private GoodsRepository goodsRepository;
     @Resource
-    private GoodsPicturesRepository goodsPicturesRepository;
-    @Resource
     private AuctionRecordRepository auctionRecordRepository;
     @Resource
     private OrderRepository orderRepository;
@@ -98,66 +96,25 @@ public class SessionController {
      * 专场开拍提醒,现支持微信提醒
      *
      * @param sessionId 专场ID
-     * @param userId    用户ID
      * @return
      */
-    @RequestMapping(path = "/remindWhenAuctionBegin")
-    public BaseResponse remindWhenAuctionBegin(@RequestParam Integer sessionId,
-                                               @RequestParam Integer userId) {
-        //TODO 业务逻辑校验
+    @RequestMapping(path = "/session/{sessionId}/action/remind")
+    public String remindWhenAuctionBegin(@PathVariable Integer sessionId,
+                                               HttpServletRequest request) {
+        Integer userId = (Integer)request.getSession().getAttribute(Constant.USER_ID);
+
         SessionReminder sessionReminder = new SessionReminder();
         sessionReminder.setSessionId(sessionId);
         sessionReminder.setUserId(userId);
-        User user = userRepository.findOne(userId);
-        sessionReminder.setOpenId(user.getOpenId());
         sessionReminderRepository.save(sessionReminder);
-        return new BaseResponse();
+
+        JSONObject response = new JSONObject();
+        response.put(Constant.RETURN_CODE, Constant.SUCCESS_CODE);
+        response.put(Constant.RETURN_DESC, Constant.SUCCESS_DESC);
+        return response.toJSONString();
     }
 
-    /**
-     * 获取商品详情
-     *
-     * @param goodsId 商品ID
-     * @return
-     */
-    @RequestMapping(path = "/goods/{goodsId}")
-    public GoodsResponse getGoods(@PathVariable Integer goodsId) {
-        Goods one = goodsRepository.findOne(goodsId);
-        Session session = sessionRepository.findOne(one.getSessionId());
 
-        GoodsResponse goods = new GoodsResponse();
-        goods.setId(one.getId());
-        goods.setSessionId(one.getSessionId());
-        goods.setBannerUrl(one.getBannerUrl());
-        goods.setTitle(one.getTitle());
-        goods.setBidCount(one.getBidCount());
-        goods.setStartingPrice(one.getStartingPrice());
-        goods.setHasCashDeposit(one.getHasCashDeposit());
-        goods.setCashDeposit(one.getCashDeposit());
-        goods.setBidIncrement(one.getBidIncrement());
-        goods.setDelayCycle(one.getDelayCycle());
-        goods.setCurrentPrice(one.getCurrentPrice());
-        goods.setAuctionPic(one.getAuctionPic());
-        goods.setShowPics(new LinkedList<String>());
-        List<GoodsPictures> goodsShowPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.SHOW_PIC);
-        if (!CollectionUtils.isEmpty(goodsShowPictures)) {
-            for (GoodsPictures goodsShowPicture : goodsShowPictures) {
-                goods.getShowPics().add(goodsShowPicture.getRelativeUrl());
-            }
-        }
-        /*goods.getShowPics().add("exampleImg/goodsShowExample1.jpg");
-        goods.getShowPics().add("exampleImg/goodsShowExample2.jpg");
-        goods.getShowPics().add("exampleImg/goodsShowExample3.jpg");*/
-        goods.setDescPics(new LinkedList<String>());
-        List<GoodsPictures> goodsDescPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.DESC_PIC);
-        for (GoodsPictures goodsDescPicture : goodsDescPictures) {
-            goods.getDescPics().add(goodsDescPicture.getRelativeUrl());
-        }
-        //goods.getDescPics().add("exampleImg/goodsDescExample1.jpg");
-        //goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
-        goods.setSession(session);
-        return goods;
-    }
 
     @RequestMapping(path = "/signUpSession")
     public void signUpSession(@RequestParam Integer userId,

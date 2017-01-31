@@ -14,7 +14,7 @@ public class DefaultWebApplicationInitializer implements WebApplicationInitializ
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(WebConfig.class);
-        //rootContext.register(MySQLConfig.class);
+        rootContext.register(MySQLConfig.class);
 
         servletContext.addListener(new ContextLoaderListener(rootContext));
 

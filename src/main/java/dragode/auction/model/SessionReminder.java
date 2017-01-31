@@ -17,7 +17,6 @@ public class SessionReminder {
     private Integer id;
     private Integer sessionId;
     private Integer userId;
-    private String openId;
 
     public Integer getId() {
         return id;
@@ -42,13 +41,5 @@ public class SessionReminder {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
     }
 }
