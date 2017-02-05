@@ -77,6 +77,19 @@
 </script>
 <!----------拍卖管理页面---------->
 
+
+<!----------拍卖管理页面---------->
+<template id="template-add-auction">
+    <div>新增拍卖专场</div>
+</template>
+<script>
+    var addAuction = {
+        template: "#template-add-auction"
+    };
+</script>
+<!----------拍卖管理页面---------->
+
+
 <!----------订单管理页面---------->
 <template id="template-order-manage">
     <div>订单管理页面</div>
@@ -87,6 +100,7 @@
     };
 </script>
 <!----------订单管理页面---------->
+
 
 <!----------用户管理页面---------->
 <template id="template-user-manage">
@@ -102,6 +116,7 @@
 <script>
     var menusConfig = [
         {path: "/auctionManage", label: "拍卖管理", component: auctionManage, isRootPath: true},
+        {path: "/addAuction", label: "新增拍卖", component: addAuction},
         {path: "/orderManage", label: "订单管理", component: orderManage},
         {path: "/userManage", label: "用户管理", component: userManage}
     ];
