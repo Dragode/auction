@@ -216,4 +216,11 @@ public class SessionController {
         List<Order> orders = orderRepository.findAllByUserId(userId);
         return new BaseListResponse<>(orders);
     }
+
+    //TODO 修改url成restful 风格
+    @RequestMapping(path = "/order/all",method = RequestMethod.GET)
+    public BaseListResponse<Order> getUserOrder(){
+        List<Order> allOrders = orderRepository.findAll();
+        return new BaseListResponse<>(allOrders);
+    }
 }
