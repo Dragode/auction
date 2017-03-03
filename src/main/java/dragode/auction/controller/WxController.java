@@ -1,5 +1,7 @@
 package dragode.auction.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import dragode.auction.common.Constant;
 import dragode.auction.model.User;
 import dragode.auction.repository.UserRepository;
@@ -217,5 +219,12 @@ public class WxController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(path = "/jssdk/config",method = RequestMethod.GET)
+    public String getJsSdkConfig(HttpServletRequest request){
+        String requestUrl = request.getHeader("Referer");
+        Map<String, String> jsSdkConfig = wxService.getJsSdkConfig(requestUrl);
+        return JSON.toJSONString(jsSdkConfig);
     }
 }

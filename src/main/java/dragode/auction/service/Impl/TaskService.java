@@ -4,10 +4,9 @@ import dragode.auction.model.*;
 import dragode.auction.repository.*;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;

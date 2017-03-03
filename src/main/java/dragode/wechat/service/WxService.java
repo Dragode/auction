@@ -2,8 +2,10 @@ package dragode.wechat.service;
 
 import dragode.auction.service.wx.WxEventHandler;
 import dragode.wechat.intf.WxInterface;
+import dragode.wechat.intf.response.JsApiTicket;
 import dragode.wechat.intf.response.OAuthAccessToken;
 import dragode.wechat.intf.response.OAuthUserInfo;
+import dragode.wechat.util.Sign;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -13,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.util.Map;
 
 import static dragode.auction.service.wx.WxMsgType.*;
 
@@ -128,6 +132,13 @@ public class WxService {
         OAuthAccessToken accessToken = WxInterface.getOAuthAccessToken(code);
         OAuthUserInfo userInfo = WxInterface.getUserInfo(accessToken);
         return userInfo;
+    }
+
+    public Map<String,String> getJsSdkConfig(String url){
+        JsApiTicket jsApiTicket = WxInterface.getJsApiTicket();
+        Map<String, String> config = Sign.sign(jsApiTicket.getTicket(), url);
+        config.put("appId", WxInterface.APP_ID);
+        return config;
     }
 
     /**

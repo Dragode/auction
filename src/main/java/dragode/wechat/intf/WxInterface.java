@@ -2,10 +2,9 @@ package dragode.wechat.intf;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import dragode.wechat.intf.response.JsApiTicket;
 import dragode.wechat.intf.response.OAuthAccessToken;
 import dragode.wechat.intf.response.OAuthUserInfo;
-import dragode.wechat.service.WxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -22,7 +21,7 @@ public class WxInterface {
     private static final Logger logger = LoggerFactory.getLogger(WxInterface.class);
 
     //TODO 改到配置文件
-    private static final String APP_ID = "wxcecf87b6a40bda8f";
+    public static final String APP_ID = "wxcecf87b6a40bda8f";
     private static final String SECRET = "14adfbebbc1fed16333271190309856b";
     private static final String WX_HOST = "https://api.weixin.qq.com";
     private static final String ACCESS_TOKEN_URL = "/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
@@ -85,7 +84,7 @@ public class WxInterface {
         String accessTokenStr = restTemplate.getForObject(WX_HOST + OAUTH_ACCESS_TOKE_URL, String.class,
                 APP_ID, SECRET, code);
         logger.info("获取网页授权AccessToken接口响应报文：" + accessTokenStr);
-        OAuthAccessToken accessToken = JSON.parseObject(accessTokenStr,OAuthAccessToken.class);
+        OAuthAccessToken accessToken = JSON.parseObject(accessTokenStr, OAuthAccessToken.class);
         return accessToken;
     }
 
@@ -125,6 +124,12 @@ public class WxInterface {
         String response = restTemplate.postForObject(templateMessageUrl, requestBody, String.class, getAccessToken());
         //{"errcode":0,"errmsg":"ok","msgid":418493294} response
         System.out.println(response);
+    }
+
+    //TODO 缓存JsApiTicket
+    public static JsApiTicket getJsApiTicket() {
+        String jsApiTicketUrl = WX_HOST + "/cgi-bin/ticket/getticket?access_token={accessToken}&type=jsapi";
+        return restTemplate.getForObject(jsApiTicketUrl, JsApiTicket.class, getAccessToken());
     }
 
     private static JSONObject convertToJsonObject(String jsonText) {
