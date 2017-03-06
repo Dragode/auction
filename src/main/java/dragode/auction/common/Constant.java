@@ -6,7 +6,7 @@ import static dragode.auction.utils.FileUtils.getAbsolutePath;
 import static dragode.auction.utils.constantUtil.ConstantUtil.getAsInteger;
 import static dragode.auction.utils.constantUtil.ConstantUtil.getAsString;
 
-@LoadProperties(files = {"/payment.properties", "/qCloudSms.properties"})
+@LoadProperties(files = {"/payment.properties", "/qCloudSms.properties","/config.properties"})
 public class Constant {
 
     /**
@@ -70,4 +70,6 @@ public class Constant {
     public static final Integer QC_SMS_SDK_APP_ID = getAsInteger("QC_SMS_SDK_APP_ID");
     public static final String QC_SMS_APP_KEY = getAsString("QC_SMS_APP_KEY");
     public static final Integer QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID = getAsInteger("QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID");
+
+    public static final String PICS_PATH = getAsString("PICS_PATH");
 }

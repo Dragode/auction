@@ -2,6 +2,7 @@ package dragode.wechat.intf;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import dragode.auction.utils.DownloadImage;
 import dragode.wechat.intf.response.JsApiTicket;
 import dragode.wechat.intf.response.OAuthAccessToken;
 import dragode.wechat.intf.response.OAuthUserInfo;
@@ -27,6 +28,7 @@ public class WxInterface {
     private static final String ACCESS_TOKEN_URL = "/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
     private static final String OAUTH_ACCESS_TOKE_URL = "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
     private static final String OAUTH_USER_INFO_URL = "/sns/userinfo?access_token={accessToken}&openid={openid}&lang={lang}";
+    private static final String DOWNLOAD_MEDIA_FILE_URL = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={accessToken}&media_id={mediaId}";
 
     private static final String ZH_CN = "zh_CN";
 
@@ -138,6 +140,18 @@ public class WxInterface {
             throw new RuntimeException("jsonText can not convert to JSONObject");
         }
         return (JSONObject) parse;
+    }
+
+    public static void downloadMediaFile(String mediaId,String fileName,String savePath) {
+        String url = DOWNLOAD_MEDIA_FILE_URL.replace("{accessToken}", getAccessToken());
+        url = url.replace("{mediaId}", mediaId);
+
+        try {
+            DownloadImage.download(url, fileName, savePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String[] args) {

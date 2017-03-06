@@ -1,5 +1,6 @@
 package dragode.auction.controller;
 
+import dragode.auction.common.Constant;
 import dragode.auction.controller.response.GoodsResponse;
 import dragode.auction.model.Goods;
 import dragode.auction.model.GoodsPictures;
@@ -7,10 +8,10 @@ import dragode.auction.model.Session;
 import dragode.auction.repository.GoodsPicturesRepository;
 import dragode.auction.repository.GoodsRepository;
 import dragode.auction.repository.SessionRepository;
+import dragode.wechat.intf.WxInterface;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ import java.util.List;
  * 商品接口
  */
 @RestController
+@RequestMapping(path = "/goods")
 public class GoodsController {
 
     @Resource
@@ -35,7 +37,7 @@ public class GoodsController {
      * @param goodsId 商品ID
      * @return
      */
-    @RequestMapping(path = "/goods/{goodsId}")
+    @RequestMapping(path = "/{goodsId}",method = RequestMethod.GET)
     public GoodsResponse getGoods(@PathVariable Integer goodsId) {
         Goods one = goodsRepository.findOne(goodsId);
         Session session = sessionRepository.findOne(one.getSessionId());
@@ -72,5 +74,44 @@ public class GoodsController {
         //goods.getDescPics().add("exampleImg/goodsDescExample2.jpg");
         goods.setSession(session);
         return goods;
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public void addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
+        //,@RequestBody Map requestBody
+        //下载图片
+        List<String> pictures = addGoodsRequest.getPictures();
+        //List<String> pictures = (List)requestBody.get("pictures");
+        for (String picture : pictures) {
+            WxInterface.downloadMediaFile(picture, picture + ".jpg", Constant.PICS_PATH);
+        }
+
+        //保存商品信息
+        Goods goods = new Goods();
+        BeanUtils.copyProperties(addGoodsRequest, goods);
+        //TODO 临时方案
+        goods.setShowPics("");
+        goods.setDescPics("");
+        goods.setBidCount(0l);
+        goods.setCurrentPrice(goods.getStartingPrice());
+        goods.setSessionId(1);
+        goods.setBannerUrl("/pic/" + addGoodsRequest.getPictures().get(0) + ".jpg");
+        goods.setAuctionPic("/pic/" + addGoodsRequest.getPictures().get(3) + ".jpg");
+        goodsRepository.save(goods);
+
+        //保存商品图片信息
+        GoodsPictures goodsShowPictures = new GoodsPictures();
+        String showPicture = addGoodsRequest.getPictures().get(1);
+        goodsShowPictures.setType(GoodsPictures.SHOW_PIC);
+        goodsShowPictures.setGoodsId(goods.getId());
+        goodsShowPictures.setRelativeUrl("/pic/" + showPicture + ".jpg");
+        goodsPicturesRepository.save(goodsShowPictures);
+
+        GoodsPictures goodsDesPictures = new GoodsPictures();
+        String desPicture = pictures.get(2);
+        goodsDesPictures.setType(GoodsPictures.DESC_PIC);
+        goodsDesPictures.setGoodsId(goods.getId());
+        goodsDesPictures.setRelativeUrl("/pic/" + desPicture + ".jpg");
+        goodsPicturesRepository.save(goodsDesPictures);
     }
 }
