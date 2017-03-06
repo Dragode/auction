@@ -76,6 +76,7 @@ public class GoodsController {
         return goods;
     }
 
+    //TODO 为什么会让/goods.html会405
     @RequestMapping(method = RequestMethod.POST)
     public void addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
         //,@RequestBody Map requestBody
