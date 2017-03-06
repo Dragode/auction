@@ -66,7 +66,7 @@ function SessionDetailListAdapter(datas, viewList) {
                                 fftitleViewText = fftitleViewFirstChild.text();
                             params.datetitle = fftitleViewText,
                                 listView2.recoverLater(params),
-                                window.location.href = "/goods.html?goodsId="+data.id;
+                                window.location.href = "/goodsDetail.html?goodsId="+data.id;
                         }),
                     null != data && null != data && "tip" == data.showtype) {
                     var tipsShow = '<section class="tipsshow" >没有更多数据了</section>';
