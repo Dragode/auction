@@ -142,7 +142,11 @@ public class WxInterface {
         return (JSONObject) parse;
     }
 
-    public static void downloadMediaFile(String mediaId,String fileName,String savePath) {
+    public static void downloadMediaFile(String mediaId,String savePath) {
+        downloadMediaFile(mediaId, mediaId, savePath);
+    }
+
+    private static void downloadMediaFile(String mediaId,String fileName,String savePath) {
         String url = DOWNLOAD_MEDIA_FILE_URL.replace("{accessToken}", getAccessToken());
         url = url.replace("{mediaId}", mediaId);
 

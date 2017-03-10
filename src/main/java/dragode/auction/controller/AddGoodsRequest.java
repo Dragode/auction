@@ -7,15 +7,58 @@ import java.util.List;
  * 新增商品请求
  */
 public class AddGoodsRequest {
+    /**
+     * 商品列表图片 wx服务器ID
+     */
+    private String bannerPictureWxServerId;
+    /**
+     * 标题
+     */
     private String title;
+    /**
+     * 起拍价
+     */
     private Long startingPrice;
-    private Boolean hasCashDeposit;
-    private Long cashDeposit = 0l;
+    /**
+     * 加价幅度
+     */
     private Long bidIncrement;
+    /**
+     * 保证金
+     */
+    private Long cashDeposit;
+    /**
+     * 延迟周期，X分/次，默认5分/次
+     */
     private Integer delayCycle;
-    private List<String> pictures;
+    /**
+     * 拍卖开始时间
+     */
     private Date startTime;
+    /**
+     * 拍卖结束时间
+     */
     private Date endTime;
+    /**
+     * 竞拍大厅页面图片 wx服务器ID
+     */
+    private String auctionPictureWxServerId;
+    /**
+     * 商品详情页 跑马灯图片列表 wx服务器ID
+     */
+    private List<String> showPicturesWxServerId;
+    /**
+     * 商品详情页 详情图片列表 wx服务器ID
+     */
+    private List<String> descPicturesWxServerId;
+
+    public String getBannerPictureWxServerId() {
+        return bannerPictureWxServerId;
+    }
+
+    public void setBannerPictureWxServerId(String bannerPictureWxServerId) {
+        this.bannerPictureWxServerId = bannerPictureWxServerId;
+    }
 
     public String getTitle() {
         return title;
@@ -25,12 +68,36 @@ public class AddGoodsRequest {
         this.title = title;
     }
 
-    public List<String> getPictures() {
-        return pictures;
+    public Long getStartingPrice() {
+        return startingPrice;
     }
 
-    public void setPictures(List<String> pictures) {
-        this.pictures = pictures;
+    public void setStartingPrice(Long startingPrice) {
+        this.startingPrice = startingPrice;
+    }
+
+    public Long getBidIncrement() {
+        return bidIncrement;
+    }
+
+    public void setBidIncrement(Long bidIncrement) {
+        this.bidIncrement = bidIncrement;
+    }
+
+    public Long getCashDeposit() {
+        return cashDeposit;
+    }
+
+    public void setCashDeposit(Long cashDeposit) {
+        this.cashDeposit = cashDeposit;
+    }
+
+    public Integer getDelayCycle() {
+        return delayCycle;
+    }
+
+    public void setDelayCycle(Integer delayCycle) {
+        this.delayCycle = delayCycle;
     }
 
     public Date getStartTime() {
@@ -49,43 +116,27 @@ public class AddGoodsRequest {
         this.endTime = endTime;
     }
 
-    public Long getStartingPrice() {
-        return startingPrice;
+    public String getAuctionPictureWxServerId() {
+        return auctionPictureWxServerId;
     }
 
-    public void setStartingPrice(Long startingPrice) {
-        this.startingPrice = startingPrice;
+    public void setAuctionPictureWxServerId(String auctionPictureWxServerId) {
+        this.auctionPictureWxServerId = auctionPictureWxServerId;
     }
 
-    public Boolean getHasCashDeposit() {
-        return hasCashDeposit;
+    public List<String> getShowPicturesWxServerId() {
+        return showPicturesWxServerId;
     }
 
-    public void setHasCashDeposit(Boolean hasCashDeposit) {
-        this.hasCashDeposit = hasCashDeposit;
+    public void setShowPicturesWxServerId(List<String> showPicturesWxServerId) {
+        this.showPicturesWxServerId = showPicturesWxServerId;
     }
 
-    public Long getCashDeposit() {
-        return cashDeposit;
+    public List<String> getDescPicturesWxServerId() {
+        return descPicturesWxServerId;
     }
 
-    public void setCashDeposit(Long cashDeposit) {
-        this.cashDeposit = cashDeposit;
-    }
-
-    public Long getBidIncrement() {
-        return bidIncrement;
-    }
-
-    public void setBidIncrement(Long bidIncrement) {
-        this.bidIncrement = bidIncrement;
-    }
-
-    public Integer getDelayCycle() {
-        return delayCycle;
-    }
-
-    public void setDelayCycle(Integer delayCycle) {
-        this.delayCycle = delayCycle;
+    public void setDescPicturesWxServerId(List<String> descPicturesWxServerId) {
+        this.descPicturesWxServerId = descPicturesWxServerId;
     }
 }

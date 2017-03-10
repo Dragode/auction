@@ -83,7 +83,7 @@ public class TaskService {
      */
     @Scheduled(fixedDelay = 1000)
     public void finishAuction() {
-        List<Session> sessions = sessionRepository.findByStatus(Session.AUCTION);
+        /*List<Session> sessions = sessionRepository.findByStatus(Session.AUCTION);
         for (Session session : sessions) {
             Date endTime = session.getEndTime();
             Date now = new Date();
@@ -125,7 +125,7 @@ public class TaskService {
 
                 sessionRepository.save(session);
             }
-        }
+        }*/
     }
 
     /**

@@ -44,7 +44,7 @@
             <div class="rc-slide">
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
-                        <li data-target="#carousel-example-generic" v-for="(showPic,index) in showPics"
+                        <li data-target="#carousel-example-generic" v-for="(showPic,index) in showPictures"
                             :data-slide-to="index" :class="{active:0==index}"></li>
                     </ol>
                     <div class="carousel-inner" role="listbox">
@@ -78,11 +78,11 @@
         <section class="pai-info pai-info-before">
             <div class="header">
                 <p class="title">{{title}}</p>
-                <!--<div class="rc-mobile-share pm-share">
+                <div class="rc-mobile-share pm-share">
                     <div class="rc-mobile-share-wrap">
-                        <b class="icon pm-util-iconfont">空</b>提醒
+                        <b class="icon pm-util-iconfont">空</b>提醒<!--TODO 根据时间变更提醒文字-->
                     </div>
-                </div>-->
+                </div>
             </div>
             <div class="basic-price">
                 <div class="unit"><b>RMB</b><span>当前价</span></div>
@@ -150,7 +150,7 @@
                                 </span>
                             </div>
                         </dd>
-                        <dd class="twoColumn item" v-if="hasCashDeposit">
+                        <dd class="twoColumn item" v-if="0 != cashDeposit">
                             <div class="param-name">保证金</div>
                             <div class="param-value">
                                 <span class="currentPrice-comma">
@@ -214,7 +214,7 @@
                         <span style="line-height: 1.5;">
                                 <img
                                         class="J_LazyLoad" data-network="Q75,Q30"
-                                        v-for="descPic in descPics" :src="descPic">
+                                        v-for="descPic in descPictures" :src="descPic">
                         </span>
                         <!--收藏证书-->
                         <span style="line-height: 1.5;">
@@ -264,7 +264,7 @@
         <div class="main-btn" id="auction" :class="{'main-btn-disable':!auctionStatus.underAuction,'main-btn-active':auctionStatus.underAuction}">
             <div class="jiaobao">
                 <p class="action">竞拍</p>
-                <p class="foregift" v-if="hasCashDeposit">
+                <p class="foregift" v-if="0 != cashDeposit">
                     (保证金金额<b>￥</b>{{cashDeposit}})
                 </p>
             </div>
@@ -304,8 +304,8 @@
             //获取拍卖状态和对应文字描述
             var auctionStatus = {};
             var now = new Date();
-            var startTime = Zepto().dateUtil.parse(response.session.startTime, "yyyy-MM-dd hh:mm:ss");
-            endTime = Zepto().dateUtil.parse(response.session.endTime, "yyyy-MM-dd hh:mm:ss");
+            var startTime = Zepto().dateUtil.parse(response.startTime, "yyyy-MM-dd hh:mm:ss");
+            endTime = Zepto().dateUtil.parse(response.endTime, "yyyy-MM-dd hh:mm:ss");
             if (now.getTime() >= endTime.getTime()) {
                 auctionStatus.underAuction = false;
                 auctionStatus.desc = "已结束";
@@ -320,20 +320,18 @@
                 auctionStatus.showtext = Zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
             }
 
-            console.log("auctionStatus.underAuction=" + auctionStatus.underAuction)
             var goodsDetail = new Vue({
                 el: '#goods-detail',
                 data: {
                     title: response.title,
-                    showPics: response.showPics,
+                    showPictures: response.showPictures,
                     auctionStatus: auctionStatus,
                     startingPrice: response.startingPrice,
                     currentPrice: response.currentPrice,
                     bidIncrement: response.bidIncrement,
-                    hasCashDeposit: response.hasCashDeposit,
                     cashDeposit: response.cashDeposit,
                     delayCycle: response.delayCycle,
-                    descPics: response.descPics
+                    descPictures: response.descPictures
                 }
             });
             window.goodsDetail = goodsDetail;

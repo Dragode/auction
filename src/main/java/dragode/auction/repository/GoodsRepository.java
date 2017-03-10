@@ -11,5 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface GoodsRepository extends JpaRepository<Goods,Integer> {
-    List<Goods> findAllBySessionId(Integer sessionId);
+    /*List<Goods> findAllBySessionId(Integer sessionId);*/
 }

@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Created by Dracode on 2016/8/27.
+ * 商品实体类
  */
 @Entity
 @Table(name = "goods")
@@ -15,41 +15,47 @@ public class Goods {
     @Id
     @GeneratedValue
     private Integer id;
-    private Integer sessionId;
-    private String bannerUrl;
-    private String title;
-
-    private Long bidCount;
     /**
-     * 当前价格
+     * 商品列表图片
      */
-    private Long currentPrice;
+    private String bannerUrl;
+    /**
+     * 标题
+     */
+    private String title;
     /**
      * 起拍价
      */
     private Long startingPrice;
     /**
-     * 是否需要保证金
-     */
-    private Boolean hasCashDeposit;
-    /**
-     * 保证金
-     */
-    private Long cashDeposit;
-    /**
      * 加价幅度
      */
     private Long bidIncrement;
     /**
+     * 保证金，0即不用保证金
+     */
+    private Long cashDeposit;
+    /**
      * 延迟周期，X分/次，默认5分/次
      */
     private Integer delayCycle;
-    private String showPics;
-    private String descPics;
+    /**
+     * 拍卖开始时间
+     */
+    private Date startTime;
+    /**
+     * 拍卖结束时间
+     */
+    private Date endTime;
+
     /**
      * 竞拍大厅页面图片
      */
     private String auctionPic;
+    /**
+     * 当前价格
+     */
+    private Long currentPrice;
     /**
      * 当前竞拍所得用户
      */
@@ -65,14 +71,6 @@ public class Goods {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(Integer sessionId) {
-        this.sessionId = sessionId;
     }
 
     public String getBannerUrl() {
@@ -91,36 +89,12 @@ public class Goods {
         this.title = title;
     }
 
-    public Long getBidCount() {
-        return bidCount;
-    }
-
-    public void setBidCount(Long bidCount) {
-        this.bidCount = bidCount;
-    }
-
     public Long getCurrentPrice() {
         return currentPrice;
     }
 
     public void setCurrentPrice(Long currentPrice) {
         this.currentPrice = currentPrice;
-    }
-
-    public String getDescPics() {
-        return descPics;
-    }
-
-    public void setDescPics(String descPics) {
-        this.descPics = descPics;
-    }
-
-    public String getShowPics() {
-        return showPics;
-    }
-
-    public void setShowPics(String showPics) {
-        this.showPics = showPics;
     }
 
     public Long getStartingPrice() {
@@ -145,14 +119,6 @@ public class Goods {
 
     public void setBidIncrement(Long bidIncrement) {
         this.bidIncrement = bidIncrement;
-    }
-
-    public Boolean getHasCashDeposit() {
-        return hasCashDeposit;
-    }
-
-    public void setHasCashDeposit(Boolean hasCashDeposit) {
-        this.hasCashDeposit = hasCashDeposit;
     }
 
     public Integer getDelayCycle() {
@@ -185,5 +151,21 @@ public class Goods {
 
     public void setLastAuctionDate(Date lastAuctionDate) {
         this.lastAuctionDate = lastAuctionDate;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }

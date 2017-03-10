@@ -72,4 +72,5 @@ public class Constant {
     public static final Integer QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID = getAsInteger("QC_SMS_VERIFICATION_CODE_SMS_TEMPLATE_ID");
 
     public static final String PICS_PATH = getAsString("PICS_PATH");
+    public static final String PICTURE_CONTEXT_PATH = "/pic";
 }

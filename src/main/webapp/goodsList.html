@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>首页</title>
+    <meta charset='utf-8'>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no"/>
+    <script type="text/javascript" src="/js/common/sea.js"></script>
+    <script type="text/javascript" src="/js/common/zepto.1.0.4.js" replace="LIB:zepto"></script>
+    <script type="text/javascript" src="/js/common/touch.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/pmp.css">
+    <style>html{font-size:37.5px!important;}body{font-size:14.0625px}</style>
+</head>
+
+<div class="main-container">
+   <!-- <div class="wrapper">
+        <div class="first-screen">-->
+            <!--拍卖专场列表-->
+            <section id="fframe_container">
+            </section>
+        <!--</div>
+
+
+        <section class="main-op" data-spm="main-op">
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>首页</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>购买须知</span></div>
+            </div>
+            <div class="pm-remind-wrap">
+                <div class="pm-remind main-op-remind"><i class="pm-util-iconfont">空</i><span>我的</span></div>
+            </div>
+        </section>-->
+    </div>
+</div>
+
+<!--首页模板-->
+<script type="text/plain" id="bannerTemplate">
+     <section class="banner">
+        <img src="<%=item.bannerUrl%>" >
+     </section>
+</script>
+
+<!--首页描述模板-->
+<script type="text/html" id="titleTemplate">
+    <section class="item_desc_container">
+        <section class="simple" id="normaltitle">
+            <section class="item_simple">
+                <section class="comment">
+                    <section class="title"></section>
+                </section>
+            </section>
+            <section class="full_split"></section>
+        </section>
+    </section>
+</script>
+
+<!--专场模板-->
+<script type="text/html" id="listCellTemplate">
+    <section id="album-<%=item.albumId%>" class="album">
+        <section class="imgdivClass">
+            <img src="<%=item.bannerUrl%>" class="bannerImg"/>
+        </section>
+        <section class="titlehere">
+            <%=item.title%>
+        </section>
+        <section class="status">
+            <section class="countclass">
+                <section class="bidcount">
+                    <span class="numverclass redColor">￥<%=item.currentPrice%></span>
+                </section>
+            </section>
+
+            <% if((item.status == 0 ||item.status == '0') &&  item.needStart != '1' && item.needStart != 1 ){%>
+            <section class="bidTime goldenBackgroundColor">
+                <span><%=item.showtext%></span>
+                <div class="cornertobe"></div>
+            </section>
+            <%} else if(item.status == 1 ||item.status == '1'  ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
+            <section class="bidTime redBackgroundColor">
+                <span><%=item.showtext%></span>
+                <div class="cornerbidding"></div>
+            </section>
+            <%}else{ %>
+            <section class="bidTime2 grayBackgroundColor">
+                <span>已结束</span>
+                <div class="cornerbided"></div>
+            </section>
+            <%}%>
+        </section>
+    </section>
+</script>
+
+</body>
+
+<script type="text/javascript">
+    //先配置版本
+    //seajs.config({base: '../js/'});//TODO 为什么不行
+
+    //引入资源文件
+    var imports = [];
+    <!---js对应的路径-->
+    //imports.push('/js/config.js');
+    imports.push('/js/utils.js');
+    imports.push('/js/ListView.js');
+    imports.push('/js/template.js');
+    imports.push('/js/iscroll5.js');
+    imports.push('/js/timeHelper.js');
+    imports.push('/js/DateExt.js');
+    imports.push('/js/DateUtil.js');
+    imports.push('/js/StringExt.js');
+    imports.push('/js/StringUtil.js');
+    imports.push('/js/goodsList/sellerAdapter.js');
+
+    //开始引入资源文件
+    seajs.use(imports, function () {
+        seajs.use('/js/goodsList/SellerSessions.js', function (home) {
+            home.initialize();
+        })
+    });
+</script>
+
+</html>

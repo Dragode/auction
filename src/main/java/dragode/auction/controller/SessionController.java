@@ -88,7 +88,7 @@ public class SessionController {
     public SessionDetailResponse getSessionDetail(@PathVariable Integer sessionId) {
         SessionDetailResponse sessionDetailResponse = new SessionDetailResponse();
         sessionDetailResponse.setSession(sessionRepository.findOne(sessionId));
-        sessionDetailResponse.setItems(goodsRepository.findAllBySessionId(sessionId));
+        //sessionDetailResponse.setItems(goodsRepository.findAllBySessionId(sessionId));
         return sessionDetailResponse;
     }
 
