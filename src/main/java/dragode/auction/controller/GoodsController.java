@@ -1,5 +1,6 @@
 package dragode.auction.controller;
 
+import com.alibaba.fastjson.JSON;
 import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.GoodsResponse;
@@ -7,12 +8,16 @@ import dragode.auction.model.Goods;
 import dragode.auction.model.GoodsPictures;
 import dragode.auction.repository.GoodsPicturesRepository;
 import dragode.auction.repository.GoodsRepository;
+import dragode.auction.utils.HttpRequestUtils;
 import dragode.wechat.intf.WxInterface;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +27,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/goods")
 public class GoodsController {
+
+    private static Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
     @Resource
     private GoodsRepository goodsRepository;
@@ -71,7 +78,12 @@ public class GoodsController {
 
     //TODO 为什么会让/goods.html会405
     @RequestMapping(method = RequestMethod.POST)
-    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
+    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest,HttpServletRequest request) {
+        logRequestIfDebug(request);
+
+        String requestParams = JSON.toJSONString(addGoodsRequest);
+        logger.info("requestParams="+requestParams);
+
         Goods goods = new Goods();
         BeanUtils.copyProperties(addGoodsRequest, goods);
         goods.setCurrentPrice(goods.getStartingPrice());
@@ -103,5 +115,10 @@ public class GoodsController {
         }
 
         return goods;
+    }
+
+    private void logRequestIfDebug(HttpServletRequest request) {
+        logger.info("[Method = " + request.getMethod() + "]" +
+                "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
     }
 }
