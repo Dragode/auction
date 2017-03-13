@@ -74,19 +74,19 @@
                 </section>
             </section>
 
-            <% if((item.status == 0 ||item.status == '0') &&  item.needStart != '1' && item.needStart != 1 ){%>
+            <% if("waiting" == item.status) {%>
             <section class="bidTime goldenBackgroundColor">
                 <span><%=item.showtext%></span>
                 <div class="cornertobe"></div>
             </section>
-            <%} else if(item.status == 1 ||item.status == '1'  ||((item.status == 0 ||item.status == '0') && item.needStart == "1")) {%>
+            <%} else if("atAuction" == item.status) {%>
             <section class="bidTime redBackgroundColor">
                 <span><%=item.showtext%></span>
                 <div class="cornerbidding"></div>
             </section>
             <%}else{ %>
             <section class="bidTime2 grayBackgroundColor">
-                <span>已结束</span>
+                <span><%=item.showtext%></span>
                 <div class="cornerbided"></div>
             </section>
             <%}%>

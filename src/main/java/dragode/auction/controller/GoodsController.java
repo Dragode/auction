@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品接口
@@ -78,8 +79,7 @@ public class GoodsController {
 
     //TODO 为什么会让/goods.html会405
     @RequestMapping(method = RequestMethod.POST)
-    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest,HttpServletRequest request) {
-        logRequestIfDebug(request);
+    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
 
         String requestParams = JSON.toJSONString(addGoodsRequest);
         logger.info("requestParams="+requestParams);

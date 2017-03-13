@@ -54,13 +54,16 @@
                 var itemToShow = response.items[i];
                 var now = new Date();
                 var startTime = zepto().dateUtil.parse(itemToShow.startTime, "yyyy-MM-dd hh:mm:ss");
-                var endTime = zepto().dateUtil.parse(itemToShow.startTime, "yyyy-MM-dd hh:mm:ss");
-                if (now.getTime() >= startTime.getTime()) {
-                    itemToShow.needStart = "0";
-                    itemToShow.showtext = zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
-                } else {
-                    itemToShow.needStart = "1";
+                var endTime = zepto().dateUtil.parse(itemToShow.endTime, "yyyy-MM-dd hh:mm:ss");
+                if(now.getTime() < startTime.getTime()){
+                    itemToShow.status = "waiting";
                     itemToShow.showtext = zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
+                }else if(now.getTime() <= endTime.getTime()){
+                    itemToShow.status = "atAuction";
+                    itemToShow.showtext = zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
+                }else{
+                    itemToShow.status = "auctioned";
+                    itemToShow.showtext = "已结束";
                 }
                 itemToShow.showtype = "data";
                 itemsToShow.push(itemToShow);
