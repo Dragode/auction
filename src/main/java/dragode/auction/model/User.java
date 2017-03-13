@@ -11,6 +11,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user")
 public class User {
+
+    public static final String NORMAL_USER = "normal";
+    public static final String MEMBER_USER = "member";
+
     @Id
     @GeneratedValue
     private Integer id;
@@ -18,6 +22,7 @@ public class User {
     private Integer balance;
     private Boolean subscribed;
     private String phoneNumber;
+    private String role;
 
     public Integer getId() {
         return id;
@@ -57,5 +62,13 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

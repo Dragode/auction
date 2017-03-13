@@ -20,7 +20,7 @@ import java.util.List;
 public class TaskService {
 
     @Resource
-    private SessionReminderRepository sessionReminderRepository;
+    private AuctionReminderRepository auctionReminderRepository;
     @Resource
     private ProxyAuctionRepository proxyAuctionRepository;
     @Resource
@@ -28,13 +28,56 @@ public class TaskService {
     @Resource
     private UserRepository userRepository;
     @Resource
-    private SessionRepository sessionRepository;
-    @Resource
     private OrderRepository orderRepository;
 
     /**
-     * 代理价
+     * 触发拍卖开始相关事件：
+     * 通知订阅拍卖开始的用户
      */
+    //TODO 优化算法，例如用优先队列 + Sleep
+    @Scheduled(fixedDelay = 1000)
+    public void startAuction() {
+        List<Goods> waitingForAuctionGoods = goodsRepository.findAllByStatus(Goods.WAITING);
+        for (Goods goods : waitingForAuctionGoods) {
+            Date startTime = goods.getStartTime();
+            Date now = new Date();
+            if (now.getTime() > startTime.getTime()) {
+                goods.setStatus(Goods.AUCTION);
+                asyncRemindUserOfAuctionStart(goods);
+                goodsRepository.save(goods);
+            }
+        }
+    }
+
+    //TODO 异步执行
+    private void asyncRemindUserOfAuctionStart(Goods goods) {
+        List<AuctionReminder> auctionReminders = auctionReminderRepository.findAllByGoodsId(goods.getId());
+        for (AuctionReminder auctionReminder : auctionReminders) {
+            remindUser(auctionReminder, goods);
+        }
+    }
+
+    //TODO 封装进WxInterface
+    private void remindUser(AuctionReminder auctionReminder, Goods goods) {
+        User user = userRepository.findOne(auctionReminder.getUserId());
+
+        String templateId = "ADHrbX8R1mB736XPDyT9HNxD4-3EIhqE--2go8YrVlA";
+        String topcolor = "#FF0000";
+        String url = "http://www.ssspaimai.com/goodsDetail.html?goodsId=" + auctionReminder.getGoodsId();
+        HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
+        TemplateMessage.DataItem name = new TemplateMessage.DataItem();
+        name.setValue(goods.getTitle());
+        name.setColor("#173177");
+        stringDataItemHashMap.put("name", name);
+        WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+    }
+
+    /**
+     * 代理出价
+     */
+    //TODO 代理价触发事件间隔限制，
+    //TODO 比如同时有两个用户设置代理价，那么一个用户代理出价后，需隔x秒再触发另一个用户的代理出价
+    //TODO 优化性能，例如其他用户拍卖后通知
     @Scheduled(fixedDelay = 1000)
     public void proxyAuction() {
         List<ProxyAuction> underProxyAuctions = proxyAuctionRepository.findByStatus(ProxyAuction.UNDER_PROXY);
@@ -46,120 +89,115 @@ public class TaskService {
                     goods.setAuctionUserId(underProxyAuction.getUserId());
                     goods.setCurrentPrice(goods.getCurrentPrice() + goods.getBidIncrement());
                     goodsRepository.save(goods);
-
-                    User user = userRepository.findOne(preAuctionUserId);
-                    String templateId = "iyu51Ee1S8F9Wf-ZX6lBMltv-nONEu3lQvog5W3fDF8";
-                    String topcolor = "#FF0000";
-                    String url = "http://119.29.159.58/auctionList.html";
-                    HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
-                    TemplateMessage.DataItem name = new TemplateMessage.DataItem();
-                    name.setValue(goods.getTitle());
-                    name.setColor("#173177");
-                    stringDataItemHashMap.put("name", name);
-                    WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+                    remindUserOfPriceProxy(preAuctionUserId, goods);
                 } else {
                     underProxyAuction.setStatus(ProxyAuction.PRICE_OVER);
                     proxyAuctionRepository.save(underProxyAuction);
-
-                    //提醒代理价被超过
-                    User user = userRepository.findOne(underProxyAuction.getUserId());
-
-                    String templateId = "0ycvUSKrpAJIzjQJWPW8qKc8QrzccrDAyEZ6w9s1Nn4";
-                    String topcolor = "#FF0000";
-                    String url = "http://119.29.159.58/auctionList.html";
-                    HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
-                    TemplateMessage.DataItem name = new TemplateMessage.DataItem();
-                    name.setValue(goods.getTitle());
-                    name.setColor("#173177");
-                    stringDataItemHashMap.put("name", name);
-                    WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+                    remindUserOfPriceOver(underProxyAuction.getUserId(), goods);
                 }
             }
         }
     }
 
     /**
-     * 到时拍卖生成订单
+     * 提醒用户竞价被超过
+     *
+     * @param userId
+     * @param goods
+     */
+    //TODO 封装进WxInterface
+    private void remindUserOfPriceProxy(Integer userId, Goods goods) {
+        User user = userRepository.findOne(userId);
+        String templateId = "iyu51Ee1S8F9Wf-ZX6lBMltv-nONEu3lQvog5W3fDF8";
+        String topcolor = "#FF0000";
+        String url = "http://www.ssspaimai.com/goodsDetail.html?goodsId=" + goods.getId();
+        HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
+        TemplateMessage.DataItem name = new TemplateMessage.DataItem();
+        name.setValue(goods.getTitle());
+        name.setColor("#173177");
+        stringDataItemHashMap.put("name", name);
+        WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+    }
+
+    /**
+     * 提醒代理价被超过
+     *
+     * @param userId
+     * @param goods
+     */
+    //TODO 封装进WxInterface
+    private void remindUserOfPriceOver(Integer userId, Goods goods) {
+        User user = userRepository.findOne(userId);
+
+        String templateId = "0ycvUSKrpAJIzjQJWPW8qKc8QrzccrDAyEZ6w9s1Nn4";
+        String topcolor = "#FF0000";
+        String url = "http://www.ssspaimai.com/goodsDetail.html?goodsId=" + goods.getId();
+        HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
+        TemplateMessage.DataItem name = new TemplateMessage.DataItem();
+        name.setValue(goods.getTitle());
+        name.setColor("#173177");
+        stringDataItemHashMap.put("name", name);
+        WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+    }
+
+    /**
+     * 拍卖到时生成订单
      */
     @Scheduled(fixedDelay = 1000)
     public void finishAuction() {
-        /*List<Session> sessions = sessionRepository.findByStatus(Session.AUCTION);
-        for (Session session : sessions) {
-            Date endTime = session.getEndTime();
+        List<Goods> goodsAtAuction = goodsRepository.findAllByStatus(Goods.AUCTION);
+        for (Goods goods : goodsAtAuction) {
+            Date endTime = goods.getEndTime();
             Date now = new Date();
             if (now.getTime() > endTime.getTime()) {
-                session.setStatus(Session.DONE);
+                goods.setStatus(Goods.DONE);
 
-                List<Goods> allGoods = goodsRepository.findAllBySessionId(session.getId());
-                for (Goods goods : allGoods) {
-                    //如果有代理价，修改状态
-                    List<ProxyAuction> proxyAuctions = proxyAuctionRepository.findByStatusAndGoodsId(ProxyAuction.UNDER_PROXY, goods.getId());
-                    if (CollectionUtils.isNotEmpty(proxyAuctions)) {
-                        for (ProxyAuction proxyAuction : proxyAuctions) {
-                            proxyAuction.setStatus(ProxyAuction.AUCTION_FINISH);
-                        }
-                        proxyAuctionRepository.save(proxyAuctions);
+                //如果有代理价，修改状态
+                List<ProxyAuction> proxyAuctions = proxyAuctionRepository.findByStatusAndGoodsId(ProxyAuction.UNDER_PROXY, goods.getId());
+                if (CollectionUtils.isNotEmpty(proxyAuctions)) {
+                    for (ProxyAuction proxyAuction : proxyAuctions) {
+                        proxyAuction.setStatus(ProxyAuction.AUCTION_FINISH);
                     }
-
-                    //提醒竞拍成功的用户
-                    User user = userRepository.findOne(goods.getAuctionUserId());
-                    String templateId = "-_DwO_45AMMzGRxJtbirC1YNUN5kzpE3WncrmcentGg";
-                    String topcolor = "#FF0000";
-                    String url = "http://119.29.159.58/auctionList.html";
-                    HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
-                    TemplateMessage.DataItem name = new TemplateMessage.DataItem();
-                    name.setValue(goods.getTitle());
-                    name.setColor("#173177");
-                    stringDataItemHashMap.put("name", name);
-                    WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
-
-                    //生成订单
-                    Order order = new Order();
-                    order.setDisplayId(String.valueOf(now.getTime()));
-                    order.setPrice(goods.getCurrentPrice());
-                    order.setOrderStatus(Order.OrderStatus.WAIT_FOR_PAY.getCode());
-                    order.setUserId(goods.getAuctionUserId());
-                    order.setGoodsId(goods.getId());
-                    orderRepository.save(order);
+                    proxyAuctionRepository.save(proxyAuctions);
                 }
 
-                sessionRepository.save(session);
-            }
-        }*/
-    }
+                remindUserOfAuctionSuccess(goods);
 
-    /**
-     * 开始拍卖
-     */
-    @Scheduled(fixedDelay = 1000)
-    public void startAuction() {
-        List<Session> waitingForAuctionSessions = sessionRepository.findByStatus(Session.WAITING);
-        for (Session session : waitingForAuctionSessions) {
-            Date startTime = session.getStartTime();
-            Date now = new Date();
-            if (now.getTime() > startTime.getTime()) {
-                session.setStatus(Session.AUCTION);
+                //生成订单
+                Order order = new Order();
+                order.setDisplayId(generateOrderDisplayId());
+                order.setPrice(goods.getCurrentPrice());
+                order.setStatus(Order.OrderStatus.WAIT_FOR_PAY.getCode());
+                order.setUserId(goods.getAuctionUserId());
+                order.setGoodsId(goods.getId());
+                orderRepository.save(order);
 
-                List<SessionReminder> sessionReminders = sessionReminderRepository.findAllBySessionId(session.getId());
-                for (SessionReminder sessionReminder : sessionReminders) {
-                    remindUser(sessionReminder, session);
-                }
-
-                sessionRepository.save(session);
+                goodsRepository.save(goods);
             }
         }
     }
 
-    //TODO 异步执行
-    public void remindUser(SessionReminder sessionReminder, Session session) {
-        User user = userRepository.findOne(sessionReminder.getUserId());
+    /**
+     * 生成用户看的订单ID
+     * @return
+     */
+    private String generateOrderDisplayId(){
+        return String.valueOf(new Date().getTime());
+    }
 
-        String templateId = "ADHrbX8R1mB736XPDyT9HNxD4-3EIhqE--2go8YrVlA";
+    /**
+     * 提醒用户竞拍成功
+     *
+     * @param goods
+     */
+    private void remindUserOfAuctionSuccess(Goods goods) {
+        User user = userRepository.findOne(goods.getAuctionUserId());
+        String templateId = "-_DwO_45AMMzGRxJtbirC1YNUN5kzpE3WncrmcentGg";
         String topcolor = "#FF0000";
         String url = "http://119.29.159.58/auctionList.html";
         HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
         TemplateMessage.DataItem name = new TemplateMessage.DataItem();
-        name.setValue(session.getTitle());
+        name.setValue(goods.getTitle());
         name.setColor("#173177");
         stringDataItemHashMap.put("name", name);
         WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);

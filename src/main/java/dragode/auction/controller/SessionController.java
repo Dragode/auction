@@ -32,8 +32,6 @@ public class SessionController {
     @Resource
     private SessionRepository sessionRepository;
     @Resource
-    private SessionReminderRepository sessionReminderRepository;
-    @Resource
     private UserRepository userRepository;
     @Resource
     private GoodsRepository goodsRepository;
@@ -90,36 +88,6 @@ public class SessionController {
         sessionDetailResponse.setSession(sessionRepository.findOne(sessionId));
         //sessionDetailResponse.setItems(goodsRepository.findAllBySessionId(sessionId));
         return sessionDetailResponse;
-    }
-
-    /**
-     * 专场开拍提醒,现支持微信提醒
-     *
-     * @param sessionId 专场ID
-     * @return
-     */
-    @RequestMapping(path = "/session/{sessionId}/action/remind")
-    public String remindWhenAuctionBegin(@PathVariable Integer sessionId,
-                                               HttpServletRequest request) {
-        Integer userId = (Integer)request.getSession().getAttribute(Constant.USER_ID);
-
-        SessionReminder sessionReminder = new SessionReminder();
-        sessionReminder.setSessionId(sessionId);
-        sessionReminder.setUserId(userId);
-        sessionReminderRepository.save(sessionReminder);
-
-        JSONObject response = new JSONObject();
-        response.put(Constant.RETURN_CODE, Constant.SUCCESS_CODE);
-        response.put(Constant.RETURN_DESC, Constant.SUCCESS_DESC);
-        return response.toJSONString();
-    }
-
-
-
-    @RequestMapping(path = "/signUpSession")
-    public void signUpSession(@RequestParam Integer userId,
-                              @RequestParam String sessionId) {
-        User user = userRepository.findOne(userId);
     }
 
     @RequestMapping(path = "/auction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)

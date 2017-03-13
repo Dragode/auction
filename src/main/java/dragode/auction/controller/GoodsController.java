@@ -3,14 +3,13 @@ package dragode.auction.controller;
 import com.alibaba.fastjson.JSON;
 import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseListResponse;
+import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.GoodsResponse;
+import dragode.auction.controller.response.HttpResult;
 import dragode.auction.model.Goods;
-import dragode.auction.model.GoodsPictures;
-import dragode.auction.repository.GoodsPicturesRepository;
-import dragode.auction.repository.GoodsRepository;
+import dragode.auction.service.Impl.GoodsService;
 import dragode.auction.utils.HttpRequestUtils;
-import dragode.wechat.intf.WxInterface;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -18,9 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 商品接口
@@ -32,9 +28,7 @@ public class GoodsController {
     private static Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
     @Resource
-    private GoodsRepository goodsRepository;
-    @Resource
-    private GoodsPicturesRepository goodsPicturesRepository;
+    private GoodsService goodsService;
 
     /**
      * 获取商品列表
@@ -43,7 +37,7 @@ public class GoodsController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public BaseListResponse<Goods> getGoods() {
-        return new BaseListResponse<>(goodsRepository.findAll());
+        return new BaseListResponse<>(goodsService.findAll());
     }
 
     /**
@@ -56,69 +50,95 @@ public class GoodsController {
     public GoodsResponse getGoods(@PathVariable Integer goodsId) {
         GoodsResponse goodsResponse = new GoodsResponse();
 
-        Goods goods = goodsRepository.findOne(goodsId);
+        Goods goods = goodsService.findOne(goodsId);
         BeanUtils.copyProperties(goods, goodsResponse);
-
-
-        goodsResponse.setShowPictures(new ArrayList<String>());
-        List<GoodsPictures> goodsShowPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.SHOW_PIC);
-        if (!CollectionUtils.isEmpty(goodsShowPictures)) {
-            for (GoodsPictures goodsShowPicture : goodsShowPictures) {
-                goodsResponse.getShowPictures().add(goodsShowPicture.getRelativeUrl());
-            }
-        }
-
-        goodsResponse.setDescPictures(new ArrayList<String>());
-        List<GoodsPictures> goodsDescPictures = goodsPicturesRepository.findAllByGoodsIdAndType(goodsId, GoodsPictures.DESC_PIC);
-        for (GoodsPictures goodsDescPicture : goodsDescPictures) {
-            goodsResponse.getDescPictures().add(goodsDescPicture.getRelativeUrl());
-        }
-
+        goodsResponse.setShowPictures(goodsService.getGoodsShowPictures(goodsId));
+        goodsResponse.setDescPictures(goodsService.getGoodsDescPictures(goodsId));
         return goodsResponse;
     }
 
+    /**
+     * 新增商品
+     *
+     * @param addGoodsRequest
+     * @param request
+     * @return
+     */
     //TODO 为什么会让/goods.html会405
     @RequestMapping(method = RequestMethod.POST)
-    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
+    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest, HttpServletRequest request) {
+
+        logRequestIfDebug(request);
 
         String requestParams = JSON.toJSONString(addGoodsRequest);
-        logger.info("requestParams="+requestParams);
+        logger.info("requestParams=" + requestParams);
 
-        Goods goods = new Goods();
-        BeanUtils.copyProperties(addGoodsRequest, goods);
-        goods.setCurrentPrice(goods.getStartingPrice());
-
-        //从微信服务器下载图片
-        WxInterface.downloadMediaFile(addGoodsRequest.getBannerPictureWxServerId(), Constant.PICS_PATH);
-        goods.setBannerUrl(Constant.PICTURE_CONTEXT_PATH + "/" + addGoodsRequest.getBannerPictureWxServerId());
-
-        WxInterface.downloadMediaFile(addGoodsRequest.getAuctionPictureWxServerId(), Constant.PICS_PATH);
-        goods.setAuctionPic(Constant.PICTURE_CONTEXT_PATH + "/" + addGoodsRequest.getAuctionPictureWxServerId());
-        goodsRepository.save(goods);
-
-
-        for (String showPictureWxServerId : addGoodsRequest.getShowPicturesWxServerId()) {
-            WxInterface.downloadMediaFile(showPictureWxServerId, Constant.PICS_PATH);
-            GoodsPictures goodsShowPictures = new GoodsPictures();
-            goodsShowPictures.setType(GoodsPictures.SHOW_PIC);
-            goodsShowPictures.setGoodsId(goods.getId());
-            goodsShowPictures.setRelativeUrl(Constant.PICTURE_CONTEXT_PATH + "/" + showPictureWxServerId);
-            goodsPicturesRepository.save(goodsShowPictures);
-        }
-        for (String descPictureWxServerId : addGoodsRequest.getDescPicturesWxServerId()) {
-            WxInterface.downloadMediaFile(descPictureWxServerId, Constant.PICS_PATH);
-            GoodsPictures goodsDesPictures = new GoodsPictures();
-            goodsDesPictures.setType(GoodsPictures.DESC_PIC);
-            goodsDesPictures.setGoodsId(goods.getId());
-            goodsDesPictures.setRelativeUrl(Constant.PICTURE_CONTEXT_PATH + "/" + descPictureWxServerId);
-            goodsPicturesRepository.save(goodsDesPictures);
-        }
-
-        return goods;
+        return goodsService.addGoods(addGoodsRequest);
     }
 
     private void logRequestIfDebug(HttpServletRequest request) {
         logger.info("[Method = " + request.getMethod() + "]" +
                 "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
+    }
+
+    /**
+     * 注册商品拍卖开始通知用户
+     *
+     * @param goodsId
+     * @param request
+     * @return
+     */
+    //TODO 前端改成POST
+    @RequestMapping(path = "/action/registerRemindOfAuctionStart/goodsId/{goodsId}", method = RequestMethod.GET)
+    public BaseResponse registerRemindOfAuctionStart(@PathVariable Integer goodsId, HttpServletRequest request) {
+        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
+        goodsService.registerRemindOfAuctionStart(userId,goodsId);
+        return BaseResponse.successResponse();
+    }
+
+    /**
+     * 用户竞拍商品
+     * @param goodsId
+     * @param price
+     * @param request
+     * @return
+     */
+    //TODO 前端改成POST
+    @RequestMapping(path = "/action/auction/goodsId/{goodsId}/price/{price}", method = RequestMethod.GET)
+    public BaseResponse auctionGoods(@PathVariable Integer goodsId,@PathVariable Long price, HttpServletRequest request){
+        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
+        try {
+            goodsService.auction(goodsId,userId,price);
+            return BaseResponse.successResponse();
+        } catch (RuntimeException e) {
+            if (StringUtils.equals("-1",e.getMessage())){
+                return new BaseResponse(HttpResult.BIDDING_HIGHER);
+            }else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * 用户设置代理价
+     * @param goodsId
+     * @param price
+     * @param request
+     * @return
+     */
+    //TODO 前端改成POST
+    @RequestMapping(path = "/action/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.GET)
+    public BaseResponse setProxyPrice(@PathVariable Integer goodsId,@PathVariable Long price, HttpServletRequest request){
+        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
+        try {
+            goodsService.setProxyPrice(goodsId,userId,price);
+            return BaseResponse.successResponse();
+        } catch (RuntimeException e) {
+            if (StringUtils.equals("-1",e.getMessage())){
+                return new BaseResponse(HttpResult.BIDDING_HIGHER);
+            }else {
+                throw e;
+            }
+        }
     }
 }

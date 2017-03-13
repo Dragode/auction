@@ -63,7 +63,7 @@
                 </a>
             </div>
         </div>
-        <div class="rc-statusbar before"><!--TODO 计算状态-->
+        <div class="rc-statusbar before">
             <div class="align-left">
                 <span class="status-icon pm-iconfont">时</span>
                 <span class="status-flag">{{auctionStatus.desc}}</span>
@@ -78,9 +78,9 @@
         <section class="pai-info pai-info-before">
             <div class="header">
                 <p class="title">{{title}}</p>
-                <div class="rc-mobile-share pm-share">
+                <div v-if="auctionStatus.showRemind" class="rc-mobile-share pm-share" id="reminder">
                     <div class="rc-mobile-share-wrap">
-                        <b class="icon pm-util-iconfont">空</b>提醒<!--TODO 根据时间变更提醒文字-->
+                        <b class="icon pm-util-iconfont">空</b>提醒
                     </div>
                 </div>
             </div>
@@ -308,14 +308,17 @@
             endTime = Zepto().dateUtil.parse(response.endTime, "yyyy-MM-dd hh:mm:ss");
             if (now.getTime() >= endTime.getTime()) {
                 auctionStatus.underAuction = false;
+                auctionStatus.showRemind = false;
                 auctionStatus.desc = "已结束";
                 auctionStatus.showtext = "";
             } else if (now.getTime() >= startTime.getTime()) {
                 auctionStatus.underAuction = true;
+                auctionStatus.showRemind = false;
                 auctionStatus.desc = "正在拍卖";
                 auctionStatus.showtext = Zepto().dateUtil.format(endTime, "MM月dd日 hh:mm") + " 结束";
             } else {
                 auctionStatus.underAuction = false;
+                auctionStatus.showRemind = true;
                 auctionStatus.desc = "即将开始";
                 auctionStatus.showtext = Zepto().dateUtil.format(startTime, "MM月dd日 hh:mm") + " 开始";
             }
@@ -336,10 +339,23 @@
             });
             window.goodsDetail = goodsDetail;
 
+            Zepto("#reminder").tap(function (event) {
+                //判断拍卖是否还未开始
+                if ("即将开始" == auctionStatus.desc) {
+                    $.getJSON('/goods/action/registerRemindOfAuctionStart/goodsId/'+ getUrlParam("goodsId"), function (response) {
+                        if (response.resultCode == "0") {
+                            alert("设置提醒成功!")
+                        } else {
+                            alert("设置提醒失败!")
+                        }
+                    });
+                }
+            });
+
             Zepto("#auction").tap(function (event) {
                 //判断拍卖是否结束
                 if ("正在拍卖" == auctionStatus.desc) {
-                    $.getJSON('/user', function (response) {
+                    $.getJSON('/users/currentUser', function (response) {
                         if (!response.phoneNumber) {
                             window.location.href = "/register.html?from=goods&goodsId=" + getUrlParam("goodsId");
                         } else {

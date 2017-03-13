@@ -175,8 +175,8 @@
 
     $.getJSON('/goods/' + getUrlParam("goodsId"), function (response) {
         bidIncrement = response.bidIncrement;
-        var endDay = Zepto().dateUtil.format(new Date(response.session.endTime), "MM月dd日");
-        var endTime = Zepto().dateUtil.format(new Date(response.session.endTime), "hh:mm");
+        var endDay = Zepto().dateUtil.format(new Date(response.endTime), "MM月dd日");
+        var endTime = Zepto().dateUtil.format(new Date(response.endTime), "hh:mm");
         var auctionMall = new Vue({
             el: '#auction-mall',
             data: {

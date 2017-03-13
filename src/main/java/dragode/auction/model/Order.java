@@ -25,7 +25,7 @@ public class Order {
     /**
      * 订单状态
      */
-    private String orderStatus;
+    private String status;
     /**
      * 用户Id
      */
@@ -63,12 +63,12 @@ public class Order {
         return String.valueOf((int) (price * 100));
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Integer getUserId() {
@@ -89,7 +89,7 @@ public class Order {
 
     public enum OrderStatus {
         /**
-         * 代付款
+         * 待付款
          */
         WAIT_FOR_PAY("WAIT_FOR_PAY"),
         /**

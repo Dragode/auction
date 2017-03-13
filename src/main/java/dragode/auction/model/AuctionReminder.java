@@ -10,12 +10,12 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "sessionReminder")
-public class SessionReminder {
+@Table(name = "auctionReminder")
+public class AuctionReminder {
     @Id
     @GeneratedValue
     private Integer id;
-    private Integer sessionId;
+    private Integer goodsId;
     private Integer userId;
 
     public Integer getId() {
@@ -26,14 +26,13 @@ public class SessionReminder {
         this.id = id;
     }
 
-    public Integer getSessionId() {
-        return sessionId;
+    public Integer getGoodsId() {
+        return goodsId;
     }
 
-    public void setSessionId(Integer sessionId) {
-        this.sessionId = sessionId;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
     }
-
 
     public Integer getUserId() {
         return userId;

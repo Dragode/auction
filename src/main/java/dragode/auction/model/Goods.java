@@ -9,9 +9,14 @@ import java.util.Date;
 /**
  * 商品实体类
  */
+//TODO 商品信息和拍卖信息是否需要分离
 @Entity
 @Table(name = "goods")
 public class Goods {
+    public static final Integer WAITING = 0;
+    public static final Integer AUCTION = 1;
+    public static final Integer DONE = 2;
+
     @Id
     @GeneratedValue
     private Integer id;
@@ -47,11 +52,15 @@ public class Goods {
      * 拍卖结束时间
      */
     private Date endTime;
-
     /**
      * 竞拍大厅页面图片
      */
     private String auctionPic;
+    /**
+     * 状态，0：等待拍卖；1：正在拍卖；2：拍卖结束
+     * 便于后台定时任务索引搜索订单
+     */
+    private Integer status;
     /**
      * 当前价格
      */
@@ -143,6 +152,14 @@ public class Goods {
 
     public void setAuctionUserId(Integer auctionUserId) {
         this.auctionUserId = auctionUserId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getLastAuctionDate() {
