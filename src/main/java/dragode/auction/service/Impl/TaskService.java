@@ -161,16 +161,22 @@ public class TaskService {
                     proxyAuctionRepository.save(proxyAuctions);
                 }
 
-                remindUserOfAuctionSuccess(goods);
+                if(null == goods.getAuctionUserId()){
+                    goods.setStatus(Goods.ABORTIVE);
+                }else {
+                    goods.setStatus(Goods.DONE);
 
-                //生成订单
-                Order order = new Order();
-                order.setDisplayId(generateOrderDisplayId());
-                order.setPrice(goods.getCurrentPrice());
-                order.setStatus(Order.OrderStatus.WAIT_FOR_PAY.getCode());
-                order.setUserId(goods.getAuctionUserId());
-                order.setGoodsId(goods.getId());
-                orderRepository.save(order);
+                    remindUserOfAuctionSuccess(goods);
+
+                    //生成订单
+                    Order order = new Order();
+                    order.setDisplayId(generateOrderDisplayId());
+                    order.setPrice(goods.getCurrentPrice());
+                    order.setStatus(Order.OrderStatus.WAIT_FOR_PAY.getCode());
+                    order.setUserId(goods.getAuctionUserId());
+                    order.setGoodsId(goods.getId());
+                    orderRepository.save(order);
+                }
 
                 goodsRepository.save(goods);
             }

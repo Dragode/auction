@@ -73,7 +73,7 @@
     bottom: .16rem;
     left: 0;
     line-height: .4rem;
-    height: .4rem;
+    height: .6rem;
     overflow: hidden
 }
 
@@ -82,12 +82,12 @@
     margin-right: .08rem;
     margin-bottom: .08rem;
     padding: .06666667rem .12rem;
-    height: .4rem;
-    line-height: .26666667rem;
+    height: .6rem;
+    /*line-height: .26666667rem;*/
     font-size: .26666667rem;
     text-align: center;
     color: #fff;
-    border-radius: .05333333rem;
+    /*border-radius: .05333333rem;*/
     box-sizing: border-box;
     background-color: rgba(102, 102, 102, .9)
 }

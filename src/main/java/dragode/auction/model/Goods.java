@@ -16,6 +16,7 @@ public class Goods {
     public static final Integer WAITING = 0;
     public static final Integer AUCTION = 1;
     public static final Integer DONE = 2;
+    public static final Integer ABORTIVE = 3;
 
     @Id
     @GeneratedValue
