@@ -8,10 +8,15 @@ import dragode.wechat.intf.response.OAuthAccessToken;
 import dragode.wechat.intf.response.OAuthUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -123,7 +128,14 @@ public class WxInterface {
         templateMessage.setData(params);
         String requestBody = JSON.toJSONString(templateMessage);
 
-        String response = restTemplate.postForObject(templateMessageUrl, requestBody, String.class, getAccessToken());
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+        headers.setContentType(type);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+
+        HttpEntity<String> formEntity = new HttpEntity<String>(requestBody, headers);
+
+        String response = restTemplate.postForObject(templateMessageUrl, formEntity, String.class, getAccessToken());
         //{"errcode":0,"errmsg":"ok","msgid":418493294} response
         System.out.println(response);
     }
@@ -156,10 +168,5 @@ public class WxInterface {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) {
-        String accessToken = getAccessToken();
-        System.out.println(accessToken);
     }
 }
