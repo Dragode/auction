@@ -98,6 +98,7 @@ public class GoodsService {
         Goods goods = new Goods();
         BeanUtils.copyProperties(addGoodsRequest, goods);
         goods.setCurrentPrice(goods.getStartingPrice());
+        goods.setStatus(Goods.WAITING);
 
         //从微信服务器下载图片
         WxInterface.downloadMediaFile(addGoodsRequest.getBannerPictureWxServerId(), Constant.PICS_PATH);

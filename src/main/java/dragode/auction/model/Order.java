@@ -87,6 +87,7 @@ public class Order {
         this.goodsId = goodsId;
     }
 
+    //TODO 存数据库
     public enum OrderStatus {
         /**
          * 待付款
