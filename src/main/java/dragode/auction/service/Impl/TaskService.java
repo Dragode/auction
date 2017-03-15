@@ -5,6 +5,9 @@ import dragode.auction.repository.*;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
 import org.apache.commons.collections4.CollectionUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,8 @@ import java.util.List;
  */
 @Service
 public class TaskService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     @Resource
     private AuctionReminderRepository auctionReminderRepository;
@@ -53,12 +58,12 @@ public class TaskService {
     private void asyncRemindUserOfAuctionStart(Goods goods) {
         List<AuctionReminder> auctionReminders = auctionReminderRepository.findAllByGoodsId(goods.getId());
         for (AuctionReminder auctionReminder : auctionReminders) {
-            remindUser(auctionReminder, goods);
+            remindUserOfAuctionStart(auctionReminder, goods);
         }
     }
 
     //TODO 封装进WxInterface
-    private void remindUser(AuctionReminder auctionReminder, Goods goods) {
+    private void remindUserOfAuctionStart(AuctionReminder auctionReminder, Goods goods) {
         User user = userRepository.findOne(auctionReminder.getUserId());
 
         String templateId = "ADHrbX8R1mB736XPDyT9HNxD4-3EIhqE--2go8YrVlA";
