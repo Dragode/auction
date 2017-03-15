@@ -74,6 +74,10 @@ public class Goods {
      * 用户竞拍时间
      */
     private Date lastAuctionDate;
+    /**
+     * 已延迟次数
+     */
+    private Integer delayTimes;
 
     public Integer getId() {
         return id;
@@ -185,5 +189,20 @@ public class Goods {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public Integer getDelayTimes() {
+        return delayTimes;
+    }
+
+    public void setDelayTimes(Integer delayTimes) {
+        this.delayTimes = delayTimes;
+    }
+
+    public static Goods newDefaultGoods(){
+        Goods goods = new Goods();
+        goods.setStatus(Goods.WAITING);
+        goods.setDelayTimes(0);
+        return goods;
     }
 }

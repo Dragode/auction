@@ -169,4 +169,8 @@ public class WxInterface {
             throw new RuntimeException(e);
         }
     }
+
+    public static void main(String[] args) {
+        System.out.println(WxInterface.getAccessToken());
+    }
 }

@@ -301,6 +301,7 @@
     seajs.use(imports, function () {
         Zepto().toastUtil.showLoading();
         $.getJSON('/goods/' + getUrlParam("goodsId"), function (response) {
+            window.goods = response;
             //获取拍卖状态和对应文字描述
             var auctionStatus = {};
             var now = new Date();
@@ -359,7 +360,12 @@
                         if (!response.phoneNumber) {
                             window.location.href = "/register.html?from=goods&goodsId=" + getUrlParam("goodsId");
                         } else {
-                            window.location.href = "/auctionMall.html?goodsId=" + getUrlParam("goodsId");
+                            if("normal" == response.role && window.goods.cashDeposit != 0){
+                                alert("请先向管理员缴纳保证金"+window.goods.cashDeposit+"元!管理员微信：xxxxxx")
+                            }else{
+                                window.location.href = "/auctionMall.html?goodsId=" + getUrlParam("goodsId");
+                            }
+
                         }
                     });
                 }

@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * 拍卖纪录
@@ -17,6 +18,7 @@ public class AuctionRecord {
     private Integer userId;
     private Integer goodsId;
     private Long price;
+    private Date auctionTime;
 
     public Integer getId() {
         return id;
@@ -48,5 +50,13 @@ public class AuctionRecord {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public Date getAuctionTime() {
+        return auctionTime;
+    }
+
+    public void setAuctionTime(Date auctionTime) {
+        this.auctionTime = auctionTime;
     }
 }
