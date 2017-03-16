@@ -3,32 +3,28 @@ package dragode.auction.controller;
 import com.alibaba.fastjson.JSONObject;
 import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseListResponse;
-import dragode.auction.controller.response.BaseResponse;
-import dragode.auction.controller.response.GoodsResponse;
 import dragode.auction.controller.response.SessionDetailResponse;
 import dragode.auction.model.*;
 import dragode.auction.repository.*;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
-import dragode.wechat.service.WxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/sessions")
 public class SessionController {
 
     private static Logger logger = LoggerFactory.getLogger(SessionController.class);
 
-    @Resource
-    private HomePageRepository homePageRepository;
+    public static final String HOME_BANNER_KEY = "HOME_BANNER_KEY";
+
     @Resource
     private SessionRepository sessionRepository;
     @Resource
@@ -41,29 +37,27 @@ public class SessionController {
     private OrderRepository orderRepository;
     @Resource
     private ProxyAuctionRepository proxyAuctionRepository;
+    @Resource
+    private SystemConfigRepository systemConfigRepository;
 
     /**
-     * 获取首页Banner的专场
+     * 获取首页Banner的图片地址
      */
-    @RequestMapping(path = "/homePage", method = RequestMethod.GET)
-    public Session getHomePage() {
-        HomePage homePage = homePageRepository.findAll().get(0);
-        Session homePageSession = sessionRepository.findOne(homePage.getSessionId());
-        return homePageSession;
+    @RequestMapping(path = "/homeBanner", method = RequestMethod.GET)
+    public SystemConfig getHomeBanner() {
+        return systemConfigRepository.findByConfigKey(HOME_BANNER_KEY);
     }
 
     /**
-     * 设置首页Banner的专场
+     * 设置首页Banner的图片地址
      */
-    @RequestMapping(path = "/homePage/{sessionId}", method = RequestMethod.POST)
-    public String setHomePage(@PathVariable Integer sessionId) {
-        HomePage homePage = homePageRepository.findAll().get(0);
-        homePage.setSessionId(sessionId);
-
-        JSONObject response = new JSONObject();
-        response.put(Constant.RETURN_CODE, Constant.SUCCESS_CODE);
-        response.put(Constant.RETURN_DESC, Constant.SUCCESS_DESC);
-        return response.toJSONString();
+    @RequestMapping(path = "/homeBanner", method = RequestMethod.POST)
+    public SystemConfig setHomeBanner(@RequestBody String value) {
+        //TODO 从微信服务器下载图片
+        SystemConfig homeBanner = systemConfigRepository.findByConfigKey(HOME_BANNER_KEY);
+        homeBanner.setValue(value);
+        systemConfigRepository.save(homeBanner);
+        return homeBanner;
     }
 
     /**
@@ -71,7 +65,7 @@ public class SessionController {
      *
      * @return
      */
-    @RequestMapping(path = "/session", method = RequestMethod.GET)
+    @RequestMapping(path = "", method = RequestMethod.GET)
     public BaseListResponse<Session> getSessions() {
         return new BaseListResponse<>(sessionRepository.findAll());
     }
@@ -141,7 +135,7 @@ public class SessionController {
 
     @RequestMapping(path = "/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
     public String proxyAuction(@PathVariable Integer goodsId, HttpServletRequest request,
-                                   @PathVariable Long price) {
+                               @PathVariable Long price) {
 
         JSONObject response = new JSONObject();
 
@@ -156,7 +150,7 @@ public class SessionController {
 
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
 
-        goods.setCurrentPrice(goods.getCurrentPrice()+goods.getBidIncrement());
+        goods.setCurrentPrice(goods.getCurrentPrice() + goods.getBidIncrement());
         goods.setAuctionUserId(userId);
         goodsRepository.save(goods);
 
@@ -178,16 +172,16 @@ public class SessionController {
         return new BaseListResponse<>(auctionRecords);
     }
 
-    @RequestMapping(path = "/order",method = RequestMethod.GET)
-    public BaseListResponse<Order> getOrders(HttpServletRequest request){
+    @RequestMapping(path = "/order", method = RequestMethod.GET)
+    public BaseListResponse<Order> getOrders(HttpServletRequest request) {
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
         List<Order> orders = orderRepository.findAllByUserId(userId);
         return new BaseListResponse<>(orders);
     }
 
     //TODO 修改url成restful 风格
-    @RequestMapping(path = "/order/all",method = RequestMethod.GET)
-    public BaseListResponse<Order> getUserOrder(){
+    @RequestMapping(path = "/order/all", method = RequestMethod.GET)
+    public BaseListResponse<Order> getUserOrder() {
         List<Order> allOrders = orderRepository.findAll();
         return new BaseListResponse<>(allOrders);
     }

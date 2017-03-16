@@ -18,9 +18,8 @@ public class Session {
     private Integer id;
     private String bannerUrl;
     private String title;
-    private Long itemNum;
+    private Long numberOfGoods;
     private String status;
-    private Long bidCount;
     private Date startTime;
     private Date endTime;
 
@@ -48,12 +47,12 @@ public class Session {
         this.title = title;
     }
 
-    public Long getItemNum() {
-        return itemNum;
+    public Long getNumberOfGoods() {
+        return numberOfGoods;
     }
 
-    public void setItemNum(Long itemNum) {
-        this.itemNum = itemNum;
+    public void setNumberOfGoods(Long numberOfGoods) {
+        this.numberOfGoods = numberOfGoods;
     }
 
     public String getStatus() {
@@ -62,14 +61,6 @@ public class Session {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Long getBidCount() {
-        return bidCount;
-    }
-
-    public void setBidCount(Long bidCount) {
-        this.bidCount = bidCount;
     }
 
     public Date getStartTime() {
