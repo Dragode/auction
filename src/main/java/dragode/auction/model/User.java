@@ -14,6 +14,7 @@ public class User {
 
     public static final String NORMAL_USER = "normal";
     public static final String MEMBER_USER = "member";
+    public static final String ADMINISTRATOR = "administrator";
 
     @Id
     @GeneratedValue

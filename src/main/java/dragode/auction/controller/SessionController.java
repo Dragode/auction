@@ -53,9 +53,9 @@ public class SessionController {
      */
     @RequestMapping(path = "/homeBanner", method = RequestMethod.POST)
     public SystemConfig setHomeBanner(@RequestBody String value) {
-        //TODO 从微信服务器下载图片
+        WxInterface.downloadMediaFile(value, Constant.PICS_PATH);
         SystemConfig homeBanner = systemConfigRepository.findByConfigKey(HOME_BANNER_KEY);
-        homeBanner.setValue(value);
+        homeBanner.setValue(Constant.PICTURE_CONTEXT_PATH + "/" + value);
         systemConfigRepository.save(homeBanner);
         return homeBanner;
     }
