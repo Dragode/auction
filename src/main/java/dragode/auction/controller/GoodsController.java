@@ -42,6 +42,17 @@ public class GoodsController {
     }
 
     /**
+     * 获取专场对应的商品列表
+     * @param sessionId 专场ID
+     * @return 商品列表
+     */
+    @RequestMapping(path = "/sessionId/{sessionId}")
+    public BaseListResponse<Goods> getSessionGoods(@PathVariable Integer sessionId){
+        //TODO implements
+        return null;
+    }
+
+    /**
      * 获取商品详情
      *
      * @param goodsId 商品ID
@@ -68,7 +79,6 @@ public class GoodsController {
     //TODO 为什么会让/goods.html会405
     @RequestMapping(method = RequestMethod.POST)
     public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest, HttpServletRequest request) {
-
         logRequestIfDebug(request);
 
         String requestParams = JSON.toJSONString(addGoodsRequest);
@@ -80,21 +90,6 @@ public class GoodsController {
     private void logRequestIfDebug(HttpServletRequest request) {
         logger.info("[Method = " + request.getMethod() + "]" +
                 "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
-    }
-
-    /**
-     * 注册商品拍卖开始通知用户
-     *
-     * @param goodsId
-     * @param request
-     * @return
-     */
-    //TODO 前端改成POST
-    @RequestMapping(path = "/action/registerRemindOfAuctionStart/goodsId/{goodsId}", method = RequestMethod.GET)
-    public BaseResponse registerRemindOfAuctionStart(@PathVariable Integer goodsId, HttpServletRequest request) {
-        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-        goodsService.registerRemindOfAuctionStart(userId,goodsId);
-        return BaseResponse.successResponse();
     }
 
     /**

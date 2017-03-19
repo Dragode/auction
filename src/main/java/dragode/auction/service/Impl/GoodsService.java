@@ -38,8 +38,6 @@ public class GoodsService {
     @Resource
     private GoodsPicturesRepository goodsPicturesRepository;
     @Resource
-    private AuctionReminderRepository auctionReminderRepository;
-    @Resource
     private AuctionRecordRepository auctionRecordRepository;
     @Resource
     private UserRepository userRepository;
@@ -139,19 +137,6 @@ public class GoodsService {
         }
 
         return goods;
-    }
-
-    /**
-     * 注册用户拍卖开始通知
-     *
-     * @param userId
-     * @param goodsId
-     */
-    public void registerRemindOfAuctionStart(Integer userId, Integer goodsId) {
-        AuctionReminder auctionReminder = new AuctionReminder();
-        auctionReminder.setGoodsId(goodsId);
-        auctionReminder.setUserId(userId);
-        auctionReminderRepository.save(auctionReminder);
     }
 
     /**
