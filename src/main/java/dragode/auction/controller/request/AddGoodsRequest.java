@@ -1,4 +1,4 @@
-package dragode.auction.controller;
+package dragode.auction.controller.request;
 
 import java.util.Date;
 import java.util.List;

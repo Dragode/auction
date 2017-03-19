@@ -2,6 +2,7 @@ package dragode.auction.controller;
 
 import com.alibaba.fastjson.JSON;
 import dragode.auction.common.Constant;
+import dragode.auction.controller.request.AddGoodsRequest;
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.GoodsResponse;

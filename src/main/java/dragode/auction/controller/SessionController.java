@@ -1,21 +1,18 @@
 package dragode.auction.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import dragode.auction.common.Constant;
+import dragode.auction.controller.request.AddSessionRequest;
 import dragode.auction.controller.response.BaseListResponse;
-import dragode.auction.controller.response.SessionDetailResponse;
 import dragode.auction.model.*;
 import dragode.auction.repository.*;
-import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequestMapping(path = "/sessions")
@@ -28,20 +25,12 @@ public class SessionController {
     @Resource
     private SessionRepository sessionRepository;
     @Resource
-    private UserRepository userRepository;
-    @Resource
-    private GoodsRepository goodsRepository;
-    @Resource
-    private AuctionRecordRepository auctionRecordRepository;
-    @Resource
-    private OrderRepository orderRepository;
-    @Resource
-    private ProxyAuctionRepository proxyAuctionRepository;
-    @Resource
     private SystemConfigRepository systemConfigRepository;
 
     /**
      * 获取首页Banner的图片地址
+     *
+     * @return
      */
     @RequestMapping(path = "/homeBanner", method = RequestMethod.GET)
     public SystemConfig getHomeBanner() {
@@ -50,12 +39,15 @@ public class SessionController {
 
     /**
      * 设置首页Banner的图片地址
+     *
+     * @param homeBannerWxServerId
+     * @return
      */
     @RequestMapping(path = "/homeBanner", method = RequestMethod.POST)
-    public SystemConfig setHomeBanner(@RequestBody String value) {
-        WxInterface.downloadMediaFile(value, Constant.PICS_PATH);
+    public SystemConfig setHomeBanner(@RequestBody String homeBannerWxServerId) {
+        WxInterface.downloadMediaFile(homeBannerWxServerId, Constant.PICS_PATH);
         SystemConfig homeBanner = systemConfigRepository.findByConfigKey(HOME_BANNER_KEY);
-        homeBanner.setValue(Constant.PICTURE_CONTEXT_PATH + "/" + value);
+        homeBanner.setValue(Constant.PICTURE_CONTEXT_PATH + "/" + homeBannerWxServerId);
         systemConfigRepository.save(homeBanner);
         return homeBanner;
     }
@@ -71,118 +63,28 @@ public class SessionController {
     }
 
     /**
-     * 获取拍卖专场详情
+     * 新增专场
      *
-     * @param sessionId 专场ID
+     * @param addSessionRequest
      * @return
      */
-    @RequestMapping(path = "/session/{sessionId}", method = RequestMethod.GET)
-    public SessionDetailResponse getSessionDetail(@PathVariable Integer sessionId) {
-        SessionDetailResponse sessionDetailResponse = new SessionDetailResponse();
-        sessionDetailResponse.setSession(sessionRepository.findOne(sessionId));
-        //sessionDetailResponse.setItems(goodsRepository.findAllBySessionId(sessionId));
-        return sessionDetailResponse;
-    }
-
-    @RequestMapping(path = "/auction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
-    public String auction(@PathVariable Integer goodsId, HttpServletRequest request,
-                          @PathVariable Long price) {
-        JSONObject response = new JSONObject();
-
-        //Long price = Long.parseLong(requestParams.get("price"));
-        //Assert.notNull(price);
-
-        Goods goods = goodsRepository.findOne(goodsId);
-        Long currentPrice = goods.getCurrentPrice();
-        if (currentPrice >= price) {
-            response.put("code", -1);
-            response.put("message", "有人出价比你高！");
-            response.put("price", goods.getCurrentPrice());
-            return response.toJSONString();
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    public Session addSession(@RequestBody AddSessionRequest addSessionRequest) {
+        Session session = new Session();
+        BeanUtils.copyProperties(addSessionRequest, session);
+        Date now = new Date();
+        if (session.getStartTime().getTime() > now.getTime()) {
+            session.setStatus(Session.WAITING);
+        } else if (session.getEndTime().getTime() > now.getTime()) {
+            session.setStatus(Session.AUCTION);
+        } else {
+            session.setStatus(Session.DONE);
         }
+        session.setNumberOfGoods(0);
 
-        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-
-        AuctionRecord auctionRecord = new AuctionRecord();
-        auctionRecord.setUserId(userId);
-        auctionRecord.setGoodsId(goodsId);
-        auctionRecord.setPrice(price);
-        auctionRecordRepository.save(auctionRecord);
-
-
-        goods.setCurrentPrice(price);
-        goods.setAuctionUserId(userId);
-        goodsRepository.save(goods);
-
-        //出价被超过提醒
-        if (goods.getAuctionUserId() != userId) {
-            User user = userRepository.findOne(userId);
-            String templateId = "iyu51Ee1S8F9Wf-ZX6lBMltv-nONEu3lQvog5W3fDF8";
-            String topcolor = "#FF0000";
-            String url = "http://119.29.159.58/auctionList.html";
-            HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
-            TemplateMessage.DataItem name = new TemplateMessage.DataItem();
-            name.setValue(goods.getTitle());
-            name.setColor("#173177");
-            stringDataItemHashMap.put("name", name);
-            WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
-        }
-
-        response.put("code", 0);
-        response.put("message", "成功");
-        return response.toJSONString();
-    }
-
-    @RequestMapping(path = "/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
-    public String proxyAuction(@PathVariable Integer goodsId, HttpServletRequest request,
-                               @PathVariable Long price) {
-
-        JSONObject response = new JSONObject();
-
-        Goods goods = goodsRepository.findOne(goodsId);
-        Long currentPrice = goods.getCurrentPrice();
-        if (currentPrice >= price) {
-            response.put("code", -1);
-            response.put("message", "有人出价比你高！");
-            response.put("price", goods.getCurrentPrice());
-            return response.toJSONString();
-        }
-
-        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-
-        goods.setCurrentPrice(goods.getCurrentPrice() + goods.getBidIncrement());
-        goods.setAuctionUserId(userId);
-        goodsRepository.save(goods);
-
-        ProxyAuction proxyAuction = new ProxyAuction();
-        proxyAuction.setUserId(userId);
-        proxyAuction.setGoodsId(goodsId);
-        proxyAuction.setPrice(price);
-        proxyAuction.setStatus(ProxyAuction.UNDER_PROXY);
-        proxyAuctionRepository.save(proxyAuction);
-
-        response.put(Constant.RETURN_CODE, Constant.SUCCESS_CODE);
-        response.put(Constant.RETURN_DESC, Constant.SUCCESS_DESC);
-        return response.toJSONString();
-    }
-
-    @RequestMapping(path = "/auctionRecord/goods/{goodsId}")
-    public BaseListResponse<AuctionRecord> getAuctionRecords(@PathVariable Integer goodsId) {
-        List<AuctionRecord> auctionRecords = auctionRecordRepository.findAllByGoodsId(goodsId);
-        return new BaseListResponse<>(auctionRecords);
-    }
-
-    @RequestMapping(path = "/order", method = RequestMethod.GET)
-    public BaseListResponse<Order> getOrders(HttpServletRequest request) {
-        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-        List<Order> orders = orderRepository.findAllByUserId(userId);
-        return new BaseListResponse<>(orders);
-    }
-
-    //TODO 修改url成restful 风格
-    @RequestMapping(path = "/order/all", method = RequestMethod.GET)
-    public BaseListResponse<Order> getUserOrder() {
-        List<Order> allOrders = orderRepository.findAll();
-        return new BaseListResponse<>(allOrders);
+        WxInterface.downloadMediaFile(addSessionRequest.getBannerPictureWxServerId(), Constant.PICS_PATH);
+        session.setBannerUrl(Constant.PICTURE_CONTEXT_PATH + "/" + addSessionRequest.getBannerPictureWxServerId());
+        session = sessionRepository.save(session);
+        return session;
     }
 }

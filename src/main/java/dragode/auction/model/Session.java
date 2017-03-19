@@ -18,7 +18,7 @@ public class Session {
     private Integer id;
     private String bannerUrl;
     private String title;
-    private Long numberOfGoods;
+    private Integer numberOfGoods;
     private String status;
     private Date startTime;
     private Date endTime;
@@ -47,11 +47,11 @@ public class Session {
         this.title = title;
     }
 
-    public Long getNumberOfGoods() {
+    public Integer getNumberOfGoods() {
         return numberOfGoods;
     }
 
-    public void setNumberOfGoods(Long numberOfGoods) {
+    public void setNumberOfGoods(Integer numberOfGoods) {
         this.numberOfGoods = numberOfGoods;
     }
 

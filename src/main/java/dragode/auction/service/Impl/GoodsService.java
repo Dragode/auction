@@ -1,7 +1,7 @@
 package dragode.auction.service.Impl;
 
 import dragode.auction.common.Constant;
-import dragode.auction.controller.AddGoodsRequest;
+import dragode.auction.controller.request.AddGoodsRequest;
 import dragode.auction.model.*;
 import dragode.auction.repository.*;
 import dragode.wechat.intf.TemplateMessage;
@@ -28,6 +28,9 @@ public class GoodsService {
      * 拍卖推迟最小间隔
      */
     public static final Period DELAY_CYCLE_GAP = new Period(5, PeriodType.minutes());
+    /**
+     * 最多延迟几次
+     */
     public static final Integer MAX_DELAY_TIMES = 5;
 
     @Resource

@@ -25,11 +25,12 @@ public class OrderController {
 
     /**
      * 获取用户的订单列表
+     *
      * @param request
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public BaseListResponse<Order> getOrdersOfUser(HttpServletRequest request){
+    @RequestMapping(path = "", method = RequestMethod.GET)
+    public BaseListResponse<Order> getOrdersOfUser(HttpServletRequest request) {
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
         List<Order> orders = orderRepository.findAllByUserId(userId);
         return new BaseListResponse<>(orders);
@@ -37,21 +38,23 @@ public class OrderController {
 
     /**
      * 获取订单列表
+     *
      * @return
      */
-    @RequestMapping(path = "/all",method = RequestMethod.GET)
-    public BaseListResponse<Order> allOrders(){
+    @RequestMapping(path = "/all", method = RequestMethod.GET)
+    public BaseListResponse<Order> allOrders() {
         List<Order> orders = orderRepository.findAll();
         return new BaseListResponse<>(orders);
     }
 
     /**
      * 订单支付成功
+     *
      * @param orderId
      * @return
      */
-    @RequestMapping(path = "/action/userPayed/orderId/{orderId}",method = RequestMethod.POST)
-    public BaseResponse userPayed(@PathVariable Integer orderId){
+    @RequestMapping(path = "/action/userPayed/orderId/{orderId}", method = RequestMethod.POST)
+    public BaseResponse userPayed(@PathVariable Integer orderId) {
         Order order = orderRepository.findOne(orderId);
         order.setStatus(Order.OrderStatus.PAY_SUCCESS.getCode());
         orderRepository.save(order);
@@ -60,11 +63,12 @@ public class OrderController {
 
     /**
      * 订单发货
+     *
      * @param orderId
      * @return
      */
-    @RequestMapping(path = "/action/deliverGoods/orderId/{orderId}",method = RequestMethod.POST)
-    public BaseResponse deliverGoods(@PathVariable Integer orderId){
+    @RequestMapping(path = "/action/deliverGoods/orderId/{orderId}", method = RequestMethod.POST)
+    public BaseResponse deliverGoods(@PathVariable Integer orderId) {
         Order order = orderRepository.findOne(orderId);
         order.setStatus(Order.OrderStatus.DILIVERED.getCode());
         orderRepository.save(order);
@@ -72,12 +76,13 @@ public class OrderController {
     }
 
     /**
-     * 订单发货
+     * 用户收到订单
+     *
      * @param orderId
      * @return
      */
-    @RequestMapping(path = "/action/receiveGoods/orderId/{orderId}",method = RequestMethod.POST)
-    public BaseResponse receiveGoods(@PathVariable Integer orderId){
+    @RequestMapping(path = "/action/receiveGoods/orderId/{orderId}", method = RequestMethod.POST)
+    public BaseResponse receiveGoods(@PathVariable Integer orderId) {
         Order order = orderRepository.findOne(orderId);
         order.setStatus(Order.OrderStatus.FINISH.getCode());
         orderRepository.save(order);
