@@ -34,6 +34,10 @@ public class Goods {
     @GeneratedValue
     private Integer id;
     /**
+     * 专场ID
+     */
+    private Integer sessionId;
+    /**
      * 商品列表图片
      */
     private String bannerUrl;
@@ -113,6 +117,14 @@ public class Goods {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Integer sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getBannerUrl() {

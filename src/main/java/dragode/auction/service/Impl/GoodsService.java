@@ -54,6 +54,15 @@ public class GoodsService {
     }
 
     /**
+     * 获取专场中的商品列表
+     * @param sessionId
+     * @return
+     */
+    public List<Goods> findBySessionId(Integer sessionId){
+        return goodsRepository.findAllBySessionId(sessionId);
+    }
+
+    /**
      * 获取商品详情
      *
      * @param goodsId 商品ID

@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface GoodsRepository extends JpaRepository<Goods,Integer> {
     List<Goods> findAllByStatus(Integer status);
+    List<Goods> findAllBySessionId(Integer sessionId);
 }

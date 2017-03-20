@@ -48,8 +48,7 @@ public class GoodsController {
      */
     @RequestMapping(path = "/sessionId/{sessionId}")
     public BaseListResponse<Goods> getSessionGoods(@PathVariable Integer sessionId){
-        //TODO implements
-        return null;
+        return new BaseListResponse<>(goodsService.findBySessionId(sessionId));
     }
 
     /**
