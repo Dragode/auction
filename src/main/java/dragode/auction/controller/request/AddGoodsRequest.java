@@ -1,12 +1,15 @@
 package dragode.auction.controller.request;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * 新增商品请求
  */
 public class AddGoodsRequest {
+    /**
+     * 专场ID
+     */
+    private Integer sessionId;
     /**
      * 商品列表图片 wx服务器ID
      */
@@ -20,6 +23,14 @@ public class AddGoodsRequest {
      */
     private Long startingPrice;
     /**
+     * 市场估价
+     */
+    private Long evaluate;
+    /**
+     * 一口价
+     */
+    private Long buyoutPrice;
+    /**
      * 加价幅度
      */
     private Long bidIncrement;
@@ -32,13 +43,17 @@ public class AddGoodsRequest {
      */
     private Integer delayCycle;
     /**
-     * 拍卖开始时间
+     * 规格
      */
-    private Date startTime;
+    private String standard;
     /**
-     * 拍卖结束时间
+     * 品种
      */
-    private Date endTime;
+    private String breed;
+    /**
+     * 作者
+     */
+    private String author;
     /**
      * 竞拍大厅页面图片 wx服务器ID
      */
@@ -100,20 +115,52 @@ public class AddGoodsRequest {
         this.delayCycle = delayCycle;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Integer getSessionId() {
+        return sessionId;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setSessionId(Integer sessionId) {
+        this.sessionId = sessionId;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Long getEvaluate() {
+        return evaluate;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setEvaluate(Long evaluate) {
+        this.evaluate = evaluate;
+    }
+
+    public Long getBuyoutPrice() {
+        return buyoutPrice;
+    }
+
+    public void setBuyoutPrice(Long buyoutPrice) {
+        this.buyoutPrice = buyoutPrice;
+    }
+
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard;
+    }
+
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getAuctionPictureWxServerId() {

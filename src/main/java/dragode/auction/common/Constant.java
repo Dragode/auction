@@ -38,32 +38,6 @@ public class Constant {
     public static final String BACK_URL = PROJECT_HOST + getAsString("BACK_URL");
 
     /**
-     * 银联支付相关
-     */
-    public static final String UNIONPAY_TRANS_URL = getAsString("UNIONPAY_TRANS_URL");
-    public static final String UNIONPAY_VERSION = getAsString("UNIONPAY_VERSION");
-    public static final String UNIONPAY_ENCODING = getAsString("UNIONPAY_ENCODING");
-    public static final String UNIONPAY_DATE_PATTERN = getAsString("UNIONPAY_DATE_PATTERN");
-    public static final String UNIONPAY_MER_ID = getAsString("UNIONPAY_MER_ID");
-
-    /**
-     * 银联支付证书相关
-     */
-    /**
-     * 证书使用模式(单证书/多证书)
-     */
-    public static final Boolean SINGLE_MODE = true;
-    public static final String CER_RELATIVE_PATH = "/certs";
-    public static final String CER_ABSOLUTE_PATH = getAbsolutePath(CER_RELATIVE_PATH);
-    public static final String CER_SIGN_PATH = getAbsolutePath(CER_RELATIVE_PATH + "/sign.pfx");
-    public static final String CER_SIGN_PWD = "000000";
-    public static final String CER_SIGN_TYPE = "PKCS12";
-    public static final String CER_ENCRYPT_PATH = getAbsolutePath(CER_RELATIVE_PATH + "/enc.cer");
-    public static final String CER_ENCRYPT_TRACK_KEY_MODULUS = "";
-    public static final String CER_ENCRYPT_TRACK_KEY_EXPONENT = "";
-    public static final String CER_VALIDATE_DIR = CER_ABSOLUTE_PATH;
-
-    /**
      * 腾讯云短信接口参数
      */
     public static final String QC_SMS_URL = getAsString("QC_SMS_URL");

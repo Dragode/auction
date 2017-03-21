@@ -36,6 +36,8 @@ public class GoodsService {
     @Resource
     private GoodsRepository goodsRepository;
     @Resource
+    private SessionRepository sessionRepository;
+    @Resource
     private GoodsPicturesRepository goodsPicturesRepository;
     @Resource
     private AuctionRecordRepository auctionRecordRepository;
@@ -118,6 +120,11 @@ public class GoodsService {
         Goods goods = Goods.newDefaultGoods();
         BeanUtils.copyProperties(addGoodsRequest, goods);
         goods.setCurrentPrice(goods.getStartingPrice());
+        goods.setStatus(Goods.WAITING);
+
+        Session session = sessionRepository.findOne(goods.getSessionId());
+        goods.setStartTime(session.getStartTime());
+        goods.setEndTime(session.getEndTime());
 
         //从微信服务器下载图片
         WxInterface.downloadMediaFile(addGoodsRequest.getBannerPictureWxServerId(), Constant.PICS_PATH);

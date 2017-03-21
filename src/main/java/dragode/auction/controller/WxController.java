@@ -102,55 +102,6 @@ public class WxController {
     }
 
     /**
-     * 微信网页授权后，跳转到拍卖专场列表页
-     *
-     * @param code
-     * @param state
-     * @param request
-     * @param response
-     */
-    @RequestMapping(path = "/redirectToAuctionList")
-    public void redirectToAuctionList(@RequestParam String code, @RequestParam(required = false) String state,
-                                      HttpServletRequest request, HttpServletResponse response) {
-        logRequestIfDebug(request);
-
-        if (StringUtils.isEmpty(code)) {
-            //TODO 优化
-            logger.error("code param is empty，or user have not authorized.");
-            PrintWriter writer = null;
-            try {
-                writer = response.getWriter();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            writer.write("请授权！");
-            writer.flush();
-        } else {
-            String openId = null;
-            try {
-                openId = wxService.getOpenId(code);
-            } catch (Exception e) {
-                logger.error("Error occurred in get openId.", e);
-                return;
-            }
-            User user = userRepository.findByOpenId(openId);
-            if (user == null) {
-                user = new User();
-                user.setOpenId(openId);
-                user.setBalance(0);
-                userRepository.save(user);
-            }
-            HttpSession session = request.getSession();
-            session.setAttribute(Constant.USER_ID, user.getId());
-            try {
-                response.sendRedirect("/auctionList.html");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * 微信网页授权后，跳转到特定页面
      *
      * @param code
