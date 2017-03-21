@@ -54,6 +54,10 @@ public class Goods {
      */
     private Long evaluate;
     /**
+     * 一口价
+     */
+    private Long buyoutPrice;
+    /**
      * 加价幅度
      */
     private Long bidIncrement;
@@ -269,6 +273,14 @@ public class Goods {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public Long getBuyoutPrice() {
+        return buyoutPrice;
+    }
+
+    public void setBuyoutPrice(Long buyoutPrice) {
+        this.buyoutPrice = buyoutPrice;
     }
 
     public static Goods newDefaultGoods() {

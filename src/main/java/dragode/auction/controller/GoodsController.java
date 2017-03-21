@@ -99,7 +99,7 @@ public class GoodsController {
      * @return
      */
     //TODO 前端改成POST
-    @RequestMapping(path = "/action/auction/goodsId/{goodsId}/price/{price}", method = RequestMethod.GET)
+    @RequestMapping(path = "/action/auction/goodsId/{goodsId}/price/{price}", method = RequestMethod.POST)
     public BaseResponse auctionGoods(@PathVariable Integer goodsId,@PathVariable Long price, HttpServletRequest request){
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
         try {
@@ -122,7 +122,7 @@ public class GoodsController {
      * @return
      */
     //TODO 前端改成POST
-    @RequestMapping(path = "/action/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.GET)
+    @RequestMapping(path = "/action/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
     public BaseResponse setProxyPrice(@PathVariable Integer goodsId,@PathVariable Long price, HttpServletRequest request){
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
         try {
