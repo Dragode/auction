@@ -123,6 +123,7 @@ public class GoodsService {
         goods.setStatus(Goods.WAITING);
 
         Session session = sessionRepository.findOne(goods.getSessionId());
+        session.setNumberOfGoods(session.getNumberOfGoods() + 1);
         goods.setStartTime(session.getStartTime());
         goods.setEndTime(session.getEndTime());
 
