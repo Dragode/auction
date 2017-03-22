@@ -38,7 +38,7 @@ public class SmsController {
      * @param httpServletRequest Http请求
      */
     @RequestMapping(value = "/sendVerificationCodeSms", method = RequestMethod.POST)
-    public String sendValidateSms(@RequestParam String telephone,
+    public String sendValidateSms(@RequestBody String telephone,
                                   HttpServletRequest httpServletRequest) {
         //TODO 判断上次获取短信验证码是否超过60秒
         if (StringUtils.isBlank(telephone)) {
@@ -69,7 +69,7 @@ public class SmsController {
      * @param httpServletRequest Http请求
      */
     @RequestMapping(path = "/validateCheckCode", method = RequestMethod.POST)
-    public String validateCheckCode(@RequestParam String msgCheckCode,
+    public String validateCheckCode(@RequestBody String msgCheckCode,
                                     HttpServletRequest httpServletRequest) {
         if (StringUtils.isBlank(msgCheckCode)) {
             throw new RuntimeException("msgCheckCode is required!");
