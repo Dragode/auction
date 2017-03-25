@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *
+ * 用户信息
  */
 @Entity
 @Table(name = "user")
@@ -15,6 +15,7 @@ public class User {
     public static final String NORMAL_USER = "normal";
     public static final String MEMBER_USER = "member";
     public static final String ADMINISTRATOR = "administrator";
+    public static final String BLACK_LIST = "black_list";
 
     @Id
     @GeneratedValue

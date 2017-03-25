@@ -4,11 +4,8 @@ import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.model.User;
-import dragode.auction.repository.UserRepository;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import dragode.auction.service.Impl.UserService;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +18,20 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
     @Resource
-    private UserRepository userRepository;
+    private UserService userService;
 
+    /**
+     * 获取当前用户信息
+     * @param httpServletRequest
+     * @return
+     */
     @RequestMapping(path = "/currentUser")
     public User getCurrentUser(HttpServletRequest httpServletRequest) {
         Integer userId = (Integer) httpServletRequest.getSession().getAttribute(Constant.USER_ID);
         if (null == userId) {
             throw new RuntimeException("User not login!");
         }
-        User user = userRepository.findOne(userId);
+        User user = userService.findOne(userId);
         return user;
     }
 
@@ -40,7 +42,7 @@ public class UserController {
      */
     @RequestMapping(path = "/{userId}",method = RequestMethod.GET)
     public User getUserInfo(@PathVariable Integer userId){
-        return userRepository.findOne(userId);
+        return userService.findOne(userId);
     }
 
     /**
@@ -49,32 +51,17 @@ public class UserController {
      */
     @RequestMapping(path = "",method = RequestMethod.GET)
     public BaseListResponse<User> getAllUser(){
-        return new BaseListResponse<>(userRepository.findAll());
+        return new BaseListResponse<>(userService.findAll());
     }
 
     /**
-     * 升级用户成会员
-     * @param userId
+     * 修改用户信息
+     * @param user
      * @return
      */
-    @RequestMapping(path = "/action/promotionToMember/userId/{userId}",method = RequestMethod.POST)
-    public BaseResponse promotionToMember(@PathVariable Integer userId){
-        User user = userRepository.findOne(userId);
-        user.setRole(User.MEMBER_USER);
-        userRepository.save(user);
-        return BaseResponse.successResponse();
-    }
-
-    /**
-     * 降低用户成普通用户
-     * @param userId
-     * @return
-     */
-    @RequestMapping(path = "/action/demotionToNormal/userId/{userId}",method = RequestMethod.POST)
-    public BaseResponse demotionToNormal(@PathVariable Integer userId){
-        User user = userRepository.findOne(userId);
-        user.setRole(User.NORMAL_USER);
-        userRepository.save(user);
+    @RequestMapping(path = "",method = RequestMethod.PUT)
+    public BaseResponse updateUser(@RequestBody User user){
+        userService.save(user);
         return BaseResponse.successResponse();
     }
 }

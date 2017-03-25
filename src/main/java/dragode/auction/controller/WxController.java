@@ -1,15 +1,13 @@
 package dragode.auction.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import dragode.auction.common.Constant;
 import dragode.auction.model.User;
-import dragode.auction.repository.UserRepository;
+import dragode.auction.service.Impl.UserService;
 import dragode.auction.utils.AuctionUtil;
 import dragode.auction.utils.HttpRequestUtils;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
-import dragode.wechat.intf.response.OAuthUserInfo;
 import dragode.wechat.service.WxService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,10 +35,8 @@ public class WxController {
 
     @Resource
     private WxService wxService;
-
     @Resource
-    private UserRepository userRepository;
-
+    private UserService userService;
 
     /**
      * 接入微信开发者
@@ -133,12 +129,9 @@ public class WxController {
                 logger.error("Error occurred in get openId.", e);
                 return;
             }
-            User user = userRepository.findByOpenId(openId);
+            User user = userService.findByOpenId(openId);
             if (user == null) {
-                user = new User();
-                user.setOpenId(openId);
-                user.setBalance(0);
-                userRepository.save(user);
+                userService.addUser(openId, false);
             }
             HttpSession session = request.getSession();
             session.setAttribute(Constant.USER_ID, user.getId());
@@ -150,17 +143,16 @@ public class WxController {
         }
     }
 
-    @RequestMapping(path = "/testGetUserInfo")
-    public OAuthUserInfo testGetUserInfo(@RequestParam String code) {
-        OAuthUserInfo userInfo = wxService.getUserInfo(code);
-        return userInfo;
-    }
-
     private void logRequestIfDebug(HttpServletRequest request) {
         logger.info("[Method = " + request.getMethod() + "]" +
                 "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
     }
 
+    /**
+     * 重定向到微信授权页面
+     * @param status
+     * @param response
+     */
     @RequestMapping(path = "/redirectToWxOauth/{status}")
     public void oauthRedirect(@PathVariable String status,
                               HttpServletResponse response){
@@ -172,6 +164,11 @@ public class WxController {
         }
     }
 
+    /**
+     * 获取微信js-sdk config
+     * @param request
+     * @return
+     */
     @RequestMapping(path = "/jssdk/config",method = RequestMethod.GET)
     public String getJsSdkConfig(HttpServletRequest request){
         String requestUrl = request.getHeader("Referer");
