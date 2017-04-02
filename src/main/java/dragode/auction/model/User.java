@@ -21,6 +21,14 @@ public class User {
     @GeneratedValue
     private Integer id;
     private String openId;
+    /**
+     * 微信昵称
+     */
+    private String nickname;
+    /**
+     *用户微信头像
+     */
+    private String headimgurl;
     private Integer balance;
     private Boolean subscribed;
     private String phoneNumber;
@@ -72,5 +80,21 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getHeadimgurl() {
+        return headimgurl;
+    }
+
+    public void setHeadimgurl(String headimgurl) {
+        this.headimgurl = headimgurl;
     }
 }

@@ -20,6 +20,7 @@ public class AuctionUtil {
     public static String SNSAPI_USERINFO_SCOPE = "snsapi_userinfo";
 
     /**
+     * 生成微信静默授权Url，获取用户openId
      * https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}&state=STATE#wechat_redirect
      *
      * @return
@@ -52,6 +53,39 @@ public class AuctionUtil {
         return url;
     }
 
+    /**
+     * 生成微信授权Url，需要用户确认，获取用户openId、昵称、头像
+     * https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}&state=STATE#wechat_redirect
+     *
+     * @return
+     */
+    public static String generateOauthUrlEx(String status) {
+        String appid = "wxcecf87b6a40bda8f";
+        String redirectUri = "http://www.ssspaimai.com/wx/redirectToHtmlEx";
+        String scope = SNSAPI_USERINFO_SCOPE;
+
+        String oauthUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}#wechat_redirect";
+        String oauthUrlWithStatus = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={appid}&redirect_uri={redirect_uri}&response_type=code&scope={scope}&state={state}#wechat_redirect";
+
+        String url;
+        if (StringUtils.isNotBlank(status)) {
+            url = oauthUrlWithStatus;
+            url = url.replace("{state}", status);
+        } else {
+            url = oauthUrl;
+        }
+
+
+        url = url.replace("{appid}", appid);
+        try {
+            url = url.replace("{redirect_uri}", URLEncoder.encode(redirectUri, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Error occurred in url encode!");
+            e.printStackTrace();
+        }
+        url = url.replace("{scope}", scope);
+        return url;
+    }
 
     public static void main(String[] args) {
         String status = "myOrders";

@@ -8,6 +8,7 @@ import dragode.auction.utils.AuctionUtil;
 import dragode.auction.utils.HttpRequestUtils;
 import dragode.wechat.intf.TemplateMessage;
 import dragode.wechat.intf.WxInterface;
+import dragode.wechat.intf.response.OAuthUserInfo;
 import dragode.wechat.service.WxService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -149,6 +150,58 @@ public class WxController {
     }
 
     /**
+     * 微信网页授权后，跳转到特定页面
+     *
+     * @param code
+     * @param state
+     * @param request
+     * @param response
+     */
+    @RequestMapping(path = "/redirectToHtmlEx")
+    public void redirectToHtmlEx(@RequestParam String code, @RequestParam String state,
+                               HttpServletRequest request, HttpServletResponse response) {
+        logRequestIfDebug(request);
+
+        if (StringUtils.isEmpty(code)) {
+            //TODO 优化
+            logger.error("code param is empty，or user have not authorized.");
+            PrintWriter writer = null;
+            try {
+                writer = response.getWriter();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            writer.write("请授权！");
+            writer.flush();
+        } else {
+            OAuthUserInfo oAuthUserInfo = null;
+            try {
+                oAuthUserInfo = wxService.getUserInfo(code);
+            } catch (Exception e) {
+                logger.error("Error occurred in get openId.", e);
+                return;
+            }
+            User user = userService.findByOpenId(oAuthUserInfo.getOpenid());
+            if (user == null) {
+                userService.addUser(oAuthUserInfo.getOpenid(),oAuthUserInfo.getNickname(),oAuthUserInfo.getHeadimgurl(), false);
+            }
+            if(StringUtils.isEmpty(user.getNickname())){
+                user.setNickname(oAuthUserInfo.getNickname());
+                user.setHeadimgurl(oAuthUserInfo.getHeadimgurl());
+                userService.save(user);
+            }
+            HttpSession session = request.getSession();
+            session.setAttribute(Constant.USER_ID, user.getId());
+            try {
+                String[] split = state.split("-");
+                response.sendRedirect("/" + split[0] + ".html#/" + split[1] + "/" + split[2]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * 重定向到微信授权页面
      * @param status
      * @param response
@@ -157,6 +210,22 @@ public class WxController {
     public void oauthRedirect(@PathVariable String status,
                               HttpServletResponse response){
         String url = AuctionUtil.generateOauthUrl(status);
+        try {
+            response.sendRedirect(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 重定向到微信授权页面
+     * @param status
+     * @param response
+     */
+    @RequestMapping(path = "/redirectToWxOauthEx/{status}")
+    public void oauthRedirectEx(@PathVariable String status,
+                              HttpServletResponse response){
+        String url = AuctionUtil.generateOauthUrlEx(status);
         try {
             response.sendRedirect(url);
         } catch (IOException e) {
