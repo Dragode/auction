@@ -4,11 +4,9 @@ import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.model.Order;
+import dragode.auction.model.User;
 import dragode.auction.repository.OrderRepository;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -48,43 +46,12 @@ public class OrderController {
     }
 
     /**
-     * 订单支付成功
+     * 修改订单
      *
-     * @param orderId
      * @return
      */
-    @RequestMapping(path = "/action/userPayed/orderId/{orderId}", method = RequestMethod.POST)
-    public BaseResponse userPayed(@PathVariable Integer orderId) {
-        Order order = orderRepository.findOne(orderId);
-        order.setStatus(Order.OrderStatus.PAY_SUCCESS.getCode());
-        orderRepository.save(order);
-        return BaseResponse.successResponse();
-    }
-
-    /**
-     * 订单发货
-     *
-     * @param orderId
-     * @return
-     */
-    @RequestMapping(path = "/action/deliverGoods/orderId/{orderId}", method = RequestMethod.POST)
-    public BaseResponse deliverGoods(@PathVariable Integer orderId) {
-        Order order = orderRepository.findOne(orderId);
-        order.setStatus(Order.OrderStatus.DILIVERED.getCode());
-        orderRepository.save(order);
-        return BaseResponse.successResponse();
-    }
-
-    /**
-     * 用户收到订单
-     *
-     * @param orderId
-     * @return
-     */
-    @RequestMapping(path = "/action/receiveGoods/orderId/{orderId}", method = RequestMethod.POST)
-    public BaseResponse receiveGoods(@PathVariable Integer orderId) {
-        Order order = orderRepository.findOne(orderId);
-        order.setStatus(Order.OrderStatus.FINISH.getCode());
+    @RequestMapping(path = "", method = RequestMethod.PUT)
+    public BaseResponse updateOrder(@RequestBody Order order) {
         orderRepository.save(order);
         return BaseResponse.successResponse();
     }
