@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 
+/**
+ * 拍卖专场接口
+ */
 @RestController
 @RequestMapping(path = "/sessions")
 public class SessionController {

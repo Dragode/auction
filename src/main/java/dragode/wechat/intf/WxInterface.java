@@ -11,12 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,10 +92,10 @@ public class WxInterface {
      * @return AccessToken
      */
     public static OAuthAccessToken getOAuthAccessToken(String code) {
-        String accessTokenStr = restTemplate.getForObject(WX_HOST + OAUTH_ACCESS_TOKE_URL, String.class,
+        ResponseEntity<String> accessTokenStr = restTemplate.getForEntity(WX_HOST + OAUTH_ACCESS_TOKE_URL, String.class,
                 APP_ID, SECRET, code);
-        logger.info("获取网页授权AccessToken接口响应报文：" + accessTokenStr);
-        OAuthAccessToken accessToken = JSON.parseObject(accessTokenStr, OAuthAccessToken.class);
+        logger.info("获取网页授权AccessToken接口响应报文：" + accessTokenStr.getBody());
+        OAuthAccessToken accessToken = JSON.parseObject(accessTokenStr.getBody(), OAuthAccessToken.class);
         return accessToken;
     }
 
@@ -102,9 +106,17 @@ public class WxInterface {
      * @return 用户信息
      */
     public static OAuthUserInfo getUserInfo(OAuthAccessToken oAuthAccessToken) {
-        OAuthUserInfo userInfo = restTemplate.getForObject(WX_HOST + OAUTH_USER_INFO_URL, OAuthUserInfo.class,
+        String response = restTemplate.getForObject(WX_HOST + OAUTH_USER_INFO_URL, String.class,
                 oAuthAccessToken.getAccess_token(), oAuthAccessToken.getOpenid(), ZH_CN);
-        return userInfo;
+        String formattedResponse = response;
+        try {
+            formattedResponse = new String(response.getBytes("ISO-8859-1"), "UTF-8");
+            logger.info("网页授权获取用户信息相应报文："+formattedResponse);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        OAuthUserInfo oAuthUserInfo = JSON.parseObject(formattedResponse, OAuthUserInfo.class);
+        return oAuthUserInfo;
     }
 
     /**
