@@ -7,26 +7,35 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- *
+ * 拍卖提醒
  */
 @Entity
 @Table(name = "auctionReminder")
 public class AuctionReminder {
 
     /**
-     * 拍卖开始时提醒
+     * 拍卖即将开始提醒
      */
-    public static final Integer AUCTION_START_REMIND = 0;
+    public static final Integer START = 0;
     /**
-     * 拍卖结束时提醒
+     * 拍卖即将结束提醒
      */
-    public static final Integer AUCTION_END_REMIND = 1;
+    public static final Integer END = 1;
 
     @Id
     @GeneratedValue
     private Integer id;
+    /**
+     * 商品ID
+     */
     private Integer goodsId;
+    /**
+     * 用户ID
+     */
     private Integer userId;
+    /**
+     * 提醒类型
+     */
     private Integer remindType;
 
     public Integer getId() {

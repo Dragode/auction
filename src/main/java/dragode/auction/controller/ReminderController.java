@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 提醒相关接口
  */
 @RestController
-@RequestMapping(path = "/reminds")
-public class RemindController {
+@RequestMapping(path = "/reminders")
+public class ReminderController {
 
     @Resource
     private AuctionReminderRepository auctionReminderRepository;
@@ -28,21 +30,23 @@ public class RemindController {
      * @param request
      * @return
      */
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/allRegisteredType", method = RequestMethod.GET)
     public BaseListResponse<Integer> getRegisteredRemindOfUser(HttpServletRequest request) {
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
 
-        List<AuctionReminder> registeredRemindOfUser = auctionReminderRepository.findAllByuserId(userId);
-        BaseListResponse<Integer> response = new BaseListResponse<>();
-        response.setItems(new ArrayList<Integer>());
+        List<AuctionReminder> registeredRemindOfUser = auctionReminderRepository.findAllByUserId(userId);
+        Set<Integer> allReminderTypes = new HashSet<>();
         for (AuctionReminder auctionReminder : registeredRemindOfUser) {
-            response.getItems().add(auctionReminder.getRemindType());
+            allReminderTypes.add(auctionReminder.getRemindType());
         }
+
+        BaseListResponse<Integer> response = new BaseListResponse<>();
+        response.setItems(new ArrayList<>(allReminderTypes));
         return response;
     }
 
     /**
-     * 注册商品拍卖相关通知
+     * 订阅商品拍卖相关通知
      *
      * @param goodsId
      * @param remindType
