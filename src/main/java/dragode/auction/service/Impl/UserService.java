@@ -49,29 +49,4 @@ public class UserService {
     public void save(User user){
         userRepository.save(user);
     }
-
-    /**
-     * 添加用户
-     * @param openId
-     * @param ifSubcribe
-     */
-    public void addUser(String openId,Boolean ifSubcribe) {
-        addUser(openId, null, null, ifSubcribe);
-    }
-
-    /**
-     * 添加用户
-     * @param openId
-     * @param ifSubcribe
-     */
-    public void addUser(String openId,String nickName,String headUrl,Boolean ifSubcribe) {
-        User user = new User();
-        user.setOpenId(openId);
-        user.setNickname(nickName);
-        user.setHeadimgurl(headUrl);
-        user.setBalance(0);
-        user.setRole(User.NORMAL_USER);
-        user.setSubscribed(ifSubcribe);
-        userRepository.save(user);
-    }
 }

@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * 订单
@@ -85,6 +86,14 @@ public class Order {
 
     public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
+    }
+
+    /**
+     * 生成用户看的订单ID
+     * @return
+     */
+    public static String generateOrderDisplayId(){
+        return String.valueOf(new Date().getTime());
     }
 
     //TODO 存数据库

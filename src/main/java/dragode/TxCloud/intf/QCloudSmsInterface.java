@@ -1,4 +1,4 @@
-package dragode.auction.intf;
+package dragode.TxCloud.intf;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -26,6 +26,7 @@ public class QCloudSmsInterface {
     private static final Logger logger = LoggerFactory.getLogger(QCloudSmsInterface.class);
     private static final String ENCODING = "utf-8";
 
+    //TODO 从配置文件获取 或 提供构造函数，并提供默认地址
     private String URL = Constant.QC_SMS_URL;
     private int SDK_APP_ID;
     private String APP_KEY;

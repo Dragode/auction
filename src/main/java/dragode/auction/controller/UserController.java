@@ -29,6 +29,8 @@ public class UserController {
     public User getCurrentUser(HttpServletRequest httpServletRequest) {
         Integer userId = (Integer) httpServletRequest.getSession().getAttribute(Constant.USER_ID);
         if (null == userId) {
+            //TODO 使用自建异常体系
+            //TODO vue-resource拦截器处理这个异常
             throw new RuntimeException("User not login!");
         }
         User user = userService.findOne(userId);

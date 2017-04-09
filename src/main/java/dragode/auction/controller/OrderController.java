@@ -6,6 +6,7 @@ import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.model.Order;
 import dragode.auction.model.User;
 import dragode.auction.repository.OrderRepository;
+import dragode.auction.service.Impl.WxReminderService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,6 +21,9 @@ import java.util.List;
 public class OrderController {
     @Resource
     private OrderRepository orderRepository;
+
+    @Resource
+    private WxReminderService wxReminderService;
 
     /**
      * 获取用户的订单列表
@@ -53,6 +57,9 @@ public class OrderController {
     @RequestMapping(path = "", method = RequestMethod.PUT)
     public BaseResponse updateOrder(@RequestBody Order order) {
         orderRepository.save(order);
+        if (order.getStatus().equals(Order.OrderStatus.DILIVERED.getCode())){
+            wxReminderService.remindUserOfGoodsDelivered(order);
+        }
         return BaseResponse.successResponse();
     }
 }

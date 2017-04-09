@@ -11,5 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Integer> {
-    List<Session> findByStatus(String status);
+    List<Session> findAllByStatus(Integer status);
 }

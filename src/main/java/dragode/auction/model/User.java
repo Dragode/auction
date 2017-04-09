@@ -17,6 +17,21 @@ public class User {
     public static final String ADMINISTRATOR = "administrator";
     public static final String BLACK_LIST = "black_list";
 
+    public User() {
+    }
+
+    public User(String openId,Boolean subscribed) {
+        this.openId = openId;
+        this.subscribed = subscribed;
+    }
+
+    public User(String openId, String nickname, String headimgurl) {
+        this.openId = openId;
+        this.nickname = nickname;
+        this.headimgurl = headimgurl;
+        this.subscribed = false;
+    }
+
     @Id
     @GeneratedValue
     private Integer id;

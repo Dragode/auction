@@ -3,7 +3,7 @@ package dragode.auction.controller.response;
 public enum HttpResult {
     SUCCESS("0", "success"),
 
-    BIDDING_HIGHER("-1", "有人出价比你高！"),
+    BID_MAX_PRICE_LESS_THEN_GOODS_CURRENT_PRICE("1001", "代理最高价格比当前商品价格低！"),
     ;
 
     private String resultCode;

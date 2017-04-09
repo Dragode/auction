@@ -1,23 +1,14 @@
 package dragode.auction.controller;
 
-import com.alibaba.fastjson.JSON;
-import dragode.auction.common.Constant;
 import dragode.auction.controller.request.AddGoodsRequest;
 import dragode.auction.controller.response.BaseListResponse;
-import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.GoodsResponse;
-import dragode.auction.controller.response.HttpResult;
 import dragode.auction.model.Goods;
 import dragode.auction.service.Impl.GoodsService;
-import dragode.auction.utils.HttpRequestUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 商品接口
@@ -26,28 +17,17 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(path = "/goods")
 public class GoodsController {
 
-    private static Logger logger = LoggerFactory.getLogger(GoodsController.class);
-
     @Resource
     private GoodsService goodsService;
 
     /**
-     * 获取商品列表
-     *
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public BaseListResponse<Goods> getGoods() {
-        return new BaseListResponse<>(goodsService.findAll());
-    }
-
-    /**
      * 获取专场对应的商品列表
+     *
      * @param sessionId 专场ID
      * @return 商品列表
      */
-    @RequestMapping(path = "/sessionId/{sessionId}")
-    public BaseListResponse<Goods> getSessionGoods(@PathVariable Integer sessionId){
+    @GetMapping(path = "/sessionId/{sessionId}")
+    public BaseListResponse<Goods> getGoodsOfSession(@PathVariable Integer sessionId) {
         return new BaseListResponse<>(goodsService.findBySessionId(sessionId));
     }
 
@@ -63,6 +43,7 @@ public class GoodsController {
 
         Goods goods = goodsService.findOne(goodsId);
         BeanUtils.copyProperties(goods, goodsResponse);
+        //TODO 用Hibernate实体中直接关联？
         goodsResponse.setShowPictures(goodsService.getGoodsShowPictures(goodsId));
         goodsResponse.setDescPictures(goodsService.getGoodsDescPictures(goodsId));
         return goodsResponse;
@@ -72,66 +53,10 @@ public class GoodsController {
      * 新增商品
      *
      * @param addGoodsRequest
-     * @param request
      * @return
      */
-    //TODO 为什么会让/goods.html会405
-    @RequestMapping(method = RequestMethod.POST)
-    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest, HttpServletRequest request) {
-        logRequestIfDebug(request);
-
-        String requestParams = JSON.toJSONString(addGoodsRequest);
-        logger.info("requestParams=" + requestParams);
-
+    @PostMapping(path = "")
+    public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
         return goodsService.addGoods(addGoodsRequest);
-    }
-
-    private void logRequestIfDebug(HttpServletRequest request) {
-        logger.info("[Method = " + request.getMethod() + "]" +
-                "[Request = " + HttpRequestUtils.transferRequestToString(request) + "]");
-    }
-
-    /**
-     * 用户竞拍商品
-     * @param goodsId
-     * @param price
-     * @param request
-     * @return
-     */
-    @RequestMapping(path = "/action/auction/goodsId/{goodsId}/price/{price}", method = RequestMethod.POST)
-    public BaseResponse auctionGoods(@PathVariable Integer goodsId,@PathVariable Long price, HttpServletRequest request){
-        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-        try {
-            goodsService.auction(goodsId,userId,price);
-            return BaseResponse.successResponse();
-        } catch (RuntimeException e) {
-            if (StringUtils.equals("-1",e.getMessage())){
-                return new BaseResponse(HttpResult.BIDDING_HIGHER);
-            }else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * 用户设置代理价
-     * @param goodsId
-     * @param price
-     * @param request
-     * @return
-     */
-    @RequestMapping(path = "/action/proxyAuction/goods/{goodsId}/price/{price}", method = RequestMethod.POST)
-    public BaseResponse setProxyPrice(@PathVariable Integer goodsId,@PathVariable Long price, HttpServletRequest request){
-        Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
-        try {
-            goodsService.setProxyPrice(goodsId,userId,price);
-            return BaseResponse.successResponse();
-        } catch (RuntimeException e) {
-            if (StringUtils.equals("-1",e.getMessage())){
-                return new BaseResponse(HttpResult.BIDDING_HIGHER);
-            }else {
-                throw e;
-            }
-        }
     }
 }

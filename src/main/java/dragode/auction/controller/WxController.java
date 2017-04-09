@@ -132,7 +132,8 @@ public class WxController {
             }
             User user = userService.findByOpenId(openId);
             if (user == null) {
-                userService.addUser(openId, false);
+                user = new User(openId,false);
+                userService.save(user);
             }
             HttpSession session = request.getSession();
             session.setAttribute(Constant.USER_ID, user.getId());
@@ -183,9 +184,9 @@ public class WxController {
             }
             User user = userService.findByOpenId(oAuthUserInfo.getOpenid());
             if (user == null) {
-                userService.addUser(oAuthUserInfo.getOpenid(),oAuthUserInfo.getNickname(),oAuthUserInfo.getHeadimgurl(), false);
-            }
-            if(StringUtils.isEmpty(user.getNickname())){
+                user = new User(oAuthUserInfo.getOpenid(),oAuthUserInfo.getNickname(),oAuthUserInfo.getHeadimgurl());
+                userService.save(user);
+            }else if(StringUtils.isEmpty(user.getNickname())){
                 user.setNickname(oAuthUserInfo.getNickname());
                 user.setHeadimgurl(oAuthUserInfo.getHeadimgurl());
                 userService.save(user);

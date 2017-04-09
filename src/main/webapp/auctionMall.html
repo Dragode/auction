@@ -268,7 +268,7 @@
             } else if ("proxy" == bidType) {
                 $.ajax({
                     type: 'POST',
-                    url: '/proxyAuction/goods/' + getUrlParam("goodsId") + "/price/" + auctionMall.bidPrice,
+                    url: '/proxyBid/goods/' + getUrlParam("goodsId") + "/price/" + auctionMall.bidPrice,
                     data: JSON.stringify({price: auctionMall.bidPrice}),
                     contentType: 'application/json',
                     success: function (response) {

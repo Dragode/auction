@@ -10,15 +10,15 @@ import java.util.Date;
  * 拍卖纪录
  */
 @Entity
-@Table(name = "auctionRecord")
-public class AuctionRecord {
+@Table(name = "bidRecord")
+public class BidRecord {
     @Id
     @GeneratedValue
     private Integer id;
     private Integer userId;
     private Integer goodsId;
     private Long price;
-    private Date auctionTime;
+    private Date bidTime;
 
     public Integer getId() {
         return id;
@@ -52,11 +52,11 @@ public class AuctionRecord {
         this.price = price;
     }
 
-    public Date getAuctionTime() {
-        return auctionTime;
+    public Date getBidTime() {
+        return bidTime;
     }
 
-    public void setAuctionTime(Date auctionTime) {
-        this.auctionTime = auctionTime;
+    public void setBidTime(Date auctionTime) {
+        this.bidTime = auctionTime;
     }
 }

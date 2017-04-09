@@ -9,15 +9,21 @@ import javax.persistence.Table;
  * 代理拍卖
  */
 @Entity
-@Table(name = "proxyAuction")
-public class ProxyAuction {
+@Table(name = "proxyBid")
+public class ProxyBid {
 
+    /**
+     * 代理出价
+     */
     public static final String UNDER_PROXY = "UNDER_PROXY";
-    public static final String AUCTION_FINISH = "AUCTION_FINISH";
     /**
      * 代理价被别人竞价超过
      */
     public static final String PRICE_OVER = "PRICE_OVER";
+    /**
+     * 拍卖结束
+     */
+    public static final String AUCTION_FINISH = "AUCTION_FINISH";
 
     @Id
     @GeneratedValue
@@ -28,7 +34,7 @@ public class ProxyAuction {
     /**
      * 代理的最高价
      */
-    private Long price;
+    private Long maxPrice;
 
     public Integer getId() {
         return id;
@@ -62,11 +68,11 @@ public class ProxyAuction {
         this.goodsId = goodsId;
     }
 
-    public Long getPrice() {
-        return price;
+    public Long getMaxPrice() {
+        return maxPrice;
     }
 
-    public void setPrice(Long price) {
-        this.price = price;
+    public void setMaxPrice(Long maxPrice) {
+        this.maxPrice = maxPrice;
     }
 }

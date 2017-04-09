@@ -9,9 +9,9 @@ import java.util.Date;
 @Entity
 @Table(name = "session")
 public class Session {
-    public static final String WAITING = "0";
-    public static final String AUCTION = "1";
-    public static final String DONE = "2";
+    public static final Integer WAITING = 0;
+    public static final Integer AUCTION = 1;
+    public static final Integer DONE = 2;
 
     @Id
     @GeneratedValue
@@ -19,7 +19,7 @@ public class Session {
     private String bannerUrl;
     private String title;
     private Integer numberOfGoods;
-    private String status;
+    private Integer status;
     private Date startTime;
     private Date endTime;
 
@@ -55,11 +55,11 @@ public class Session {
         this.numberOfGoods = numberOfGoods;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

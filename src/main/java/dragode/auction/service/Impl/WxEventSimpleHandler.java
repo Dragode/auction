@@ -21,7 +21,8 @@ public class WxEventSimpleHandler extends WxEventDefaultHandler{
         //用户不存在，则新增用户；用户存在，则更新用户关注信息
         User userByOpenId = userService.findByOpenId(openId);
         if(null == userByOpenId){
-            userService.addUser(openId,true);
+            userByOpenId = new User(openId,true);
+            userService.save(userByOpenId);
         }else if(!userByOpenId.getSubscribed()){
             userByOpenId.setSubscribed(true);
             userService.save(userByOpenId);

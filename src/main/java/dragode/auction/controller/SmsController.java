@@ -23,14 +23,6 @@ public class SmsController {
     @Resource
     private UserRepository userRepository;
 
-    @RequestMapping(value = "/sendVerificationCodeSms/{telephone}", method = RequestMethod.GET)
-    public String sendVerificationCodeSms(@PathVariable String telephone) {
-        JSONObject response = new JSONObject();
-        String verificationCode = txSmsService.sendVerificationCodeSms(telephone);
-        response.put("success", StringUtils.isNotBlank(verificationCode));
-        return response.toJSONString();
-    }
-
     /**
      * 发送短信验证码
      *

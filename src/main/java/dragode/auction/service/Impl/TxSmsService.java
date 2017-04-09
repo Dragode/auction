@@ -1,7 +1,7 @@
 package dragode.auction.service.Impl;
 
 
-import dragode.auction.intf.QCloudSmsInterface;
+import dragode.TxCloud.intf.QCloudSmsInterface;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static dragode.auction.common.Constant.*;
-import static dragode.auction.intf.QCloudSmsInterface.SmsType;
+import static dragode.TxCloud.intf.QCloudSmsInterface.SmsType;
 
 @Service
 public class TxSmsService {
