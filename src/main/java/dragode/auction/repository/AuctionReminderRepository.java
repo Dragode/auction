@@ -12,5 +12,5 @@ import java.util.List;
 @Repository
 public interface AuctionReminderRepository extends JpaRepository<AuctionReminder, Integer> {
     List<AuctionReminder> findAllByGoodsId(Integer sessionId);
-    List<AuctionReminder> findAllByUserId(Integer userId);
+    List<AuctionReminder> findAllByUserIdAndGoodsId(Integer userId,Integer goodsId);
 }

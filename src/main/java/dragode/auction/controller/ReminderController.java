@@ -30,11 +30,11 @@ public class ReminderController {
      * @param request
      * @return
      */
-    @RequestMapping(path = "/allRegisteredType", method = RequestMethod.GET)
-    public BaseListResponse<Integer> getRegisteredRemindOfUser(HttpServletRequest request) {
+    @RequestMapping(path = "/allRegisteredType/goodsId/{goodsId}", method = RequestMethod.GET)
+    public BaseListResponse<Integer> getRegisteredRemindOfUser(@PathVariable Integer goodsId,HttpServletRequest request) {
         Integer userId = (Integer) request.getSession().getAttribute(Constant.USER_ID);
 
-        List<AuctionReminder> registeredRemindOfUser = auctionReminderRepository.findAllByUserId(userId);
+        List<AuctionReminder> registeredRemindOfUser = auctionReminderRepository.findAllByUserIdAndGoodsId(userId,goodsId);
         Set<Integer> allReminderTypes = new HashSet<>();
         for (AuctionReminder auctionReminder : registeredRemindOfUser) {
             allReminderTypes.add(auctionReminder.getRemindType());
