@@ -19,6 +19,8 @@ public class ProxyBidService {
     private GoodsRepository goodsRepository;
     @Resource
     private ProxyBidRepository proxyBidRepository;
+    @Resource
+    private AuctionService auctionService;
 
     /**
      * 用户设置代理价
@@ -37,10 +39,10 @@ public class ProxyBidService {
             throw new RuntimeException("-1");
         }
 
-        //TODO 调用拍卖方法
-        goods.setCurrentPrice(goods.getCurrentPrice() + goods.getBidIncrement());
-        goods.setAuctionUserId(proxyBid.getUserId());
-        goodsRepository.save(goods);
+        //拍一手
+        if (!goods.getAuctionUserId().equals(proxyBid.getUserId())) {
+            auctionService.bid(proxyBid.getGoodsId(), proxyBid.getUserId(), goods.getCurrentPrice() + goods.getBidIncrement());
+        }
 
         proxyBid.setStatus(ProxyBid.UNDER_PROXY);
         proxyBidRepository.save(proxyBid);

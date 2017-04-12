@@ -114,6 +114,7 @@ public class AuctionService {
         }
 
         DateTime now = DateTime.now();
+        Integer preAuctionUserId = goods.getAuctionUserId();
 
         //增加拍卖纪录
         BidRecord bidRecord = new BidRecord();
@@ -123,16 +124,28 @@ public class AuctionService {
         bidRecord.setBidTime(now.toDate());
         bidRecordRepository.save(bidRecord);
 
+        Boolean ifBuyout = false;
+        if (goods.getBuyoutPrice() !=0
+                && price >= goods.getBuyoutPrice()) {
+            ifBuyout = true;
+        }
+
         //修改物品拍卖状态
         goods.setCurrentPrice(price);
         goods.setAuctionUserId(userId);
         goods.setLastAuctionDate(now.toDate());
-        delayEndTimeIfNecessary(now, goods);
+        if (!ifBuyout) {
+            delayEndTimeIfNecessary(now, goods);
+        }
         goodsRepository.save(goods);
 
         //出价被超过提醒
-        if (goods.getAuctionUserId() != userId) {
-            wxReminderService.remindUserOfBidOver(userId, goods);
+        if (!goods.getAuctionUserId().equals(preAuctionUserId)) {
+            wxReminderService.remindUserOfBidOver(preAuctionUserId, goods);
+        }
+
+        if (ifBuyout) {
+            finishAuctionOfGoods(goods);
         }
     }
 

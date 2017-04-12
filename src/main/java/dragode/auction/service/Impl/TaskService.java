@@ -63,15 +63,11 @@ public class TaskService {
             Goods goods = goodsRepository.findOne(underProxyBid.getGoodsId());
             if (!goods.getAuctionUserId().equals(underProxyBid.getUserId())) {
                 if (goods.getCurrentPrice() < underProxyBid.getMaxPrice()) {
-                    Integer preAuctionUserId = goods.getAuctionUserId();
-                    goods.setAuctionUserId(underProxyBid.getUserId());
-                    goods.setCurrentPrice(goods.getCurrentPrice() + goods.getBidIncrement());
-                    goodsRepository.save(goods);
-                    wxReminderService.remindUserOfProxyBid(preAuctionUserId, goods);
+                    auctionService.bid(goods.getId(), underProxyBid.getUserId(), goods.getCurrentPrice() + goods.getBidIncrement());
                 } else {
                     underProxyBid.setStatus(ProxyBid.PRICE_OVER);
                     proxyBidRepository.save(underProxyBid);
-                    wxReminderService.remindUserOfPriceOver(underProxyBid.getUserId(), goods);
+                    wxReminderService.remindUserOfOverProxy(underProxyBid.getUserId(), goods);
                 }
             }
         }
@@ -90,12 +86,12 @@ public class TaskService {
             if (now.isAfter(endTime)) {
                 //拍卖到期，生成订单
                 auctionService.finishAuctionOfGoods(goods);
-            }else if (now.plusMinutes(10).isAfter(endTime)) {
+            } else if (now.plusMinutes(10).isAfter(endTime) && !goods.getRemindOfFinish()) {
                 //拍卖即将到期提醒
                 List<BidRecord> goodsBidRecords = bidRecordRepository.findAllByGoodsId(goods.getId());
-                if (goodsBidRecords.size() > 1){
+                if (goodsBidRecords.size() > 1) {
                     Set<Integer> auctionedGoodsUser = new HashSet<>();//拍卖过该商品的用户，除了当前竞拍用户
-                    goodsBidRecords = goodsBidRecords.subList(0, goodsBidRecords.size()-2);
+                    goodsBidRecords = goodsBidRecords.subList(0, goodsBidRecords.size() - 2);
                     for (BidRecord goodsBidRecord : goodsBidRecords) {
                         auctionedGoodsUser.add(goodsBidRecord.getUserId());
                     }
@@ -103,6 +99,8 @@ public class TaskService {
                         wxReminderService.remindUserOfAuctionToBeFinish(userId, goods);
                     }
                 }
+                goods.setRemindOfFinish(true);
+                goodsRepository.save(goods);
             }
         }
     }

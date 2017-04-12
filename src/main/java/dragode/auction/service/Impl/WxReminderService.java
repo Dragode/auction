@@ -22,8 +22,8 @@ public class WxReminderService {
     private static final String GOODS_DETAIL_URL = INDEX_HTML + "/goodsDetail?goodsId=";
 
     private static final String AUCTION_START_TEMPLATE_ID = "ADHrbX8R1mB736XPDyT9HNxD4-3EIhqE--2go8YrVlA";
-    private static final String PROXY_BID_TEMPLATE_ID = "iyu51Ee1S8F9Wf-ZX6lBMltv-nONEu3lQvog5W3fDF8";
-    private static final String PRICE_OVER_TEMPLATE_ID = "0ycvUSKrpAJIzjQJWPW8qKc8QrzccrDAyEZ6w9s1Nn4";
+    private static final String OVER_BID_TEMPLATE_ID = "iyu51Ee1S8F9Wf-ZX6lBMltv-nONEu3lQvog5W3fDF8";
+    private static final String OVER_PROXY_TEMPLATE_ID = "0ycvUSKrpAJIzjQJWPW8qKc8QrzccrDAyEZ6w9s1Nn4";
     private static final String AUCTION_SUCCESS_TEMPLATE_ID = "-_DwO_45AMMzGRxJtbirC1YNUN5kzpE3WncrmcentGg";
     private static final String GOODS_DELIVERED_TEMPLATE_ID = "gWBf9sX9qHG-PS87DnNk27QwqBDkixUmikOl4SJjFOc";
     private static final String AUCTION_TO_BE_FINISH_TEMPLATE_ID = "woXuU5Ov-7Dg9VJ4H_QbRh1yPxCdCaxZUZwWdUqbTEU";
@@ -58,7 +58,7 @@ public class WxReminderService {
      * @param userId
      * @param goods
      */
-    public void remindUserOfProxyBid(Integer userId, Goods goods) {
+    public void remindUserOfOverBid(Integer userId, Goods goods) {
         User user = userRepository.findOne(userId);
         String topcolor = "#FF0000";
         String url = GOODS_DETAIL_URL + goods.getId();
@@ -67,7 +67,7 @@ public class WxReminderService {
         name.setValue(goods.getTitle());
         name.setColor("#173177");
         stringDataItemHashMap.put("name", name);
-        WxInterface.sendTemplateMessage(PROXY_BID_TEMPLATE_ID, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+        WxInterface.sendTemplateMessage(OVER_BID_TEMPLATE_ID, user.getOpenId(), topcolor, url, stringDataItemHashMap);
     }
 
     /**
@@ -76,8 +76,7 @@ public class WxReminderService {
      * @param userId
      * @param goods
      */
-    //TODO 封装进WxInterface
-    public void remindUserOfPriceOver(Integer userId, Goods goods) {
+    public void remindUserOfOverProxy(Integer userId, Goods goods) {
         User user = userRepository.findOne(userId);
 
         String topcolor = "#FF0000";
@@ -87,7 +86,7 @@ public class WxReminderService {
         name.setValue(goods.getTitle());
         name.setColor("#173177");
         stringDataItemHashMap.put("name", name);
-        WxInterface.sendTemplateMessage(PRICE_OVER_TEMPLATE_ID, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+        WxInterface.sendTemplateMessage(OVER_PROXY_TEMPLATE_ID, user.getOpenId(), topcolor, url, stringDataItemHashMap);
     }
 
     /**

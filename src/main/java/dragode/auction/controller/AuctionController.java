@@ -4,11 +4,11 @@ import dragode.auction.common.Constant;
 import dragode.auction.controller.response.BaseResponse;
 import dragode.auction.controller.response.HttpResult;
 import dragode.auction.service.Impl.AuctionService;
-import dragode.auction.service.Impl.GoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 拍卖接口
  */
+@RestController
 @RequestMapping(path = "/auctions")
 public class AuctionController {
 
@@ -29,7 +30,6 @@ public class AuctionController {
      * @param request
      * @return
      */
-    //TODO 拍卖接口独立
     @PostMapping(path = "/goodsId/{goodsId}/price/{price}")
     public BaseResponse bidGoods(@PathVariable Integer goodsId,
                                  @PathVariable Long price,

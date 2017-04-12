@@ -114,6 +114,10 @@ public class Goods {
      * 已延迟次数
      */
     private Integer delayTimes;
+    /**
+     * 是否已提醒过竞拍即将结束
+     */
+    private Boolean remindOfFinish;
 
     public Integer getId() {
         return id;
@@ -281,6 +285,14 @@ public class Goods {
 
     public void setBuyoutPrice(Long buyoutPrice) {
         this.buyoutPrice = buyoutPrice;
+    }
+
+    public Boolean getRemindOfFinish() {
+        return remindOfFinish;
+    }
+
+    public void setRemindOfFinish(Boolean remindOfFinish) {
+        this.remindOfFinish = remindOfFinish;
     }
 
     public static Goods newDefaultGoods() {
