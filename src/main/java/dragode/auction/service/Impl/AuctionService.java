@@ -6,6 +6,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,6 +18,8 @@ import java.util.List;
  */
 @Service
 public class AuctionService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuctionService.class);
 
     /**
      * 拍卖推迟最小间隔
@@ -60,6 +64,7 @@ public class AuctionService {
      * @param session
      */
     public void startAuctionOfSession(Session session){
+        LOGGER.info("专场{}准备开始拍卖！[id={}]",session.getTitle(),session.getId());
         session.setStatus(Session.AUCTION);
         sessionRepository.save(session);
         startGoodsAuction(session);
@@ -72,6 +77,7 @@ public class AuctionService {
     private void startGoodsAuction(Session session){
         List<Goods> goodsInSession = goodsRepository.findAllBySessionId(session.getId());
         for (Goods goods : goodsInSession) {
+            LOGGER.info("商品{}准备开始拍卖！[id={}]",goods.getTitle(),goods.getId());
             goods.setStatus(Goods.AUCTION);
             asyncRemindUserOfAuctionStart(goods);
             goodsRepository.save(goods);
@@ -86,6 +92,7 @@ public class AuctionService {
     private void asyncRemindUserOfAuctionStart(Goods goods) {
         List<AuctionReminder> auctionReminders = auctionReminderRepository.findAllByGoodsId(goods.getId());
         for (AuctionReminder auctionReminder : auctionReminders) {
+            LOGGER.info("通知用户商品{}准备开始拍卖！[userId={},goodsId={}]",goods.getTitle(),auctionReminder.getUserId(),goods.getId());
             wxReminderService.remindUserOfAuctionStart(auctionReminder.getUserId(), goods);
             auctionReminderRepository.delete(auctionReminder);
         }

@@ -43,9 +43,8 @@ public class TaskService {
     public void startSessionAuction() {
         List<Session> waitingForAuctionSessions = sessionRepository.findAllByStatus(Session.WAITING);
         for (Session session : waitingForAuctionSessions) {
-            Date startTime = session.getStartTime();
-            Date now = new Date();
-            if (now.getTime() > startTime.getTime()) {
+            DateTime goodsAuctionStartTime = new DateTime(session.getStartTime());
+            if (DateTime.now().isAfter(goodsAuctionStartTime)) {
                 auctionService.startAuctionOfSession(session);
             }
         }
