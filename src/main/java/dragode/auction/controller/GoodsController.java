@@ -3,7 +3,9 @@ package dragode.auction.controller;
 import dragode.auction.controller.request.AddGoodsRequest;
 import dragode.auction.controller.response.BaseListResponse;
 import dragode.auction.controller.response.GoodsResponse;
+import dragode.auction.model.BidRecord;
 import dragode.auction.model.Goods;
+import dragode.auction.repository.BidRecordRepository;
 import dragode.auction.service.Impl.GoodsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ public class GoodsController {
 
     @Resource
     private GoodsService goodsService;
+    @Resource
+    private BidRecordRepository bidRecordRepository;
 
     /**
      * 获取专场对应的商品列表
@@ -58,5 +62,15 @@ public class GoodsController {
     @PostMapping(path = "")
     public Goods addGoods(@RequestBody AddGoodsRequest addGoodsRequest) {
         return goodsService.addGoods(addGoodsRequest);
+    }
+
+    /**
+     * 获取商品的拍卖记录
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/{goodsId}/records")
+    public BaseListResponse<BidRecord> records(@PathVariable Integer goodsId) {
+        return new BaseListResponse(bidRecordRepository.findAllByGoodsId(goodsId));
     }
 }

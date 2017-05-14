@@ -16,6 +16,7 @@ public class BidRecord {
     @GeneratedValue
     private Integer id;
     private Integer userId;
+    private String userPhoneNumber;
     private Integer goodsId;
     private Long price;
     private Date bidTime;
@@ -30,6 +31,14 @@ public class BidRecord {
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
     }
 
     public void setUserId(Integer userId) {
