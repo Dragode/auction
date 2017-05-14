@@ -156,4 +156,28 @@ public class WxReminderService {
         stringDataItemHashMap.put("name", name);
         WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
     }
+
+    /**
+     * 通知用户竞拍出价被超过
+     */
+    public void remindAdminOfBid(Integer userId, Goods goods) {
+        User user = userRepository.findOne(userId);
+        String templateId = "pPcjc7S_cXRYy6UCoF1heSqqaUxMu4YdPd_5ak7bcn4";
+        String topcolor = "#FF0000";
+        String url = "http://119.29.159.58/auctionList.html";
+        HashMap<String, TemplateMessage.DataItem> stringDataItemHashMap = new HashMap<>();
+        TemplateMessage.DataItem phoneNumber = new TemplateMessage.DataItem();
+        phoneNumber.setValue(user.getPhoneNumber());
+        phoneNumber.setColor("#173177");
+        stringDataItemHashMap.put("phoneNumber", phoneNumber);
+        TemplateMessage.DataItem goodsName = new TemplateMessage.DataItem();
+        goodsName.setValue(goods.getTitle());
+        goodsName.setColor("#173177");
+        stringDataItemHashMap.put("goodsName", goodsName);
+        TemplateMessage.DataItem price = new TemplateMessage.DataItem();
+        price.setValue(goods.getCurrentPrice().toString());
+        price.setColor("#173177");
+        stringDataItemHashMap.put("price", price);
+        WxInterface.sendTemplateMessage(templateId, user.getOpenId(), topcolor, url, stringDataItemHashMap);
+    }
 }

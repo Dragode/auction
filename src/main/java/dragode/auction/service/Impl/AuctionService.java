@@ -55,6 +55,8 @@ public class AuctionService {
     private OrderRepository orderRepository;
     @Resource
     private BidRecordRepository bidRecordRepository;
+    @Resource
+    private UserRepository userRepository;
 
     @Resource
     private WxReminderService wxReminderService;
@@ -123,6 +125,13 @@ public class AuctionService {
         bidRecord.setPrice(price);
         bidRecord.setBidTime(now.toDate());
         bidRecordRepository.save(bidRecord);
+
+        List<User> adminUsers = userRepository.findAllByRole(User.ADMINISTRATOR);
+        if (CollectionUtils.isNotEmpty(adminUsers)) {
+            for (User adminUser : adminUsers) {
+                wxReminderService.remindUserOfBidOver(adminUser.getId(), goods);
+            }
+        }
 
         Boolean ifBuyout = false;
         if (goods.getBuyoutPrice() !=0
