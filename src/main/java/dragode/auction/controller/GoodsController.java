@@ -8,6 +8,10 @@ import dragode.auction.model.Goods;
 import dragode.auction.repository.BidRecordRepository;
 import dragode.auction.service.Impl.GoodsService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -71,6 +75,8 @@ public class GoodsController {
      */
     @RequestMapping(value = "/{goodsId}/records")
     public BaseListResponse<BidRecord> records(@PathVariable Integer goodsId) {
-        return new BaseListResponse(bidRecordRepository.findAllByGoodsId(goodsId));
+        Sort sort = new Sort(Sort.Direction.DESC, "bidTime");
+        Pageable pageable = new PageRequest(0, 4, sort);
+        return new BaseListResponse(bidRecordRepository.findAllByGoodsId(goodsId,pageable));
     }
 }
