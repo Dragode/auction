@@ -8,7 +8,6 @@ import dragode.auction.model.Goods;
 import dragode.auction.repository.BidRecordRepository;
 import dragode.auction.service.Impl.GoodsService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

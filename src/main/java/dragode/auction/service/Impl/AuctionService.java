@@ -119,8 +119,10 @@ public class AuctionService {
         Integer preAuctionUserId = goods.getAuctionUserId();
 
         //增加拍卖纪录
+        User bidUser = userRepository.findOne(userId);
         BidRecord bidRecord = new BidRecord();
         bidRecord.setUserId(userId);
+        bidRecord.setUserPhoneNumber(bidUser.getPhoneNumber());
         bidRecord.setGoodsId(goodsId);
         bidRecord.setPrice(price);
         bidRecord.setBidTime(now.toDate());
@@ -129,7 +131,7 @@ public class AuctionService {
         List<User> adminUsers = userRepository.findAllByRole(User.ADMINISTRATOR);
         if (CollectionUtils.isNotEmpty(adminUsers)) {
             for (User adminUser : adminUsers) {
-                wxReminderService.remindUserOfBidOver(adminUser.getId(), goods);
+                wxReminderService.remindAdminOfBid(adminUser.getId(), goods);
             }
         }
 
