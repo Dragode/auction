@@ -2,20 +2,21 @@ package dragode.auction.service.Impl;
 
 import dragode.auction.common.Constant;
 import dragode.auction.controller.request.AddGoodsRequest;
-import dragode.auction.model.*;
-import dragode.auction.repository.*;
-import dragode.wechat.intf.TemplateMessage;
+import dragode.auction.model.Goods;
+import dragode.auction.model.GoodsPictures;
+import dragode.auction.model.Session;
+import dragode.auction.repository.GoodsPicturesRepository;
+import dragode.auction.repository.GoodsRepository;
+import dragode.auction.repository.SessionRepository;
 import dragode.wechat.intf.WxInterface;
 import org.apache.commons.collections4.CollectionUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,6 +24,8 @@ import java.util.List;
  */
 @Service
 public class GoodsService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsService.class);
 
     @Resource
     private GoodsRepository goodsRepository;
@@ -33,10 +36,11 @@ public class GoodsService {
 
     /**
      * 获取专场中的商品列表
+     *
      * @param sessionId
      * @return
      */
-    public List<Goods> findBySessionId(Integer sessionId){
+    public List<Goods> findBySessionId(Integer sessionId) {
         return goodsRepository.findAllBySessionId(sessionId);
     }
 
@@ -104,6 +108,7 @@ public class GoodsService {
         goods.setEndTime(session.getEndTime());
 
         //从微信服务器下载图片
+        LOGGER.info("开始从微信服务下载图片");
         WxInterface.downloadMediaFile(addGoodsRequest.getBannerPictureWxServerId(), Constant.PICS_PATH);
         goods.setBannerUrl(Constant.PICTURE_CONTEXT_PATH + "/" + addGoodsRequest.getBannerPictureWxServerId());
 
@@ -127,6 +132,7 @@ public class GoodsService {
             goodsDesPictures.setRelativeUrl(Constant.PICTURE_CONTEXT_PATH + "/" + descPictureWxServerId);
             goodsPicturesRepository.save(goodsDesPictures);
         }
+        LOGGER.info("结束从微信服务下载图片");
 
         return goods;
     }

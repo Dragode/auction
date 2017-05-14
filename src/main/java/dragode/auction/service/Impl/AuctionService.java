@@ -158,8 +158,8 @@ public class AuctionService {
         //用户在快结束时拍卖，则延长拍卖周期。但是不能超过一定次数
         DateTime auctionEndTime = new DateTime(goods.getEndTime());
         DateTime delayedEndTime = now.plus(DELAY_CYCLE_GAP);
-        if (delayedEndTime.isAfter(auctionEndTime)
-                && goods.getDelayTimes() <= MAX_DELAY_TIMES) {
+        //&& goods.getDelayTimes() <= MAX_DELAY_TIMES //5.1沟通后决定，不设置次数上限
+        if (delayedEndTime.isAfter(auctionEndTime)) {
             goods.setEndTime(delayedEndTime.toDate());
             goods.setDelayTimes(goods.getDelayTimes() + 1);
         }
