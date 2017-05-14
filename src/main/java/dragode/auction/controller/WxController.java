@@ -232,6 +232,7 @@ public class WxController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logger.info("重定向用户到" + url);
     }
 
     /**

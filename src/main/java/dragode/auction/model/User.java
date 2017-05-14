@@ -22,6 +22,7 @@ public class User {
 
     public User(String openId,Boolean subscribed) {
         this.openId = openId;
+        this.role = NORMAL_USER;
         this.subscribed = subscribed;
     }
 
