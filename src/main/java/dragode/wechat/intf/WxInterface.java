@@ -33,6 +33,10 @@ public class WxInterface {
     public static String APP_ID = getAsString("wx.app.id");
     private static String SECRET = getAsString("wx.secret");
 
+    public static String getAppId() {
+        return APP_ID;
+    }
+
     private static final String WX_API_HOST = "https://api.weixin.qq.com";
     private static final String ACCESS_TOKEN_URL = WX_API_HOST + "/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
     private static final String OAUTH_ACCESS_TOKE_URL = WX_API_HOST + "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";

@@ -1,5 +1,6 @@
 package dragode.auction.utils;
 
+import dragode.wechat.intf.WxInterface;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -26,7 +27,7 @@ public class AuctionUtil {
      * @return
      */
     public static String generateOauthUrl(String status) {
-        String appid = "wxcecf87b6a40bda8f";
+        String appid = WxInterface.getAppId();
         String redirectUri = "http://www.ssspaimai.com/wx/redirectToHtml";
         String scope = SNSAPI_BASE_SCOPE;
 
@@ -60,7 +61,7 @@ public class AuctionUtil {
      * @return
      */
     public static String generateOauthUrlEx(String status) {
-        String appid = "wxcecf87b6a40bda8f";
+        String appid = WxInterface.getAppId();
         String redirectUri = "http://www.ssspaimai.com/wx/redirectToHtmlEx";
         String scope = SNSAPI_USERINFO_SCOPE;
 
