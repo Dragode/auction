@@ -3,6 +3,7 @@ package dragode.wechat.intf;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import dragode.auction.utils.DownloadImage;
+import dragode.auction.utils.constantUtil.LoadProperties;
 import dragode.wechat.intf.response.JsApiTicket;
 import dragode.wechat.intf.response.OAuthAccessToken;
 import dragode.wechat.intf.response.OAuthUserInfo;
@@ -16,28 +17,31 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static dragode.auction.utils.constantUtil.ConstantUtil.getAsString;
 
 /**
  * 微信接口
  */
+@LoadProperties(files = {"/wx.properties"})
 public class WxInterface {
 
     private static final Logger logger = LoggerFactory.getLogger(WxInterface.class);
 
-    //TODO 改到配置文件
-    public static final String APP_ID = "wxcecf87b6a40bda8f";
-    private static final String SECRET = "14adfbebbc1fed16333271190309856b";
-    private static final String WX_HOST = "https://api.weixin.qq.com";
-    private static final String ACCESS_TOKEN_URL = "/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
-    private static final String OAUTH_ACCESS_TOKE_URL = "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
-    private static final String OAUTH_USER_INFO_URL = "/sns/userinfo?access_token={accessToken}&openid={openid}&lang={lang}";
-    private static final String DOWNLOAD_MEDIA_FILE_URL = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={accessToken}&media_id={mediaId}";
+    public static String APP_ID = getAsString("wx.app.id");
+    private static String SECRET = getAsString("wx.secret");
+
+    private static final String WX_API_HOST = "https://api.weixin.qq.com";
+    private static final String ACCESS_TOKEN_URL = WX_API_HOST + "/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
+    private static final String OAUTH_ACCESS_TOKE_URL = WX_API_HOST + "/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
+    private static final String OAUTH_USER_INFO_URL = WX_API_HOST + "/sns/userinfo?access_token={accessToken}&openid={openid}&lang={lang}";
+    private static final String TEMPLATE_MESSAGE = WX_API_HOST + "/cgi-bin/message/template/send?access_token={accessToken}";
+    private static final String JS_API = WX_API_HOST + "/cgi-bin/ticket/getticket?access_token={accessToken}&type=jsapi";
+
+    private static final String WX_FILE_HOST = "http://file.api.weixin.qq.com";
+    private static final String DOWNLOAD_MEDIA_FILE_URL = WX_FILE_HOST + "/cgi-bin/media/get?access_token={accessToken}&media_id={mediaId}";
 
     private static final String ZH_CN = "zh_CN";
 
@@ -76,7 +80,7 @@ public class WxInterface {
         if (StringUtils.isEmpty(access_token)
                 || null == tokenLastFreshTime
                 || tokenLastFreshTime.getTime() - now.getTime() > TOKEN_FRESH_INTERVAL) {
-            String response = restTemplate.getForObject(WX_HOST + ACCESS_TOKEN_URL, String.class, APP_ID, SECRET);
+            String response = restTemplate.getForObject(ACCESS_TOKEN_URL, String.class, APP_ID, SECRET);
             JSONObject jsonObjectResponse = convertToJsonObject(response);
             //TODO 异常处理
             access_token = jsonObjectResponse.getString("access_token");
@@ -92,7 +96,7 @@ public class WxInterface {
      * @return AccessToken
      */
     public static OAuthAccessToken getOAuthAccessToken(String code) {
-        ResponseEntity<String> accessTokenStr = restTemplate.getForEntity(WX_HOST + OAUTH_ACCESS_TOKE_URL, String.class,
+        ResponseEntity<String> accessTokenStr = restTemplate.getForEntity(OAUTH_ACCESS_TOKE_URL, String.class,
                 APP_ID, SECRET, code);
         logger.info("获取网页授权AccessToken接口响应报文：" + accessTokenStr.getBody());
         OAuthAccessToken accessToken = JSON.parseObject(accessTokenStr.getBody(), OAuthAccessToken.class);
@@ -106,12 +110,12 @@ public class WxInterface {
      * @return 用户信息
      */
     public static OAuthUserInfo getUserInfo(OAuthAccessToken oAuthAccessToken) {
-        String response = restTemplate.getForObject(WX_HOST + OAUTH_USER_INFO_URL, String.class,
+        String response = restTemplate.getForObject(OAUTH_USER_INFO_URL, String.class,
                 oAuthAccessToken.getAccess_token(), oAuthAccessToken.getOpenid(), ZH_CN);
         String formattedResponse = response;
         try {
             formattedResponse = new String(response.getBytes("ISO-8859-1"), "UTF-8");
-            logger.info("网页授权获取用户信息相应报文："+formattedResponse);
+            logger.info("网页授权获取用户信息相应报文：" + formattedResponse);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -130,8 +134,6 @@ public class WxInterface {
      */
     public static void sendTemplateMessage(String templateId, String openId, String topColor, String url,
                                            Map<String, TemplateMessage.DataItem> params) {
-        String templateMessageUrl = WX_HOST + "/cgi-bin/message/template/send?access_token={accessToken}";
-
         TemplateMessage templateMessage = new TemplateMessage();
         templateMessage.setTouser(openId);
         templateMessage.setTemplate_id(templateId);
@@ -147,14 +149,14 @@ public class WxInterface {
 
         HttpEntity<String> formEntity = new HttpEntity<String>(requestBody, headers);
 
-        String response = restTemplate.postForObject(templateMessageUrl, formEntity, String.class, getAccessToken());
+        String response = restTemplate.postForObject(TEMPLATE_MESSAGE, formEntity, String.class, getAccessToken());
         //{"errcode":0,"errmsg":"ok","msgid":418493294} response
         System.out.println(response);
     }
 
     //TODO 缓存JsApiTicket
     public static JsApiTicket getJsApiTicket() {
-        String jsApiTicketUrl = WX_HOST + "/cgi-bin/ticket/getticket?access_token={accessToken}&type=jsapi";
+        String jsApiTicketUrl = JS_API;
         return restTemplate.getForObject(jsApiTicketUrl, JsApiTicket.class, getAccessToken());
     }
 
@@ -166,11 +168,11 @@ public class WxInterface {
         return (JSONObject) parse;
     }
 
-    public static void downloadMediaFile(String mediaId,String savePath) {
+    public static void downloadMediaFile(String mediaId, String savePath) {
         downloadMediaFile(mediaId, mediaId, savePath);
     }
 
-    private static void downloadMediaFile(String mediaId,String fileName,String savePath) {
+    private static void downloadMediaFile(String mediaId, String fileName, String savePath) {
         String url = DOWNLOAD_MEDIA_FILE_URL.replace("{accessToken}", getAccessToken());
         url = url.replace("{mediaId}", mediaId);
 

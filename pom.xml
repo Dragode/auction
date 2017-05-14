@@ -34,6 +34,12 @@
                 <env>product</env>
             </properties>
         </profile>
+        <profile>
+            <id>preProduct</id>
+            <properties>
+                <env>preProduct</env>
+            </properties>
+        </profile>
     </profiles>
 
 
