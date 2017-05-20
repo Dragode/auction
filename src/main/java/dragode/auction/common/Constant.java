@@ -2,7 +2,6 @@ package dragode.auction.common;
 
 import dragode.auction.utils.constantUtil.LoadProperties;
 
-import static dragode.auction.utils.FileUtils.getAbsolutePath;
 import static dragode.auction.utils.constantUtil.ConstantUtil.getAsInteger;
 import static dragode.auction.utils.constantUtil.ConstantUtil.getAsString;
 
@@ -47,4 +46,10 @@ public class Constant {
 
     public static final String PICS_PATH = getAsString("PICS_PATH");
     public static final String PICTURE_CONTEXT_PATH = "/pic";
+
+    /**
+     * 颜色
+     */
+    public static final String RED_COLOR = "#FF0000";
+    public static final String BLUE_COLOR = "#173177";
 }

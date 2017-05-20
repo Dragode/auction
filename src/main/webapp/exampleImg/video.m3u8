@@ -1,9 +1,0 @@
-#EXTM3U
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=329
-http://cloud.video.taobao.com/play/u/727053408/p/2/e/5/t/1/d/ld/38959850.m3u8
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=516
-http://cloud.video.taobao.com/play/u/727053408/p/2/e/5/t/1/d/sd/38959850.m3u8
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1296
-http://cloud.video.taobao.com/play/u/727053408/p/2/e/5/t/1/d/ud/38959850.m3u8
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=802
-http://cloud.video.taobao.com/play/u/727053408/p/2/e/5/t/1/d/hd/38959850.m3u8
